@@ -15,8 +15,8 @@ from telegram.ext import (
 logging.basicConfig(level=logging.INFO)
 
 # ══════════════════════════════════════════════════════════
-BOT_TOKEN  = "8910680454:AAG1uKbiBvZi1gRrk8CqDnPLVbLFT46vOfs"   # از @BotFather بگیرید
-ADMIN_ID   = 8910680454               # آیدی عددی تلگرام شما — از @userinfobot بگیرید
+BOT_TOKEN  = os.environ.get("BOT_TOKEN")  # از @BotFather بگیرید
+ADMIN_ID   = int(os.environ.get("ADMIN_ID"))              # آیدی عددی تلگرام شما — از @userinfobot بگیرید
 CSV_DATEI  = "melkyab_anfragen.csv"
 # ══════════════════════════════════════════════════════════
 
