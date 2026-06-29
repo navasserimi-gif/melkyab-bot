@@ -1,0 +1,381 @@
+"""
+MelkYab — ربات کوالیفیکیشن (پیش‌ارزیابی مشتری)
+Immobilien-Kundenqualifizierung — Telegram-Bot
+فقط به زبان فارسی با مشتری صحبت می‌کند
+۵ سؤال استاندارد → تولید خودکار «KUNDENPROFIL» برای مشاور املاک
+"""
+
+import logging, csv, os
+from datetime import datetime
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import (
+    Application, CommandHandler, CallbackQueryHandler,
+    MessageHandler, ConversationHandler, ContextTypes, filters
+)
+
+logging.basicConfig(level=logging.INFO)
+
+# ══════════════════════════════════════════════════════════
+BOT_TOKEN = os.environ.get("BOT_TOKEN")          # از @BotFather بگیرید
+ADMIN_ID  = int(os.environ.get("ADMIN_ID"))      # آیدی عددی تلگرام شما — از @userinfobot
+CSV_DATEI = "melkyab_kundenprofile.csv"
+# ══════════════════════════════════════════════════════════
+
+# مراحل مکالمه (به ترتیب ثابت فرگبوگن)
+(EIGENKAPITAL, NETTOEINKOMMEN, SCHUFA, REGION, HAUSHALT) = range(5)
+
+# ── متن خطای استاندارد برای سؤال خارج از موضوع ────────────
+OFFTOPIC_FA = (
+    "ببخشید، در حال حاضر تمرکز من روی ثبت اطلاعات شماست. "
+    "بیایید سؤال‌ها را ادامه دهیم. 🙏"
+)
+TECH_FA = (
+    "متأسفانه نمی‌توانم به این پاسخ بدهم. "
+    "لطفاً مستقیماً با دفتر ما تماس بگیرید."
+)
+
+START_MSG = (
+    "🏠 *به دستیار دفتر املاک خوش آمدید!*\n\n"
+    "من دستیار دیجیتال دفتر مشاور املاک شما هستم. "
+    "برای اینکه مشاور بتواند بهترین آپارتمان را برای شما پیدا کند، "
+    "چند سؤال کوتاه درباره وضعیت مالی و نیاز سکونتی شما می‌پرسم.\n\n"
+    "همه چیز محرمانه و فقط برای پیدا کردن خانه مناسب شماست. "
+    "برای شروع دکمه زیر را بزنید 👇"
+)
+
+
+# ── کمک‌تابع: تبدیل عدد ──────────────────────────────────
+def parse_zahl(text):
+    """رشته ورودی را به عدد تبدیل می‌کند؛ در صورت نامعتبر None برمی‌گرداند."""
+    bereinigt = (
+        text.replace("€", "")
+            .replace("یورو", "")
+            .replace("تومان", "")
+            .replace(" ", "")
+            .replace(".", "")   # جداکننده هزارگان آلمانی
+            .replace(",", ".")  # جداکننده اعشاری
+            .strip()
+    )
+    try:
+        wert = float(bereinigt)
+        if wert < 0:
+            return None
+        return wert
+    except ValueError:
+        return None
+
+
+def f(n):
+    return f"{int(n):,}".replace(",", ".")
+
+
+# ── تولید KUNDENPROFIL ───────────────────────────────────
+def kundenprofil_text(d):
+    schufa = "JA" if d["schufa"] else "NEIN"
+    return (
+        "```\n"
+        "=== KUNDENPROFIL ===\n"
+        f"Eigenkapital: {f(d['eigenkapital'])} €\n"
+        f"Nettoeinkommen/Monat: {f(d['netto'])} €\n"
+        f"SCHUFA vorhanden: {schufa}\n"
+        f"Suchregion: {d['region']}\n"
+        f"Haushaltsgröße: {d['haushalt']} Personen\n"
+        f"Erfassungsdatum: {datetime.now().strftime('%Y-%m-%d')}\n"
+        "===\n"
+        "```"
+    )
+
+
+# ── ذخیره در CSV ─────────────────────────────────────────
+def speichern(user, d):
+    neu = not os.path.exists(CSV_DATEI)
+    with open(CSV_DATEI, "a", newline="", encoding="utf-8-sig") as csvf:
+        w = csv.writer(csvf)
+        if neu:
+            w.writerow([
+                "Erfassungsdatum", "User ID", "Username", "Name",
+                "Eigenkapital (€)", "Nettoeinkommen/Monat (€)",
+                "SCHUFA vorhanden", "Suchregion", "Haushaltsgröße",
+            ])
+        w.writerow([
+            datetime.now().strftime("%Y-%m-%d %H:%M"),
+            user.id,
+            f"@{user.username}" if user.username else "—",
+            user.first_name or "—",
+            int(d["eigenkapital"]),
+            int(d["netto"]),
+            "JA" if d["schufa"] else "NEIN",
+            d["region"],
+            d["haushalt"],
+        ])
+
+
+# ── اطلاع‌رسانی فوری به ادمین/مشاور ──────────────────────
+async def admin_notify(context, user, d):
+    tg_link = f"tg://user?id={user.id}"
+    schufa = "✅ بله" if d["schufa"] else "❌ خیر"
+    msg = (
+        "📋 *پروفایل جدید مشتری (Kundenprofil)*\n\n"
+        f"👤 نام: [{user.first_name or '—'}]({tg_link})\n"
+        f"🔗 یوزرنیم: @{user.username or '—'}\n"
+        f"🆔 آیدی: `{user.id}`\n\n"
+        f"🏦 سرمایه اولیه (Eigenkapital): `{f(d['eigenkapital'])} €`\n"
+        f"💰 درآمد خالص ماهانه: `{f(d['netto'])} €`\n"
+        f"📄 شوفا (SCHUFA): {schufa}\n"
+        f"📍 منطقه جستجو: `{d['region']}`\n"
+        f"👥 تعداد ساکنین: `{d['haushalt']} نفر`\n"
+        f"📅 تاریخ ثبت: {datetime.now().strftime('%Y-%m-%d %H:%M')}"
+    )
+    await context.bot.send_message(ADMIN_ID, msg,
+                                   parse_mode="Markdown",
+                                   disable_web_page_preview=True)
+
+
+# ── گزارش کامل برای ادمین (/liste) ──────────────────────
+async def cmd_liste(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    if update.effective_user.id != ADMIN_ID:
+        return
+    if not os.path.exists(CSV_DATEI):
+        await update.message.reply_text("هنوز هیچ پروفایلی ثبت نشده.")
+        return
+
+    with open(CSV_DATEI, "r", encoding="utf-8-sig") as csvf:
+        rows = list(csv.reader(csvf))
+
+    if len(rows) <= 1:
+        await update.message.reply_text("هنوز هیچ پروفایلی ثبت نشده.")
+        return
+
+    data_rows = rows[1:]
+    total = len(data_rows)
+
+    summary = (
+        "📊 *گزارش پروفایل‌های مشتری MelkYab*\n"
+        "━━━━━━━━━━━━━━━━━━\n"
+        f"📅 تاریخ گزارش: {datetime.now().strftime('%Y-%m-%d %H:%M')}\n"
+        f"👥 تعداد کل پروفایل‌ها: *{total}*\n"
+        "━━━━━━━━━━━━━━━━━━\n\n"
+        "*لیست مشتریان:*\n\n"
+    )
+
+    lines = []
+    for i, r in enumerate(data_rows, 1):
+        # r: تاریخ, ID, یوزر, نام, سرمایه, درآمد, شوفا, منطقه, تعداد نفر
+        tg_link = f"tg://user?id={r[1]}"
+        lines.append(
+            f"*{i}.* [{r[3]}]({tg_link}) | {r[2]}\n"
+            f"   🆔 `{r[1]}` | 📅 {r[0]}\n"
+            f"   🏦 سرمایه: `{r[4]} €` | 💰 درآمد: `{r[5]} €`\n"
+            f"   📄 شوفا: {r[6]} | 📍 {r[7]} | 👥 {r[8]} نفر\n"
+        )
+
+    full_msg = summary + "\n".join(lines)
+    if len(full_msg) <= 4000:
+        await update.message.reply_text(full_msg, parse_mode="Markdown",
+                                        disable_web_page_preview=True)
+    else:
+        await update.message.reply_text(summary, parse_mode="Markdown")
+        for i in range(0, len(lines), 10):
+            chunk = "\n".join(lines[i:i+10])
+            await update.message.reply_text(chunk, parse_mode="Markdown",
+                                            disable_web_page_preview=True)
+
+    await update.message.reply_document(
+        document=open(CSV_DATEI, "rb"),
+        filename=f"melkyab_kundenprofile_{datetime.now().strftime('%Y%m%d')}.csv",
+        caption="📎 فایل اکسل کامل همه پروفایل‌ها"
+    )
+
+
+# ── Handlers ─────────────────────────────────────────────
+async def start(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    kb = [[InlineKeyboardButton("▶️ شروع", callback_data="qual_start")]]
+    await update.message.reply_text(START_MSG, parse_mode="Markdown",
+                                    reply_markup=InlineKeyboardMarkup(kb))
+    return EIGENKAPITAL
+
+
+# سؤال ۱ — Eigenkapital
+async def cb_start(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    q = update.callback_query; await q.answer()
+    ctx.user_data.clear()
+    await q.edit_message_text(
+        "🏦 *سؤال ۱ از ۵ — سرمایه اولیه (Eigenkapital)*\n\n"
+        "چه میزان سرمایه نقدی در دسترس دارید؟ (به یورو)\n\n"
+        "_(اگر سرمایه‌ای ندارید، عدد ۰ بنویسید)_",
+        parse_mode="Markdown")
+    return EIGENKAPITAL
+
+
+async def msg_eigenkapital(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    wert = parse_zahl(update.message.text)
+    if wert is None:
+        await update.message.reply_text(
+            "⚠️ لطفاً یک عدد معتبر وارد کنید. مثال: 50000")
+        return EIGENKAPITAL
+    ctx.user_data["eigenkapital"] = wert
+    await update.message.reply_text(
+        f"✅ سرمایه اولیه ثبت شد: *{f(wert)} €*\n\n"
+        "💰 *سؤال ۲ از ۵ — درآمد خالص ماهانه*\n\n"
+        "درآمد خالص ماهانه شما چقدر است؟ (به یورو)",
+        parse_mode="Markdown")
+    return NETTOEINKOMMEN
+
+
+# سؤال ۲ — Nettoeinkommen
+async def msg_netto(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    wert = parse_zahl(update.message.text)
+    if wert is None:
+        await update.message.reply_text(
+            "⚠️ لطفاً یک عدد معتبر وارد کنید. مثال: 3500")
+        return NETTOEINKOMMEN
+    ctx.user_data["netto"] = wert
+    kb = [
+        [InlineKeyboardButton("✅ بله", callback_data="schufa_ja"),
+         InlineKeyboardButton("❌ خیر", callback_data="schufa_nein")],
+    ]
+    await update.message.reply_text(
+        f"✅ درآمد خالص ثبت شد: *{f(wert)} €*\n\n"
+        "📄 *سؤال ۳ از ۵ — گزارش شوفا (SCHUFA)*\n\n"
+        "آیا گزارش شوفا (SCHUFA-Auskunft) دارید؟",
+        parse_mode="Markdown", reply_markup=InlineKeyboardMarkup(kb))
+    return SCHUFA
+
+
+# سؤال ۳ — SCHUFA
+async def cb_schufa(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    q = update.callback_query; await q.answer()
+    ctx.user_data["schufa"] = (q.data == "schufa_ja")
+    antwort = "بله ✅" if ctx.user_data["schufa"] else "خیر ❌"
+    await q.edit_message_text(
+        f"✅ شوفا ثبت شد: *{antwort}*\n\n"
+        "📍 *سؤال ۴ از ۵ — منطقه جستجو*\n\n"
+        "در کدام شهر یا منطقه در آلمان دنبال آپارتمان هستید؟\n"
+        "_(مثال: کلن، دوسلدورف، سراسر آلمان)_",
+        parse_mode="Markdown")
+    return REGION
+
+
+async def msg_schufa_text(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    """اگر کاربر به جای دکمه، متن بله/خیر بنویسد."""
+    txt = update.message.text.strip().lower()
+    ja_worte = {"بله", "آره", "دارم", "ja", "yes", "y", "بلی", "بله دارم"}
+    nein_worte = {"خیر", "نه", "ندارم", "نخیر", "nein", "no", "n"}
+    if any(w in txt for w in ja_worte):
+        ctx.user_data["schufa"] = True
+    elif any(w in txt for w in nein_worte):
+        ctx.user_data["schufa"] = False
+    else:
+        await update.message.reply_text(
+            "لطفاً مشخص کنید: آیا گزارش شوفا دارید؟ «بله» یا «خیر»؟")
+        return SCHUFA
+    antwort = "بله ✅" if ctx.user_data["schufa"] else "خیر ❌"
+    await update.message.reply_text(
+        f"✅ شوفا ثبت شد: *{antwort}*\n\n"
+        "📍 *سؤال ۴ از ۵ — منطقه جستجو*\n\n"
+        "در کدام شهر یا منطقه در آلمان دنبال آپارتمان هستید؟\n"
+        "_(مثال: کلن، دوسلدورف، سراسر آلمان)_",
+        parse_mode="Markdown")
+    return REGION
+
+
+# سؤال ۴ — Suchregion
+async def msg_region(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    region = update.message.text.strip()
+    if len(region) < 2:
+        await update.message.reply_text(
+            "می‌شود دقیق‌تر بفرمایید؟ نام شهر یا منطقه را بنویسید.")
+        return REGION
+    ctx.user_data["region"] = region
+    await update.message.reply_text(
+        f"✅ منطقه جستجو ثبت شد: *{region}*\n\n"
+        "👥 *سؤال ۵ از ۵ — تعداد ساکنین*\n\n"
+        "چند نفر در این آپارتمان زندگی خواهند کرد؟",
+        parse_mode="Markdown")
+    return HAUSHALT
+
+
+# سؤال ۵ — Haushaltsgröße
+async def msg_haushalt(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    wert = parse_zahl(update.message.text)
+    if wert is None or wert < 1:
+        await update.message.reply_text(
+            "⚠️ لطفاً تعداد افراد را به صورت یک عدد معتبر وارد کنید. مثال: 3")
+        return HAUSHALT
+    d = ctx.user_data
+    d["haushalt"] = int(wert)
+
+    speichern(update.effective_user, d)
+    await admin_notify(ctx, update.effective_user, d)
+
+    kb = [
+        [InlineKeyboardButton("🔄 ثبت پروفایل جدید", callback_data="restart")],
+        [InlineKeyboardButton("📞 تماس با مشاور", url=f"tg://user?id={ADMIN_ID}")],
+    ]
+    await update.message.reply_text(kundenprofil_text(d), parse_mode="Markdown")
+    await update.message.reply_text(
+        "🙏 از همکاری شما سپاسگزاریم!\n\n"
+        "اطلاعات شما با موفقیت ثبت شد. مشاور املاک ما اکنون از این داده‌ها "
+        "برای جستجوی آپارتمان مناسب شما استفاده خواهد کرد و به‌زودی با شما "
+        "تماس می‌گیرد.",
+        reply_markup=InlineKeyboardMarkup(kb))
+    return ConversationHandler.END
+
+
+async def cb_restart(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    q = update.callback_query; await q.answer()
+    ctx.user_data.clear()
+    kb = [[InlineKeyboardButton("▶️ شروع", callback_data="qual_start")]]
+    await q.edit_message_text(START_MSG, parse_mode="Markdown",
+                              reply_markup=InlineKeyboardMarkup(kb))
+    return EIGENKAPITAL
+
+
+async def cancel(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("❌ لغو شد. برای شروع مجدد /start بزنید.")
+    return ConversationHandler.END
+
+
+# ── پاسخ به سؤال خارج از موضوع در حین فرایند ─────────────
+async def offtopic_eigenkapital(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(OFFTOPIC_FA)
+    return EIGENKAPITAL
+
+
+# ── Main ─────────────────────────────────────────────────
+def main():
+    app = Application.builder().token(BOT_TOKEN).build()
+    conv = ConversationHandler(
+        entry_points=[CommandHandler("start", start)],
+        states={
+            EIGENKAPITAL: [
+                CallbackQueryHandler(cb_start, pattern="^qual_start$"),
+                MessageHandler(filters.TEXT & ~filters.COMMAND, msg_eigenkapital),
+            ],
+            NETTOEINKOMMEN: [
+                MessageHandler(filters.TEXT & ~filters.COMMAND, msg_netto),
+            ],
+            SCHUFA: [
+                CallbackQueryHandler(cb_schufa, pattern="^schufa_(ja|nein)$"),
+                MessageHandler(filters.TEXT & ~filters.COMMAND, msg_schufa_text),
+            ],
+            REGION: [
+                MessageHandler(filters.TEXT & ~filters.COMMAND, msg_region),
+            ],
+            HAUSHALT: [
+                MessageHandler(filters.TEXT & ~filters.COMMAND, msg_haushalt),
+            ],
+        },
+        fallbacks=[
+            CommandHandler("cancel", cancel),
+            CallbackQueryHandler(cb_restart, pattern="^restart$"),
+        ],
+    )
+    app.add_handler(conv)
+    app.add_handler(CommandHandler("liste", cmd_liste))
+    print("✅ MelkYab Qualifikation-Bot läuft — ربات کوالیفیکیشن فعال است")
+    app.run_polling()
+
+
+if __name__ == "__main__":
+    main()
