@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Laufzeit-Daten (vom Bot generiert)
+melkyab_anfragen.csv
+melkyab_kundenprofile.csv
+
+# OS / Editor
+.DS_Store
