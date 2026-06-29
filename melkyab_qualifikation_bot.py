@@ -28,10 +28,8 @@ CSV_KREDIT = "melkyab_anfragen.csv"               # نتایج محاسبه وا
 # مراحل مکالمه
 # بخش کوالیفیکیشن:
 (EIGENKAPITAL, NETTOEINKOMMEN, SCHUFA, REGION, HAUSHALT,
-# پل بین دو بخش:
- PROFIL_FERTIG,
-# بخش محاسبه وام:
- PERSONEN, BESCHAEFTIGUNG, SCHULDEN, SCHULDEN_BETRAG, LAUFZEIT) = range(11)
+# بخش محاسبه وام (به صورت خودکار پس از کوالیفیکیشن ادامه می‌یابد):
+ PERSONEN, BESCHAEFTIGUNG, SCHULDEN, SCHULDEN_BETRAG, LAUFZEIT) = range(10)
 
 # پارامترهای محاسبه وام
 JOB_FAKTOR = [1.0, 0.85, 0.75, 1.05]
@@ -435,32 +433,25 @@ async def msg_haushalt(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(kundenprofil_text(d), parse_mode="Markdown")
 
-    kb = [
-        [InlineKeyboardButton("🏦 محاسبه وام مسکن", callback_data="calc_start")],
-        [InlineKeyboardButton("🔄 ثبت پروفایل جدید", callback_data="restart")],
-        [InlineKeyboardButton("📞 تماس با مشاور", url=f"tg://user?id={ADMIN_ID}")],
-    ]
+    # ادامه خودکار به محاسبه وام مسکن
     await update.message.reply_text(
-        "🙏 از همکاری شما سپاسگزاریم!\n\n"
-        "اطلاعات شما با موفقیت ثبت شد و مشاور املاک ما از آن برای جستجوی "
-        "آپارتمان مناسب شما استفاده خواهد کرد.\n\n"
-        "💡 اگر مایلید، می‌توانم همین حالا *حداکثر وام مسکن* شما را هم محاسبه کنم.",
+        "🙏 از همکاری شما سپاسگزاریم! اطلاعات شما با موفقیت ثبت شد.\n\n"
+        "💡 حالا بیایید *حداکثر وام مسکن* شما را هم محاسبه کنیم. "
+        "فقط چند سؤال کوتاه باقی مانده 👇",
+        parse_mode="Markdown")
+
+    kb = [[InlineKeyboardButton("👤 تنها (۱ نفر)", callback_data="pers_1")],
+          [InlineKeyboardButton("👫 با شریک (۲ نفر)", callback_data="pers_2")]]
+    await update.message.reply_text(
+        "👥 *محاسبه وام — مرحله ۱ از ۴ — تعداد وام‌گیرندگان*\n\n"
+        "وام را تنها می‌گیرید یا با شریک/همسر؟",
         parse_mode="Markdown", reply_markup=InlineKeyboardMarkup(kb))
-    return PROFIL_FERTIG
+    return PERSONEN
 
 
 # ══════════════════════════════════════════════════════════
 #  بخش ۲ — محاسبه وام مسکن (مقادیر درآمد/سرمایه از قبل موجود است)
 # ══════════════════════════════════════════════════════════
-async def cb_calc_start(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    q = update.callback_query; await q.answer()
-    kb = [[InlineKeyboardButton("👤 تنها (۱ نفر)", callback_data="pers_1")],
-          [InlineKeyboardButton("👫 با شریک (۲ نفر)", callback_data="pers_2")]]
-    await q.edit_message_text(
-        "👥 *محاسبه وام — مرحله ۱ از ۴ — تعداد وام‌گیرندگان*\n\n"
-        "وام را تنها می‌گیرید یا با شریک/همسر؟",
-        parse_mode="Markdown", reply_markup=InlineKeyboardMarkup(kb))
-    return PERSONEN
 
 
 async def cb_personen(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
@@ -604,12 +595,7 @@ def main():
             HAUSHALT: [
                 MessageHandler(filters.TEXT & ~filters.COMMAND, msg_haushalt),
             ],
-            # پل
-            PROFIL_FERTIG: [
-                CallbackQueryHandler(cb_calc_start, pattern="^calc_start$"),
-                CallbackQueryHandler(cb_restart, pattern="^restart$"),
-            ],
-            # بخش محاسبه وام
+            # بخش محاسبه وام (به صورت خودکار ادامه می‌یابد)
             PERSONEN: [
                 CallbackQueryHandler(cb_personen, pattern="^pers_[12]$"),
             ],
