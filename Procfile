@@ -1,1 +1,1 @@
-worker: python3 melkyab_kredit_bot.py
+worker: python3 melkyab_miet_bot.py

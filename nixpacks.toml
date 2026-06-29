@@ -5,4 +5,4 @@ nixPkgs = ["python313"]
 cmds = ["pip install -r requirements.txt"]
 
 [start]
-cmd = "python3 melkyab_kredit_bot.py"
+cmd = "python3 melkyab_miet_bot.py"
