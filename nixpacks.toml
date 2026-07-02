@@ -1,8 +1,14 @@
 [phases.setup]
-nixPkgs = ["python313"]
+# python313 + Systembibliotheken, die WeasyPrint (PDF-Rendering im Exposé-Generator) benötigt
+nixPkgs = ["python313", "pango", "cairo", "gdk-pixbuf", "harfbuzz", "fontconfig", "freetype", "glib"]
 
 [phases.install]
 cmds = ["pip install -r requirements.txt"]
 
 [start]
 cmd = "python3 melkyab_kredit_bot.py"
+
+# Hinweis: Für den Exposé-Generator (expose_app) einen zweiten Railway-Service
+# aus demselben Repo anlegen und dort den Start-Befehl überschreiben mit:
+#   uvicorn main:app --app-dir expose_app --host 0.0.0.0 --port $PORT
+# (siehe Procfile, Prozess "web")

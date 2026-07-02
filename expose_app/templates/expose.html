@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>{{ data.title }} — MaYa Investment</title>
+<style>
+
+    @font-face {
+        font-family: "Playfair";
+        src: url("fonts/playfair-regular.ttf");
+        font-weight: 400;
+    }
+    @font-face {
+        font-family: "Playfair";
+        src: url("fonts/playfair-semibold.ttf");
+        font-weight: 600;
+    }
+    @font-face {
+        font-family: "Playfair";
+        src: url("fonts/playfair-bold.ttf");
+        font-weight: 700;
+    }
+    @font-face {
+        font-family: "Garamond";
+        src: url("fonts/garamond-regular.ttf");
+        font-weight: 400;
+    }
+    @font-face {
+        font-family: "Garamond";
+        src: url("fonts/garamond-medium.ttf");
+        font-weight: 500;
+    }
+    @font-face {
+        font-family: "Lato";
+        src: url("fonts/lato-light.ttf");
+        font-weight: 300;
+    }
+    @font-face {
+        font-family: "Lato";
+        src: url("fonts/lato-regular.ttf");
+        font-weight: 400;
+    }
+    @font-face {
+        font-family: "Lato";
+        src: url("fonts/lato-bold.ttf");
+        font-weight: 700;
+    }
+
+    :root {
+        --navy: #16204A;
+        --navy-deep: #0D1330;
+        --gold: #C9A24B;
+        --gold-light: #E7CE93;
+        --cream: #FBF8F2;
+        --ink: #201F1C;
+        --hairline: rgba(22, 32, 74, 0.18);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        color: var(--ink);
+        font-family: "Garamond", Georgia, serif;
+        background: var(--cream);
+    }
+
+    /* ───────────────────────── Seiten-Setup ───────────────────────── */
+
+    @page cover {
+        size: A4;
+        margin: 0;
+    }
+
+    @page content {
+        size: A4;
+        margin: 3.1cm 1.9cm 2.2cm 1.9cm;
+        background: var(--cream);
+
+        @top-left {
+            content: "MAYA INVESTMENT";
+            font-family: "Lato", sans-serif;
+            font-size: 8.5pt;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+            color: var(--navy);
+            vertical-align: bottom;
+            padding-bottom: 0.5cm;
+        }
+        @top-right {
+            content: "Exposé";
+            font-family: "Playfair", serif;
+            font-style: italic;
+            font-size: 10pt;
+            color: var(--gold);
+            vertical-align: bottom;
+            padding-bottom: 0.5cm;
+        }
+        @bottom-left {
+            content: "MaYa Investment GmbH";
+            font-family: "Lato", sans-serif;
+            font-size: 7pt;
+            color: #8a8672;
+            letter-spacing: 0.5px;
+            padding-top: 0.4cm;
+        }
+        @bottom-right {
+            content: "Seite " counter(page) " / " counter(pages);
+            font-family: "Lato", sans-serif;
+            font-size: 7pt;
+            color: #8a8672;
+            padding-top: 0.4cm;
+        }
+    }
+
+    .page {
+        page-break-after: always;
+    }
+    .page:last-child {
+        page-break-after: auto;
+    }
+
+    /* ───────────────────────── Titelseite ───────────────────────── */
+
+    .cover {
+        page: cover;
+        position: relative;
+        width: 21cm;
+        height: 29.7cm;
+        overflow: hidden;
+        background: linear-gradient(160deg, var(--navy-deep) 0%, var(--navy) 55%, #1c2a5e 100%);
+    }
+
+    .cover-image {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .cover-scrim {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg,
+            rgba(13,19,48,0.78) 0%,
+            rgba(13,19,48,0.55) 32%,
+            rgba(13,19,48,0.62) 60%,
+            rgba(13,19,48,0.95) 100%);
+    }
+
+    .cover-frame {
+        position: absolute;
+        inset: 0.55cm;
+        border: 1px solid rgba(231, 206, 147, 0.55);
+    }
+
+    .cover-content {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.5cm 1.6cm;
+        text-align: center;
+    }
+
+    .cover-logo {
+        width: 3.1cm;
+        margin-top: 0.3cm;
+        filter: drop-shadow(0 2px 6px rgba(0,0,0,0.35));
+    }
+
+    .cover-kicker {
+        font-family: "Lato", sans-serif;
+        font-size: 10.5pt;
+        letter-spacing: 5px;
+        color: var(--gold-light);
+        text-transform: uppercase;
+        margin-top: 0.9cm;
+    }
+
+    .cover-title {
+        font-family: "Playfair", serif;
+        font-weight: 700;
+        font-size: 32pt;
+        line-height: 1.18;
+        color: #ffffff;
+        max-width: 15.5cm;
+        margin: 0.5cm 0 0 0;
+        text-wrap: balance;
+    }
+
+    .cover-address {
+        font-family: "Lato", sans-serif;
+        font-size: 12pt;
+        color: var(--gold-light);
+        letter-spacing: 1px;
+        margin-top: 0.55cm;
+    }
+
+    .cover-bottom {
+        width: 100%;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        border-top: 1px solid rgba(231, 206, 147, 0.4);
+        padding-top: 0.55cm;
+    }
+
+    .cover-price-block {
+        text-align: left;
+    }
+    .cover-price-label {
+        font-family: "Lato", sans-serif;
+        font-size: 8.5pt;
+        letter-spacing: 2px;
+        color: var(--gold-light);
+        text-transform: uppercase;
+    }
+    .cover-price {
+        font-family: "Playfair", serif;
+        font-weight: 600;
+        font-size: 19pt;
+        color: #ffffff;
+        margin-top: 0.1cm;
+    }
+    .cover-firm {
+        text-align: right;
+        font-family: "Lato", sans-serif;
+        font-size: 9pt;
+        letter-spacing: 3px;
+        color: #ffffff;
+        text-transform: uppercase;
+    }
+    .cover-firm span {
+        display: block;
+        font-size: 7pt;
+        letter-spacing: 2px;
+        color: var(--gold-light);
+        margin-top: 0.15cm;
+    }
+
+    /* ───────────────────────── Inhaltsseiten ───────────────────────── */
+
+    .page.content {
+        page: content;
+    }
+
+    .section-title {
+        font-family: "Lato", sans-serif;
+        font-size: 9pt;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: 0.15cm;
+    }
+
+    .section-heading {
+        font-family: "Playfair", serif;
+        font-weight: 700;
+        font-size: 21pt;
+        color: var(--navy);
+        margin: 0 0 0.55cm 0;
+    }
+
+    .rule {
+        height: 1px;
+        background: linear-gradient(90deg, var(--gold) 0%, var(--hairline) 45%);
+        margin: 0.35cm 0 0.7cm 0;
+    }
+
+    /* Fact grid */
+    .facts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35cm;
+        margin-bottom: 0.9cm;
+    }
+    .fact {
+        flex: 1 1 4.2cm;
+        border: 1px solid var(--hairline);
+        border-top: 2px solid var(--gold);
+        background: #ffffff;
+        padding: 0.4cm 0.45cm;
+    }
+    .fact-label {
+        font-family: "Lato", sans-serif;
+        font-size: 7.5pt;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: #8a8672;
+    }
+    .fact-value {
+        font-family: "Playfair", serif;
+        font-weight: 600;
+        font-size: 14pt;
+        color: var(--navy);
+        margin-top: 0.08cm;
+    }
+
+    .lede {
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 400;
+        font-size: 13.5pt;
+        line-height: 1.5;
+        color: var(--navy);
+        margin-bottom: 0.7cm;
+        border-left: 2px solid var(--gold);
+        padding-left: 0.5cm;
+    }
+
+    .description {
+        font-size: 11.5pt;
+        line-height: 1.62;
+        color: var(--ink);
+        column-count: 2;
+        column-gap: 0.9cm;
+        text-align: justify;
+        orphans: 3;
+        widows: 3;
+    }
+
+    .features-block {
+        margin-top: 0.9cm;
+        break-inside: avoid;
+    }
+    .features-title {
+        font-family: "Lato", sans-serif;
+        font-size: 9pt;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--navy);
+        margin: 0 0 0.35cm 0;
+    }
+    .features {
+        column-count: 2;
+        column-gap: 0.9cm;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        font-family: "Lato", sans-serif;
+        font-size: 10pt;
+    }
+    .features li {
+        padding: 0.14cm 0;
+        border-bottom: 1px dotted var(--hairline);
+        break-inside: avoid;
+    }
+    .features li::before {
+        content: "◆";
+        color: var(--gold);
+        font-size: 6.5pt;
+        margin-right: 0.3cm;
+        vertical-align: middle;
+    }
+
+    /* Gallery */
+    .gallery-heading {
+        margin-bottom: 0.6cm;
+    }
+    .gallery-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35cm;
+    }
+    .gallery-grid .g-large {
+        flex: 1 1 100%;
+        height: 8.3cm;
+    }
+    .gallery-grid .g-small {
+        flex: 1 1 calc(50% - 0.18cm);
+        height: 5.6cm;
+    }
+    .gallery-item {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--hairline);
+    }
+    .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+    .gallery-item .g-index {
+        position: absolute;
+        top: 0.25cm;
+        left: 0.25cm;
+        background: rgba(13,19,48,0.78);
+        color: var(--gold-light);
+        font-family: "Lato", sans-serif;
+        font-size: 7.5pt;
+        letter-spacing: 1px;
+        padding: 0.08cm 0.24cm;
+    }
+
+    /* Closing / contact page */
+    .closing {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        height: 20cm;
+    }
+    .closing-logo {
+        width: 2.6cm;
+        margin-bottom: 0.7cm;
+    }
+    .closing-quote {
+        font-family: "Playfair", serif;
+        font-style: italic;
+        font-weight: 400;
+        font-size: 16pt;
+        color: var(--navy);
+        max-width: 12.5cm;
+        line-height: 1.5;
+        margin-bottom: 0.9cm;
+    }
+    .closing-rule {
+        width: 2.4cm;
+        height: 2px;
+        background: var(--gold);
+        margin-bottom: 0.9cm;
+    }
+    .closing-cta {
+        font-family: "Lato", sans-serif;
+        font-size: 9pt;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #8a8672;
+        margin-bottom: 0.25cm;
+    }
+    .closing-contact {
+        font-family: "Lato", sans-serif;
+        font-size: 11.5pt;
+        color: var(--navy);
+        line-height: 1.9;
+    }
+    .closing-contact strong {
+        color: var(--navy);
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+    .closing-firmname {
+        font-family: "Playfair", serif;
+        font-weight: 700;
+        font-size: 15pt;
+        color: var(--navy);
+        letter-spacing: 0.5px;
+        margin-top: 0.5cm;
+    }
+
+</style>
+</head>
+<body>
+
+    <!-- ═══════════════════════ TITELSEITE ═══════════════════════ -->
+    <section class="page cover">
+        {% if data.hero_image_uri %}
+        <img class="cover-image" src="{{ data.hero_image_uri }}">
+        {% endif %}
+        <div class="cover-scrim"></div>
+        <div class="cover-frame"></div>
+        <div class="cover-content">
+            <img class="cover-logo" src="{{ logo_uri }}">
+
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                <div class="cover-kicker">Exklusives Immobilienangebot</div>
+                <h1 class="cover-title">{{ data.title }}</h1>
+                {% if data.address %}
+                <div class="cover-address">{{ data.address }}</div>
+                {% endif %}
+            </div>
+
+            <div class="cover-bottom">
+                <div class="cover-price-block">
+                    <div class="cover-price-label">Kaufpreis</div>
+                    <div class="cover-price">{{ data.price if data.price else "Auf Anfrage" }}</div>
+                </div>
+                <div class="cover-firm">
+                    MaYa Investment GmbH
+                    <span>Real Estate &amp; Capital</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════ OBJEKTÜBERSICHT ═══════════════════════ -->
+    <section class="page content">
+        <div class="section-title">Objektübersicht</div>
+        <h2 class="section-heading">{{ data.title }}</h2>
+        <div class="rule"></div>
+
+        <div class="facts">
+            <div class="fact">
+                <div class="fact-label">Kaufpreis</div>
+                <div class="fact-value">{{ data.price if data.price else "Auf Anfrage" }}</div>
+            </div>
+            <div class="fact">
+                <div class="fact-label">Wohnfläche</div>
+                <div class="fact-value">{{ (data.area + " m²") if data.area else "—" }}</div>
+            </div>
+            <div class="fact">
+                <div class="fact-label">Zimmer</div>
+                <div class="fact-value">{{ data.rooms if data.rooms else "—" }}</div>
+            </div>
+            <div class="fact">
+                <div class="fact-label">Grundstück</div>
+                <div class="fact-value">{{ (data.plot_area + " m²") if data.plot_area else "—" }}</div>
+            </div>
+            <div class="fact">
+                <div class="fact-label">Baujahr</div>
+                <div class="fact-value">{{ data.year_built if data.year_built else "—" }}</div>
+            </div>
+            <div class="fact">
+                <div class="fact-label">Lage</div>
+                <div class="fact-value" style="font-size:11.5pt;">{{ data.address if data.address else "—" }}</div>
+            </div>
+        </div>
+
+        <div class="lede">
+            „Ein Objekt mit Charakter — sorgfältig ausgewählt und aufbereitet
+            von MaYa Investment GmbH für Anleger mit Anspruch auf das Besondere.“
+        </div>
+
+        <div class="description">
+            {{ data.description if data.description else "Weitere Informationen zu diesem Objekt erhalten Sie auf Anfrage bei MaYa Investment GmbH." }}
+        </div>
+
+        {% if data.features %}
+        <div class="features-block">
+            <div class="features-title">Ausstattung</div>
+            <ul class="features">
+                {% for feat in data.features %}
+                <li>{{ feat }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </section>
+
+    <!-- ═══════════════════════ GALERIE ═══════════════════════ -->
+    {% if data.gallery_uris %}
+    <section class="page content">
+        <div class="section-title">Impressionen</div>
+        <h2 class="section-heading gallery-heading">Das Objekt im Detail</h2>
+        <div class="rule"></div>
+
+        <div class="gallery-grid">
+            {% for img in data.gallery_uris %}
+            <div class="gallery-item {{ 'g-large' if loop.first else 'g-small' }}">
+                <img src="{{ img }}">
+                <div class="g-index">{{ '%02d' % loop.index }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- ═══════════════════════ KONTAKT ═══════════════════════ -->
+    <section class="page content">
+        <div class="closing">
+            <img class="closing-logo" src="{{ logo_uri }}">
+            <div class="closing-quote">
+                „Vertrauen entsteht durch Substanz. Wir begleiten Sie mit
+                Diskretion und Weitblick bei einer der wichtigsten
+                Entscheidungen Ihrer Investitionslaufbahn.“
+            </div>
+            <div class="closing-rule"></div>
+            <div class="closing-cta">Für eine persönliche Besichtigung</div>
+            <div class="closing-contact">
+                <strong>{{ company.phone }}</strong><br>
+                {{ company.email }}<br>
+                {{ company.website }}
+            </div>
+            <div class="closing-firmname">MaYa Investment GmbH</div>
+            <div style="font-family:'Lato',sans-serif; font-size:9pt; color:#8a8672; margin-top:0.2cm;">
+                {{ company.address }}
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>

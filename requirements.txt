@@ -1,1 +1,10 @@
 python-telegram-bot==20.7
+
+# Exposé Generator (expose_app)
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+python-multipart==0.0.9
+jinja2==3.1.4
+weasyprint==69.0
+PyMuPDF==1.24.5
+Pillow==10.3.0

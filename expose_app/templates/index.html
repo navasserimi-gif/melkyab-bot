@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MaYa Investment — Exposé Generator</title>
+<style>
+    @font-face {
+        font-family: "Playfair";
+        src: url("/static/fonts/playfair-bold.ttf");
+        font-weight: 700;
+    }
+    @font-face {
+        font-family: "Playfair";
+        src: url("/static/fonts/playfair-semibold.ttf");
+        font-weight: 600;
+    }
+    @font-face {
+        font-family: "Lato";
+        src: url("/static/fonts/lato-regular.ttf");
+        font-weight: 400;
+    }
+    @font-face {
+        font-family: "Lato";
+        src: url("/static/fonts/lato-light.ttf");
+        font-weight: 300;
+    }
+    @font-face {
+        font-family: "Lato";
+        src: url("/static/fonts/lato-bold.ttf");
+        font-weight: 700;
+    }
+
+    :root {
+        --navy: #16204A;
+        --navy-deep: #0D1330;
+        --gold: #C9A24B;
+        --gold-light: #E7CE93;
+        --cream: #FBF8F2;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        background: radial-gradient(circle at 20% 0%, #1c2a5e 0%, var(--navy-deep) 55%, #080c1e 100%);
+        font-family: "Lato", sans-serif;
+        color: var(--cream);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+    }
+
+    .card {
+        width: 100%;
+        max-width: 620px;
+        background: rgba(251, 248, 242, 0.03);
+        border: 1px solid rgba(231, 206, 147, 0.28);
+        padding: 2.6rem 2.6rem 2.2rem;
+        text-align: center;
+        backdrop-filter: blur(4px);
+    }
+
+    .logo {
+        width: 84px;
+        margin-bottom: 1.1rem;
+    }
+
+    .kicker {
+        font-size: 0.72rem;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--gold-light);
+        margin-bottom: 0.4rem;
+    }
+
+    h1 {
+        font-family: "Playfair", serif;
+        font-weight: 700;
+        font-size: 2rem;
+        margin: 0 0 0.6rem;
+        letter-spacing: 0.5px;
+    }
+
+    p.lead {
+        font-weight: 300;
+        font-size: 0.98rem;
+        line-height: 1.6;
+        color: #d9d6ea;
+        margin: 0 auto 2rem;
+        max-width: 460px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .dropzone {
+        border: 1.5px dashed rgba(231, 206, 147, 0.5);
+        padding: 2.2rem 1rem;
+        cursor: pointer;
+        transition: border-color 0.2s ease, background 0.2s ease;
+        position: relative;
+    }
+    .dropzone:hover, .dropzone.dragover {
+        border-color: var(--gold);
+        background: rgba(201, 162, 75, 0.06);
+    }
+    .dropzone input[type=file] {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+    .dropzone .dz-label {
+        font-size: 0.92rem;
+        color: var(--gold-light);
+        letter-spacing: 0.5px;
+    }
+    .dropzone .dz-sub {
+        font-size: 0.78rem;
+        color: #a9a6c4;
+        margin-top: 0.35rem;
+    }
+    .dropzone .dz-filename {
+        margin-top: 0.6rem;
+        font-size: 0.85rem;
+        color: var(--cream);
+        font-weight: 700;
+    }
+
+    button {
+        font-family: "Lato", sans-serif;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        font-size: 0.82rem;
+        color: var(--navy-deep);
+        background: linear-gradient(120deg, var(--gold-light), var(--gold));
+        border: none;
+        padding: 0.95rem 1.5rem;
+        cursor: pointer;
+        transition: opacity 0.2s ease;
+    }
+    button:hover { opacity: 0.9; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .status {
+        min-height: 1.2rem;
+        font-size: 0.82rem;
+        color: var(--gold-light);
+    }
+
+    .foot {
+        margin-top: 1.8rem;
+        font-size: 0.7rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #6f6c8a;
+    }
+</style>
+</head>
+<body>
+    <div class="card">
+        <img class="logo" src="/static/logo_cropped.jpg" alt="MaYa Investment">
+        <div class="kicker">Exposé Generator</div>
+        <h1>Aus fremd wird MaYa.</h1>
+        <p class="lead">
+            Laden Sie ein beliebiges externes Immobilien-Exposé als PDF hoch.
+            Wir übernehmen Objektdaten, Bilder und Beschreibung automatisch
+            und erstellen daraus ein exklusives Katalog-Exposé im Design von
+            MaYa Investment GmbH — bereit zum Versand.
+        </p>
+
+        <form id="uploadForm">
+            <label class="dropzone" id="dropzone">
+                <input type="file" id="fileInput" name="file" accept="application/pdf" required>
+                <div class="dz-label">PDF hier ablegen oder klicken zum Auswählen</div>
+                <div class="dz-sub">Nur PDF-Dateien, max. 25 MB</div>
+                <div class="dz-filename" id="fileName"></div>
+            </label>
+            <button type="submit" id="submitBtn">Exposé erstellen</button>
+            <div class="status" id="status"></div>
+        </form>
+
+        <div class="foot">MaYa Investment GmbH &middot; Real Estate &amp; Capital</div>
+    </div>
+
+<script>
+    const form = document.getElementById('uploadForm');
+    const fileInput = document.getElementById('fileInput');
+    const fileName = document.getElementById('fileName');
+    const dropzone = document.getElementById('dropzone');
+    const statusEl = document.getElementById('status');
+    const submitBtn = document.getElementById('submitBtn');
+
+    fileInput.addEventListener('change', () => {
+        fileName.textContent = fileInput.files.length ? fileInput.files[0].name : '';
+    });
+    ['dragover'].forEach(evt => dropzone.addEventListener(evt, e => {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+    }));
+    ['dragleave', 'drop'].forEach(evt => dropzone.addEventListener(evt, () => {
+        dropzone.classList.remove('dragover');
+    }));
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!fileInput.files.length) return;
+
+        submitBtn.disabled = true;
+        statusEl.textContent = 'Exposé wird erstellt — das kann einen Moment dauern…';
+
+        const fd = new FormData();
+        fd.append('file', fileInput.files[0]);
+
+        try {
+            const res = await fetch('/generate', { method: 'POST', body: fd });
+            if (!res.ok) {
+                const detail = await res.text();
+                throw new Error(detail || res.statusText);
+            }
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'MaYa-Investment-Expose.pdf';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            statusEl.textContent = 'Fertig — Ihr Exposé wurde heruntergeladen.';
+        } catch (err) {
+            statusEl.textContent = 'Fehler: ' + err.message;
+        } finally {
+            submitBtn.disabled = false;
+        }
+    });
+</script>
+</body>
+</html>
