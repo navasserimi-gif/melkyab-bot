@@ -22,3 +22,7 @@ RECIPIENT_EMAIL = os.environ.get("RECIPIENT_EMAIL") or SMTP_USER or "navasserimi
 
 IS24_CLIENT_ID = os.environ.get("IS24_CLIENT_ID")
 IS24_CLIENT_SECRET = os.environ.get("IS24_CLIENT_SECRET")
+
+# Optional: Ergebnisse zusätzlich an die Real-Estate-Analyzer-PWA (Railway) senden.
+WEBAPP_INGEST_URL = os.environ.get("WEBAPP_INGEST_URL")  # z.B. https://<app>.up.railway.app/api/ingest
+WEBAPP_INGEST_TOKEN = os.environ.get("WEBAPP_INGEST_TOKEN")

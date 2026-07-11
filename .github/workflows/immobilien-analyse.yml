@@ -26,6 +26,8 @@ jobs:
           RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
           IS24_CLIENT_ID: ${{ secrets.IS24_CLIENT_ID }}
           IS24_CLIENT_SECRET: ${{ secrets.IS24_CLIENT_SECRET }}
+          WEBAPP_INGEST_URL: ${{ secrets.WEBAPP_INGEST_URL }}
+          WEBAPP_INGEST_TOKEN: ${{ secrets.WEBAPP_INGEST_TOKEN }}
           MAX_PRICE: "350000"
           CITIES: "Köln,Düsseldorf"
           RADIUS_KM: "30"
