@@ -14,7 +14,6 @@ import time
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
 from typing import Optional
-from urllib.parse import quote
 
 import requests
 from bs4 import BeautifulSoup
@@ -71,11 +70,20 @@ FOREIGN_LOCATION_KEYWORDS = (
     "schweiz", "portugal", "zypern", "thailand", "dubai",
 )
 
-# Kleinanzeigens Orts-/Radius-Parameter werden nicht immer zuverlässig
-# angewendet (in der Praxis beobachtet: Preis-Filter greift, Orts-Filter
-# nicht). Deshalb zusätzlich clientseitig anhand der PLZ eingrenzen.
+# Kleinanzeigens Orts-Parameter in der Such-URL wird nachweislich komplett
+# ignoriert (Suchen für "Köln" und "Düsseldorf" liefern byte-identische
+# bundesweite Ergebnisse). Deshalb wird nur noch EINMAL pro Suchbegriff
+# gesucht (nicht mehr pro Stadt dupliziert) und jeder Treffer anschließend
+# clientseitig anhand der PLZ einer Stadt zugeordnet bzw. verworfen.
 # Für Wohnungen/Grundstücke: grobe Region um Köln/Düsseldorf (~50 km).
 REGION_PLZ_PREFIXES = {"40", "41", "42", "45", "46", "47", "50", "51", "53"}
+# Grobe PLZ-Präfix-Zuordnung zur nächstgelegenen der beiden Zielstädte,
+# nur für die Richtwert-Auswahl beim Scoring relevant.
+PREFIX_TO_CITY = {
+    "40": "düsseldorf", "41": "düsseldorf", "42": "düsseldorf",
+    "45": "düsseldorf", "46": "düsseldorf", "47": "düsseldorf",
+    "50": "köln", "51": "köln", "53": "köln",
+}
 # Für Geschäfte/Ablöse: nur die Städte selbst, enger PLZ-Bereich.
 STRICT_CITY_PLZ_RANGES = {
     "köln": (50667, 51149),
@@ -91,8 +99,6 @@ _NEGATED_COMMERCIAL_RE = re.compile(
     r"|\b(?:kein|keine|keiner|ohne)\w*(?:\s+\w+){0,2}\s+\b(?:makler|provision)\w*",
     re.IGNORECASE,
 )
-
-_UMLAUT_MAP = str.maketrans({"ü": "ue", "ö": "oe", "ä": "ae", "ß": "ss"})
 
 # Kleinanzeigen zeigt auf jeder Anzeigenseite (gesetzlich vorgeschrieben,
 # Impressumspflicht) explizit "Privater Anbieter" oder "Gewerblicher
@@ -119,6 +125,7 @@ class Listing:
     is_private: bool = True
     description_snippet: str = ""
     listing_age_days: Optional[int] = None
+    matched_city: Optional[str] = None
 
 
 def _to_float(text: str) -> Optional[float]:
@@ -167,27 +174,44 @@ def _in_target_region(location: str) -> bool:
     return match.group(1)[:2] in REGION_PLZ_PREFIXES
 
 
-def _in_strict_city(location: str, city: str) -> bool:
+def _matched_strict_city(location: str, cities: list[str]) -> Optional[str]:
+    """Für Geschäfte/Ablöse: gibt die erste Stadt aus `cities` zurück, deren
+    engem PLZ-Bereich der Treffer entspricht, sonst None (= verwerfen)."""
     match = _PLZ_RE.search(location or "")
-    plz_range = STRICT_CITY_PLZ_RANGES.get(city.lower())
-    if not match or not plz_range:
-        # Keine PLZ erkennbar oder unbekannte Stadt - im Zweifel nicht ausschließen.
-        return True
+    if not match:
+        return None
     plz = int(match.group(1))
-    return plz_range[0] <= plz <= plz_range[1]
+    for city in cities:
+        plz_range = STRICT_CITY_PLZ_RANGES.get(city.lower())
+        if plz_range and plz_range[0] <= plz <= plz_range[1]:
+            return city
+    return None
 
 
-def _city_slug(city: str) -> str:
-    return quote(city.lower().translate(_UMLAUT_MAP).replace(" ", "-"))
+def _guess_nearby_city(location: str, cities: list[str]) -> str:
+    """Für Wohnungen/Grundstücke: nur für die Richtwert-Auswahl beim Scoring
+    relevant, nicht für die Region-Filterung selbst. Fällt auf die erste
+    konfigurierte Stadt zurück, wenn nichts Genaueres erkennbar ist."""
+    match = _PLZ_RE.search(location or "")
+    if match:
+        guessed = PREFIX_TO_CITY.get(match.group(1)[:2])
+        if guessed:
+            for city in cities:
+                if city.lower() == guessed:
+                    return city
+    return cities[0] if cities else ""
 
 
-def _build_search_url(slug: str, property_type: str, city: str, max_price: int, min_price: int, radius_km: int) -> str:
-    # Reihenfolge <ort>/<suchbegriff>/k0 mit dem Stadtnamen (nicht PLZ) ist
-    # die einzige Variante, die bisher tatsächlich Ergebniskarten geliefert
-    # hat (PLZ-Ortsanker + vertauschte Reihenfolge lieferte 0 bzw. wirre
-    # Treffer). Ort-/Radius-Filterung selbst bleibt unzuverlässig - siehe
-    # REGION_PLZ_PREFIXES-Absicherung weiter unten.
-    url = f"{BASE_URL}/s-{_city_slug(city)}/{slug}/k0?maxPrice={max_price}&minPrice={min_price}"
+# Platzhalter für das Ort-Segment der URL. Erwiesenermaßen ohne Effekt auf
+# die Ergebnisse (Suchen mit "koeln" und "duesseldorf" liefern identische
+# bundesweite Treffer) - wird trotzdem benötigt, weil dieses URL-Muster
+# (<ort>/<suchbegriff>/k0) das einzige ist, das überhaupt Ergebniskarten
+# liefert. Die eigentliche Regions-Filterung passiert clientseitig.
+_PLACEHOLDER_LOCATION_SLUG = "koeln"
+
+
+def _build_search_url(slug: str, property_type: str, max_price: int, min_price: int, radius_km: int) -> str:
+    url = f"{BASE_URL}/s-{_PLACEHOLDER_LOCATION_SLUG}/{slug}/k0?maxPrice={max_price}&minPrice={min_price}"
     if property_type not in STRICT_CITY_ONLY_TYPES:
         url += f"&radius={radius_km}"
     return url
@@ -255,7 +279,7 @@ def _verify_private_seller(url: str, timeout: int = 20) -> Optional[bool]:
 
 
 def fetch_listings(
-    city: str,
+    cities: list[str],
     property_type: str,
     max_price: int,
     min_price: int = 15000,
@@ -266,7 +290,13 @@ def fetch_listings(
     max_seller_checks: int = 60,
 ) -> list[Listing]:
     """Holt Angebote von Kleinanzeigen.de (über alle Suchbegriff-Varianten
-    der Kategorie) und filtert Miete/Gewerbe/Ausland grob raus."""
+    der Kategorie) und filtert Miete/Gewerbe/Ausland grob raus.
+
+    Sucht pro Suchbegriff nur EINMAL (nicht mehr einmal je Stadt): Kleinanzeigen
+    ignoriert den Ort in der Such-URL nachweislich, wiederholte Suchen pro
+    Stadt lieferten byte-identische Ergebnisse. Jeder Treffer wird nach dem
+    Abruf per PLZ einer der konfigurierten Städte zugeordnet (`matched_city`).
+    """
     listings: list[Listing] = []
     seen_urls_in_search: set[str] = set()
     strict_city = property_type in STRICT_CITY_ONLY_TYPES
@@ -275,7 +305,7 @@ def fetch_listings(
     for slug in QUERY_SLUGS[property_type]:
         seller_checks_done = _fetch_for_slug(
             slug=slug,
-            city=city,
+            cities=cities,
             property_type=property_type,
             max_price=max_price,
             min_price=min_price,
@@ -295,7 +325,7 @@ def fetch_listings(
 
 def _fetch_for_slug(
     slug: str,
-    city: str,
+    cities: list[str],
     property_type: str,
     max_price: int,
     min_price: int,
@@ -309,16 +339,17 @@ def _fetch_for_slug(
     seen_urls_in_search: set[str],
     listings: list[Listing],
 ) -> int:
-    """Durchsucht eine einzelne Suchbegriff-Variante und hängt Treffer an
-    `listings` an. Gibt den aktualisierten seller_checks_done-Zähler zurück."""
-    base_url = _build_search_url(slug, property_type, city, max_price, min_price, radius_km)
+    """Durchsucht eine einzelne Suchbegriff-Variante (bundesweit, da der
+    Ort-Parameter ignoriert wird) und hängt Treffer an `listings` an. Gibt
+    den aktualisierten seller_checks_done-Zähler zurück."""
+    base_url = _build_search_url(slug, property_type, max_price, min_price, radius_km)
 
     for page in range(1, max_pages + 1):
         page_url = base_url if page == 1 else f"{base_url}&page={page}"
         try:
             resp = requests.get(page_url, headers=HEADERS, timeout=20)
         except requests.RequestException as exc:
-            logger.warning("Kleinanzeigen-Anfrage fehlgeschlagen (%s, %s): %s", city, property_type, exc)
+            logger.warning("Kleinanzeigen-Anfrage fehlgeschlagen (%s): %s", property_type, exc)
             break
 
         if resp.status_code != 200:
@@ -357,7 +388,7 @@ def _fetch_for_slug(
         skipped_seller_unconfirmed = 0
         with_age = 0
         for card in cards:
-            listing = _parse_card(card, city, property_type)
+            listing = _parse_card(card, property_type)
             if listing is None:
                 continue
             if listing.url in seen_urls_in_search:
@@ -374,14 +405,17 @@ def _fetch_for_slug(
                 skipped_foreign += 1
                 continue
 
-            in_region = (
-                _in_strict_city(listing.location, city)
-                if strict_city
-                else _in_target_region(listing.location)
-            )
-            if not in_region:
-                skipped_out_of_region += 1
-                continue
+            if strict_city:
+                matched = _matched_strict_city(listing.location, cities)
+                if matched is None:
+                    skipped_out_of_region += 1
+                    continue
+                listing.matched_city = matched
+            else:
+                if not _in_target_region(listing.location):
+                    skipped_out_of_region += 1
+                    continue
+                listing.matched_city = _guess_nearby_city(listing.location, cities)
 
             if verify_seller_type and seller_checks_done < max_seller_checks:
                 seller_checks_done += 1
@@ -416,7 +450,7 @@ def _fetch_for_slug(
     return seller_checks_done
 
 
-def _parse_card(card, city: str, property_type: str) -> Optional[Listing]:
+def _parse_card(card, property_type: str) -> Optional[Listing]:
     try:
         link_el = card.select_one("a.ellipsis") or card.find("a", href=True)
         if link_el is None or not link_el.get("href"):
@@ -438,7 +472,7 @@ def _parse_card(card, city: str, property_type: str) -> Optional[Listing]:
         description = desc_el.get_text(" ", strip=True) if desc_el else ""
 
         location_el = card.select_one(".aditem-main--top--left")
-        location = location_el.get_text(" ", strip=True) if location_el else city
+        location = location_el.get_text(" ", strip=True) if location_el else ""
 
         # Beobachtetes Layout: das Anzeigedatum steht meist als eigenes
         # Element neben dem Preis oder unten im Karten-Footer. Da die
