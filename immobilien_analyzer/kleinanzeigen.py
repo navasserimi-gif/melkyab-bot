@@ -39,9 +39,9 @@ HEADERS = {
 # Seite 1) - mehr unterschiedliche Suchanfragen sind der einzige Weg, mehr
 # Rohtreffer zu bekommen, aus denen dann streng gefiltert wird.
 QUERY_SLUGS = {
-    "wohnung": ["wohnung-kaufen", "eigentumswohnung"],
-    "grundstueck": ["grundstueck-kaufen", "baugrundstueck"],
-    "geschaeft": ["ablöse", "ladenlokal"],
+    "wohnung": ["wohnung-kaufen", "eigentumswohnung", "haus-kaufen", "eigentumswohnung-kaufen"],
+    "grundstueck": ["grundstueck-kaufen", "baugrundstueck", "bauplatz", "grundstueck-privat"],
+    "geschaeft": ["ablöse", "ladenlokal", "gastronomie-übernahme", "imbiss-übernahme"],
 }
 
 # Geschäfte/Ablöse-Übernahmen sollen NUR aus Köln oder Düsseldorf selbst
@@ -287,7 +287,7 @@ def fetch_listings(
     max_pages: int = 2,
     request_delay_s: float = 2.0,
     verify_seller_type: bool = True,
-    max_seller_checks: int = 60,
+    max_seller_checks: int = 120,
 ) -> list[Listing]:
     """Holt Angebote von Kleinanzeigen.de (über alle Suchbegriff-Varianten
     der Kategorie) und filtert Miete/Gewerbe/Ausland grob raus.
