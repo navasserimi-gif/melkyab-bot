@@ -34,10 +34,15 @@ HEADERS = {
 # per Keyword-Filter weiter unten. "geschaeft" sucht gezielt nach
 # Laden-/Gastro-Übernahmen mit Ablöse (kein Kauf, sondern Mietübernahme +
 # Ablösesumme für Inventar/Einrichtung).
+#
+# Mehrere Suchbegriffe pro Kategorie, weil Kleinanzeigens Seiten-Blätterung
+# nicht zuverlässig funktioniert (Seite 2 liefert oft dieselben Treffer wie
+# Seite 1) - mehr unterschiedliche Suchanfragen sind der einzige Weg, mehr
+# Rohtreffer zu bekommen, aus denen dann streng gefiltert wird.
 QUERY_SLUGS = {
-    "wohnung": "wohnung-kaufen",
-    "grundstueck": "grundstueck-kaufen",
-    "geschaeft": "ablöse",
+    "wohnung": ["wohnung-kaufen", "eigentumswohnung"],
+    "grundstueck": ["grundstueck-kaufen", "baugrundstueck"],
+    "geschaeft": ["ablöse", "ladenlokal"],
 }
 
 # Geschäfte/Ablöse-Übernahmen sollen NUR aus Köln oder Düsseldorf selbst
@@ -176,13 +181,12 @@ def _city_slug(city: str) -> str:
     return quote(city.lower().translate(_UMLAUT_MAP).replace(" ", "-"))
 
 
-def _build_search_url(property_type: str, city: str, max_price: int, min_price: int, radius_km: int) -> str:
+def _build_search_url(slug: str, property_type: str, city: str, max_price: int, min_price: int, radius_km: int) -> str:
     # Reihenfolge <ort>/<suchbegriff>/k0 mit dem Stadtnamen (nicht PLZ) ist
     # die einzige Variante, die bisher tatsächlich Ergebniskarten geliefert
     # hat (PLZ-Ortsanker + vertauschte Reihenfolge lieferte 0 bzw. wirre
     # Treffer). Ort-/Radius-Filterung selbst bleibt unzuverlässig - siehe
     # REGION_PLZ_PREFIXES-Absicherung weiter unten.
-    slug = QUERY_SLUGS[property_type]
     url = f"{BASE_URL}/s-{_city_slug(city)}/{slug}/k0?maxPrice={max_price}&minPrice={min_price}"
     if property_type not in STRICT_CITY_ONLY_TYPES:
         url += f"&radius={radius_km}"
@@ -259,14 +263,55 @@ def fetch_listings(
     max_pages: int = 2,
     request_delay_s: float = 2.0,
     verify_seller_type: bool = True,
-    max_seller_checks: int = 40,
+    max_seller_checks: int = 60,
 ) -> list[Listing]:
-    """Holt Angebote von Kleinanzeigen.de und filtert Miete/Gewerbe/Ausland grob raus."""
+    """Holt Angebote von Kleinanzeigen.de (über alle Suchbegriff-Varianten
+    der Kategorie) und filtert Miete/Gewerbe/Ausland grob raus."""
     listings: list[Listing] = []
     seen_urls_in_search: set[str] = set()
-    base_url = _build_search_url(property_type, city, max_price, min_price, radius_km)
     strict_city = property_type in STRICT_CITY_ONLY_TYPES
     seller_checks_done = 0
+
+    for slug in QUERY_SLUGS[property_type]:
+        seller_checks_done = _fetch_for_slug(
+            slug=slug,
+            city=city,
+            property_type=property_type,
+            max_price=max_price,
+            min_price=min_price,
+            radius_km=radius_km,
+            max_pages=max_pages,
+            request_delay_s=request_delay_s,
+            verify_seller_type=verify_seller_type,
+            max_seller_checks=max_seller_checks,
+            seller_checks_done=seller_checks_done,
+            strict_city=strict_city,
+            seen_urls_in_search=seen_urls_in_search,
+            listings=listings,
+        )
+
+    return listings
+
+
+def _fetch_for_slug(
+    slug: str,
+    city: str,
+    property_type: str,
+    max_price: int,
+    min_price: int,
+    radius_km: int,
+    max_pages: int,
+    request_delay_s: float,
+    verify_seller_type: bool,
+    max_seller_checks: int,
+    seller_checks_done: int,
+    strict_city: bool,
+    seen_urls_in_search: set[str],
+    listings: list[Listing],
+) -> int:
+    """Durchsucht eine einzelne Suchbegriff-Variante und hängt Treffer an
+    `listings` an. Gibt den aktualisierten seller_checks_done-Zähler zurück."""
+    base_url = _build_search_url(slug, property_type, city, max_price, min_price, radius_km)
 
     for page in range(1, max_pages + 1):
         page_url = base_url if page == 1 else f"{base_url}&page={page}"
@@ -368,7 +413,7 @@ def fetch_listings(
 
         time.sleep(request_delay_s)
 
-    return listings
+    return seller_checks_done
 
 
 def _parse_card(card, city: str, property_type: str) -> Optional[Listing]:
