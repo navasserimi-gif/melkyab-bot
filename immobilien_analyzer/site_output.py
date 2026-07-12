@@ -23,6 +23,8 @@ def scored_listing_to_dict(scored: ScoredListing) -> dict:
         "price_per_sqm": scored.price_per_sqm,
         "score": scored.score,
         "reasons": scored.reasons,
+        "listing_age_days": listing.listing_age_days,
+        "is_stale_opportunity": scored.is_stale_opportunity,
     }
 
 
