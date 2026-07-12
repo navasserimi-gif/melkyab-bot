@@ -89,6 +89,13 @@ _NEGATED_COMMERCIAL_RE = re.compile(
 
 _UMLAUT_MAP = str.maketrans({"ü": "ue", "ö": "oe", "ä": "ae", "ß": "ss"})
 
+# Kleinanzeigen zeigt auf jeder Anzeigenseite (gesetzlich vorgeschrieben,
+# Impressumspflicht) explizit "Privater Anbieter" oder "Gewerblicher
+# Anbieter" im Profil-Kasten des Verkäufers. Das ist deutlich
+# zuverlässiger als ein geratenes CSS-Badge auf der Trefferliste.
+_COMMERCIAL_SELLER_RE = re.compile(r"gewerblich(?:e[rn]?)?\s+(?:anbieter|nutzer)", re.IGNORECASE)
+_PRIVATE_SELLER_RE = re.compile(r"privat(?:e[rn]?)?\s+(?:anbieter|nutzer)", re.IGNORECASE)
+
 _MONTHS_DE = {
     "jan": 1, "feb": 2, "mär": 3, "maer": 3, "apr": 4, "mai": 5, "jun": 6,
     "jul": 7, "aug": 8, "sep": 9, "okt": 10, "nov": 11, "dez": 12,
@@ -217,6 +224,27 @@ def _parse_listing_age_days(text: str, today: Optional[date] = None) -> Optional
     return None
 
 
+def _verify_private_seller(url: str, timeout: int = 20) -> Optional[bool]:
+    """Ruft die Anzeigenseite ab und liest das gesetzlich vorgeschriebene
+    Anbieter-Kennzeichen ('Privater Anbieter' / 'Gewerblicher Anbieter').
+    Gibt True/False bei eindeutigem Befund zurück, sonst None."""
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=timeout)
+    except requests.RequestException as exc:
+        logger.debug("Anzeigenseite nicht abrufbar (%s): %s", url, exc)
+        return None
+
+    if resp.status_code != 200:
+        return None
+
+    text = BeautifulSoup(resp.text, "lxml").get_text(" ", strip=True)
+    if _COMMERCIAL_SELLER_RE.search(text):
+        return False
+    if _PRIVATE_SELLER_RE.search(text):
+        return True
+    return None
+
+
 def fetch_listings(
     city: str,
     property_type: str,
@@ -225,12 +253,15 @@ def fetch_listings(
     radius_km: int = 30,
     max_pages: int = 2,
     request_delay_s: float = 2.0,
+    verify_seller_type: bool = True,
+    max_seller_checks: int = 40,
 ) -> list[Listing]:
     """Holt Angebote von Kleinanzeigen.de und filtert Miete/Gewerbe/Ausland grob raus."""
     listings: list[Listing] = []
     seen_urls_in_search: set[str] = set()
     base_url = _build_search_url(property_type, city, max_price, min_price, radius_km)
     strict_city = property_type in STRICT_CITY_ONLY_TYPES
+    seller_checks_done = 0
 
     for page in range(1, max_pages + 1):
         page_url = base_url if page == 1 else f"{base_url}&page={page}"
@@ -256,6 +287,8 @@ def fetch_listings(
         skipped_out_of_region = 0
         skipped_foreign = 0
         skipped_duplicate = 0
+        skipped_commercial_confirmed = 0
+        skipped_seller_unconfirmed = 0
         with_age = 0
         for card in cards:
             listing = _parse_card(card, city, property_type)
@@ -284,14 +317,31 @@ def fetch_listings(
                 skipped_out_of_region += 1
                 continue
 
+            if verify_seller_type and seller_checks_done < max_seller_checks:
+                seller_checks_done += 1
+                time.sleep(1.0)
+                confirmed_private = _verify_private_seller(listing.url)
+                if confirmed_private is False:
+                    skipped_commercial_confirmed += 1
+                    continue
+                if confirmed_private is None:
+                    # Kein eindeutiges Anbieter-Kennzeichen gefunden - im
+                    # Zweifel ausschließen, statt versehentlich einen
+                    # gewerblichen Anbieter/Konkurrenten durchzulassen.
+                    skipped_seller_unconfirmed += 1
+                    continue
+                listing.is_private = True
+
             if listing.listing_age_days is not None:
                 with_age += 1
             listings.append(listing)
 
-        if skipped_out_of_region or skipped_foreign or skipped_duplicate:
+        if skipped_out_of_region or skipped_foreign or skipped_duplicate or skipped_commercial_confirmed or skipped_seller_unconfirmed:
             logger.info(
-                "Übersprungen: %d außerhalb Zielregion, %d Ausland, %d Duplikate auf Seite %d.",
-                skipped_out_of_region, skipped_foreign, skipped_duplicate, page,
+                "Übersprungen: %d außerhalb Zielregion, %d Ausland, %d Duplikate, "
+                "%d bestätigt gewerblich, %d Anbietertyp nicht eindeutig (Seite %d).",
+                skipped_out_of_region, skipped_foreign, skipped_duplicate,
+                skipped_commercial_confirmed, skipped_seller_unconfirmed, page,
             )
         logger.info("%d/%d Treffer mit erkennbarem Anzeigedatum.", with_age, len(cards))
 
@@ -336,8 +386,6 @@ def _parse_card(card, city: str, property_type: str) -> Optional[Listing]:
 
         size = _extract_size_sqm(title) or _extract_size_sqm(description)
 
-        commercial_badge = card.select_one(".badge-hint-pro-small-srp") is not None
-
         return Listing(
             title=title,
             url=url,
@@ -345,7 +393,9 @@ def _parse_card(card, city: str, property_type: str) -> Optional[Listing]:
             location=location,
             size_sqm=size,
             property_type=property_type,
-            is_private=not commercial_badge,
+            # Nur ein vorläufiger Platzhalter - die verbindliche Prüfung
+            # passiert in fetch_listings() anhand der Anzeigenseite selbst.
+            is_private=False,
             description_snippet=description[:300],
             listing_age_days=listing_age_days,
         )
