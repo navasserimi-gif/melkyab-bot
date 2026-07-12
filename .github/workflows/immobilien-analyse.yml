@@ -31,7 +31,7 @@ jobs:
           IS24_CLIENT_SECRET: ${{ secrets.IS24_CLIENT_SECRET }}
           MAX_PRICE: "350000"
           CITIES: "Köln,Düsseldorf"
-          RADIUS_KM: "30"
+          RADIUS_KM: "50"
         run: python -m immobilien_analyzer.run_analysis
 
       - name: Aktuelle Ergebnisse für GitHub Pages committen
