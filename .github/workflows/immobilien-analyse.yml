@@ -1,0 +1,47 @@
+name: Tägliche Immobilien-Analyse
+
+on:
+  schedule:
+    # 06:00 UTC ≈ 07:00/08:00 Uhr MEZ/MESZ
+    - cron: "0 6 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  analyse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Immobilien-Analyse ausführen
+        env:
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+          IS24_CLIENT_ID: ${{ secrets.IS24_CLIENT_ID }}
+          IS24_CLIENT_SECRET: ${{ secrets.IS24_CLIENT_SECRET }}
+          MAX_PRICE: "350000"
+          CITIES: "Köln,Düsseldorf"
+          RADIUS_KM: "30"
+        run: python -m immobilien_analyzer.run_analysis
+
+      - name: Aktuelle Ergebnisse für GitHub Pages committen
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/data.json
+          if git diff --cached --quiet; then
+            echo "Keine neuen Angebote — nichts zu committen."
+          else
+            git commit -m "Tägliche Immobilien-Analyse aktualisiert"
+            git push
+          fi

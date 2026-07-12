@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Real Estate Analyzer</title>
+<meta name="theme-color" content="#15573d">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RE Analyzer">
+<style>
+  :root {
+    --bg: #0f1a14;
+    --card: #16261d;
+    --accent: #2fa66a;
+    --text: #f1f5f2;
+    --muted: #9db3a6;
+    --border: #24352b;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f4f7f5;
+      --card: #ffffff;
+      --accent: #1c7a4d;
+      --text: #14201a;
+      --muted: #55695f;
+      --border: #dfe8e2;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    padding-bottom: 2rem;
+  }
+  header {
+    padding: 1.1rem 1rem 0.8rem;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 10;
+    border-bottom: 1px solid var(--border);
+  }
+  h1 {
+    font-size: 1.15rem;
+    margin: 0 0 0.15rem;
+  }
+  .meta {
+    color: var(--muted);
+    font-size: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  button.refresh {
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 999px;
+    padding: 0.35rem 0.8rem;
+    font-size: 0.8rem;
+  }
+  main {
+    padding: 0.8rem 0.8rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 0.85rem 0.9rem;
+  }
+  .card h2 {
+    font-size: 0.98rem;
+    margin: 0 0 0.35rem;
+    line-height: 1.3;
+  }
+  .card h2 a { color: var(--text); text-decoration: none; }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.7rem;
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 0.45rem;
+  }
+  .badge {
+    display: inline-block;
+    background: rgba(47,166,106,0.15);
+    color: var(--accent);
+    border-radius: 999px;
+    padding: 0.1rem 0.55rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+  }
+  .price {
+    font-weight: 700;
+    color: var(--text);
+    font-size: 1.05rem;
+  }
+  .reasons {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin: 0.4rem 0 0.6rem;
+    line-height: 1.4;
+  }
+  .actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .actions a, .actions button {
+    flex: 1;
+    text-align: center;
+    padding: 0.5rem;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+  }
+  .actions .primary {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+  .empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 3rem 1rem;
+    font-size: 0.9rem;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>🏡 Real Estate Analyzer</h1>
+  <div class="meta">
+    <span id="updatedAt">Lade Daten…</span>
+    <button class="refresh" id="refreshBtn">Aktualisieren</button>
+  </div>
+</header>
+<main id="listings">
+  <div class="empty">Lade aktuelle Angebote…</div>
+</main>
+
+<script>
+const PROPERTY_LABELS = { wohnung: "Wohnung", grundstueck: "Grundstück" };
+
+function fmtDate(iso) {
+  if (!iso) return "Noch keine Daten empfangen";
+  const d = new Date(iso);
+  return "Aktualisiert: " + d.toLocaleString("de-DE", { dateStyle: "medium", timeStyle: "short" });
+}
+
+function cardHtml(item) {
+  const typ = PROPERTY_LABELS[item.property_type] || item.property_type;
+  const price = item.price_eur ? item.price_eur.toLocaleString("de-DE") + " €" : "n/a";
+  const size = item.size_sqm ? item.size_sqm.toFixed(0) + " m²" : "n/a";
+  const ppsqm = item.price_per_sqm ? Math.round(item.price_per_sqm).toLocaleString("de-DE") + " €/m²" : "n/a";
+  const anbieter = item.is_private ? "Privat" : "Gewerblich";
+  const reasons = (item.reasons || []).join(" · ");
+
+  return `
+    <article class="card">
+      <h2><a href="${item.url}" target="_blank" rel="noopener">${item.title}</a></h2>
+      <div class="row">
+        <span class="badge">${typ}</span>
+        <span class="badge">${anbieter}</span>
+        <span>${item.location || ""}</span>
+      </div>
+      <div class="row">
+        <span class="price">${price}</span>
+        <span>${size}</span>
+        <span>${ppsqm}</span>
+      </div>
+      <div class="reasons">${reasons}</div>
+      <div class="actions">
+        <a class="primary" href="${item.url}" target="_blank" rel="noopener">Zum Angebot</a>
+        <button onclick='shareListing(${JSON.stringify(item.title)}, ${JSON.stringify(item.url)}, ${JSON.stringify(price)})'>Teilen</button>
+      </div>
+    </article>`;
+}
+
+function shareListing(title, url, price) {
+  const text = `${title} — ${price}`;
+  if (navigator.share) {
+    navigator.share({ title, text, url }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(`${text}\n${url}`);
+    alert("Link kopiert (Teilen-Funktion nicht verfügbar in diesem Browser).");
+  }
+}
+
+async function loadListings() {
+  const container = document.getElementById("listings");
+  const updatedEl = document.getElementById("updatedAt");
+  try {
+    const res = await fetch("data.json", { cache: "no-store" });
+    const data = await res.json();
+    updatedEl.textContent = fmtDate(data.generated_at);
+    const items = data.listings || [];
+    if (!items.length) {
+      container.innerHTML = '<div class="empty">Aktuell keine passenden Privatangebote gefunden.</div>';
+      return;
+    }
+    container.innerHTML = items.map(cardHtml).join("");
+  } catch (err) {
+    updatedEl.textContent = "Fehler beim Laden";
+    container.innerHTML = '<div class="empty">Daten konnten nicht geladen werden. Bitte später erneut versuchen.</div>';
+  }
+}
+
+document.getElementById("refreshBtn").addEventListener("click", loadListings);
+loadListings();
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("service-worker.js"));
+}
+</script>
+</body>
+</html>
