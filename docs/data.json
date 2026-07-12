@@ -1,21 +1,20 @@
 {
-  "generated_at": "2026-07-12T11:16:24.838601+00:00",
+  "generated_at": "2026-07-12T12:29:44.078562+00:00",
   "listings": [
     {
-      "title": "Investment-Chance in Ratingen: 1.643 m² - Erbpachtgrundstück",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/investment-chance-in-ratingen-1-643-m-erbpachtgrundstueck/3457023720-207-1780",
-      "price_eur": 51700.0,
-      "location": "40882 Ratingen",
-      "size_sqm": 1643.0,
-      "property_type": "grundstueck",
+      "title": "Charmante Eigentumswohnung mit hohen Decken in zentraler Lage",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/charmante-eigentumswohnung-mit-hohen-decken-in-zentraler-lage/3457116688-196-1546",
+      "price_eur": 189000.0,
+      "location": "42929 Wermelskirchen",
+      "size_sqm": null,
+      "property_type": "wohnung",
       "source": "kleinanzeigen",
       "is_private": true,
-      "price_per_sqm": 31.46682897139379,
-      "score": 38.191010638297875,
+      "price_per_sqm": null,
+      "score": 1.15,
       "reasons": [
-        "≈2919% unter Richtwert (950 €/m² in Düsseldorf)",
-        "Privater Anbieter – vermutlich keine Käuferprovision",
-        "Ausdrücklich provisionsfrei beworben"
+        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
+        "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
       "listing_age_days": 0,
       "is_stale_opportunity": false
