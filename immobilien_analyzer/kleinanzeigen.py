@@ -39,7 +39,22 @@ RENTAL_KEYWORDS = ("miete", "mieten", "kaltmiete", "warmmiete", "wg-zimmer")
 COMMERCIAL_KEYWORDS = (
     "makler", "provision", "käuferprovision", "immobilien gmbh",
     "immobilienbüro", "vermittlung durch", "gewerblich",
+    "fertighaus", "massivhaus", "typenhaus", "bausatzhaus",
+    "musterhaus", "hausbaufirma", "bauunternehmen",
+    # bekannte Fertighaus-Hersteller/-Vertriebe, die auf Kleinanzeigen
+    # wie Privatangebote wirkende Werbeanzeigen schalten
+    "allkauf", "town & country", "town and country", "streif haus",
+    "weberhaus", "bien-zenker", "davinci haus", "living haus",
+    "okal", "fingerhaus", "kern-haus", "heinz von heiden",
 )
+
+# Kleinanzeigens Orts-/Radius-Parameter werden nicht immer zuverlässig
+# angewendet (in der Praxis beobachtet: Preis-Filter greift, Orts-Filter
+# nicht). Deshalb zusätzlich clientseitig anhand der PLZ auf die Region
+# Köln/Düsseldorf (~30-40 km) eingrenzen. Grobe, aber verlässliche
+# Absicherung gegen bundesweite Treffer.
+REGION_PLZ_PREFIXES = {"40", "41", "42", "45", "47", "50", "51", "53"}
+_PLZ_RE = re.compile(r"\b(\d{5})\b")
 # Verneinte/positive Erwähnungen ("kein Makler", "provisionsfrei",
 # "maklerfrei") sind gerade das Gegenteil eines gewerblichen Hinweises
 # und dürfen den Treffer nicht ausschließen.
@@ -98,6 +113,14 @@ def _looks_like_rental(text: str) -> bool:
     return any(kw in lowered for kw in RENTAL_KEYWORDS)
 
 
+def _in_target_region(location: str) -> bool:
+    match = _PLZ_RE.search(location or "")
+    if not match:
+        # Keine PLZ erkennbar - im Zweifel nicht ausschließen.
+        return True
+    return match.group(1)[:2] in REGION_PLZ_PREFIXES
+
+
 def _city_slug(city: str) -> str:
     return quote(city.lower().translate(_UMLAUT_MAP).replace(" ", "-"))
 
@@ -135,12 +158,16 @@ def fetch_listings(
             logger.warning("Kleinanzeigen antwortete mit Status %s für %s", resp.status_code, page_url)
             break
 
+        if resp.url != page_url:
+            logger.info("Kleinanzeigen hat umgeleitet: %s -> %s", page_url, resp.url)
+
         soup = BeautifulSoup(resp.text, "lxml")
         cards = soup.select("article.aditem")
         if not cards:
             logger.info("Keine Angebotskarten gefunden auf %s (Seite %d)", page_url, page)
             break
 
+        skipped_out_of_region = 0
         for card in cards:
             listing = _parse_card(card, city, property_type)
             if listing is None:
@@ -150,7 +177,16 @@ def fetch_listings(
                 continue
             if _looks_commercial(haystack):
                 continue
+            if not _in_target_region(listing.location):
+                skipped_out_of_region += 1
+                continue
             listings.append(listing)
+
+        if skipped_out_of_region:
+            logger.info(
+                "%d Treffer außerhalb der Zielregion (Köln/Düsseldorf) übersprungen.",
+                skipped_out_of_region,
+            )
 
         time.sleep(request_delay_s)
 

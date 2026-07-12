@@ -26,6 +26,7 @@ logger = logging.getLogger(__name__)
 def main() -> int:
     is24 = ImmoScout24Client(config.IS24_CLIENT_ID, config.IS24_CLIENT_SECRET)
     all_scored = []
+    seen_urls: set[str] = set()
 
     for city in config.CITIES:
         for property_type in config.PROPERTY_TYPES:
@@ -40,9 +41,15 @@ def main() -> int:
                 max_pages=config.MAX_PAGES_PER_SEARCH,
             )
             listings += is24.search(city, property_type, config.MAX_PRICE, config.RADIUS_KM)
-            logger.info("  -> %d Angebote gefunden", len(listings))
 
-            all_scored.extend(score_listing(listing, city) for listing in listings)
+            new_listings = [l for l in listings if l.url not in seen_urls]
+            seen_urls.update(l.url for l in new_listings)
+            logger.info(
+                "  -> %d Angebote gefunden (%d neu, %d bereits über andere Stadt gefunden)",
+                len(listings), len(new_listings), len(listings) - len(new_listings),
+            )
+
+            all_scored.extend(score_listing(listing, city) for listing in new_listings)
 
     top = rank_listings(all_scored, config.TOP_N)
     subject = (
