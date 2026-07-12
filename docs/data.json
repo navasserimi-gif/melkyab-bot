@@ -1,4 +1,58 @@
 {
-  "generated_at": null,
-  "listings": []
+  "generated_at": "2026-07-12T07:16:19.915287+00:00",
+  "listings": [
+    {
+      "title": "Gestalten Sie Ihr Traumzuhause – Helle Eigentumswohnung mit Loggia und Tiefgarage",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/gestalten-sie-ihr-traumzuhause-helle-eigentumswohnung-mit-loggia-und-tiefgarage/3433363597-196-1516",
+      "price_eur": 230000.0,
+      "location": "42781 Haan",
+      "size_sqm": null,
+      "property_type": "wohnung",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": null,
+      "score": 1.15,
+      "reasons": [
+        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
+        "Privater Anbieter – vermutlich keine Käuferprovision"
+      ],
+      "listing_age_days": 0,
+      "is_stale_opportunity": false
+    },
+    {
+      "title": "Schönes Einfamilienhaus mit PKW-Garage in 47475 Kamp-Lintfort-Hoerstgen",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/schoenes-einfamilienhaus-mit-pkw-garage-in-47475-kamp-lintfort-hoerstgen/3437678246-208-1130",
+      "price_eur": 239000.0,
+      "location": "47475 Kamp-​Lintfort",
+      "size_sqm": null,
+      "property_type": "grundstueck",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": null,
+      "score": 1.15,
+      "reasons": [
+        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
+        "Privater Anbieter – vermutlich keine Käuferprovision"
+      ],
+      "listing_age_days": null,
+      "is_stale_opportunity": false
+    },
+    {
+      "title": "Pizzeria / Burgerladen zur Ablöse abzugeben",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/pizzeria-burgerladen-zur-abloese-abzugeben/3445776543-277-21775",
+      "price_eur": 64999.0,
+      "location": "51107 Ostheim",
+      "size_sqm": null,
+      "property_type": "geschaeft",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": null,
+      "score": 1.15,
+      "reasons": [
+        "Privater Anbieter – vermutlich keine Käuferprovision"
+      ],
+      "listing_age_days": 14,
+      "is_stale_opportunity": false
+    }
+  ]
 }
