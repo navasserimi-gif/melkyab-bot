@@ -44,6 +44,14 @@ QUERY_SLUGS = {
 # kommen (kein Umkreis), Wohnungen/Grundstücke aus der weiteren Region.
 STRICT_CITY_ONLY_TYPES = {"geschaeft"}
 
+# Städtenamen als Ort-Slug in der URL wurden in der Praxis von Kleinanzeigen
+# ignoriert (Treffer kamen bundesweit statt aus der Region). Eine PLZ als
+# Ortsanker scheint zuverlässiger von der Suche erkannt zu werden.
+CITY_PLZ_ANCHOR = {
+    "köln": "50667",
+    "düsseldorf": "40210",
+}
+
 RENTAL_KEYWORDS = ("miete", "mieten", "kaltmiete", "warmmiete", "wg-zimmer")
 COMMERCIAL_KEYWORDS = (
     "makler", "provision", "käuferprovision", "immobilien gmbh",
@@ -176,9 +184,15 @@ def _city_slug(city: str) -> str:
     return quote(city.lower().translate(_UMLAUT_MAP).replace(" ", "-"))
 
 
+def _location_anchor(city: str) -> str:
+    """PLZ, falls bekannt (zuverlässiger als der Stadtname), sonst Stadtname-Slug."""
+    return CITY_PLZ_ANCHOR.get(city.lower(), _city_slug(city))
+
+
 def _build_search_url(property_type: str, city: str, max_price: int, min_price: int, radius_km: int) -> str:
     slug = QUERY_SLUGS[property_type]
-    url = f"{BASE_URL}/s-{_city_slug(city)}/{slug}/k0?maxPrice={max_price}&minPrice={min_price}"
+    location = _location_anchor(city)
+    url = f"{BASE_URL}/s-{slug}/{location}/k0?maxPrice={max_price}&minPrice={min_price}"
     if property_type not in STRICT_CITY_ONLY_TYPES:
         url += f"&radius={radius_km}"
     return url
@@ -283,6 +297,22 @@ def fetch_listings(
         if not cards:
             logger.info("Keine Angebotskarten gefunden auf %s (Seite %d)", page_url, page)
             break
+
+        card_urls = []
+        for c in cards:
+            a = c.select_one("a.ellipsis") or c.find("a", href=True)
+            href = a["href"] if a and a.get("href") else None
+            if href:
+                card_urls.append(href if href.startswith("http") else f"{BASE_URL}{href}")
+        if page > 1 and card_urls and all(u in seen_urls_in_search for u in card_urls):
+            logger.info("Seite %d liefert identische Treffer wie zuvor - Paginierung greift nicht, breche ab.", page)
+            break
+
+        sample_locations = [
+            (c.select_one(".aditem-main--top--left").get_text(" ", strip=True) if c.select_one(".aditem-main--top--left") else "?")
+            for c in cards[:5]
+        ]
+        logger.info("Rohe Orte (ungefiltert, erste 5 von %d): %s", len(cards), sample_locations)
 
         skipped_out_of_region = 0
         skipped_foreign = 0
