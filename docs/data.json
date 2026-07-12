@@ -1,195 +1,65 @@
 {
-  "generated_at": "2026-07-12T06:45:49.909002+00:00",
+  "generated_at": "2026-07-12T07:02:50.526304+00:00",
   "listings": [
     {
-      "title": "Außergewöhnliche Loft-Dachgeschosswohnung | Erstbezug nach Sanierung | 76 m² | 5 m Deckenhöhe",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/aussergewoehnliche-loft-dachgeschosswohnung-erstbezug-nach-sanierung-76-m-5-m-deckenhoehe/3445931021-196-1283",
-      "price_eur": 229000.0,
-      "location": "45475 Mülheim (Ruhr)",
-      "size_sqm": 76.0,
-      "property_type": "wohnung",
+      "title": "Kreta, Listaros, Grundstück mit Panorama Meerblick",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/kreta-listaros-grundstueck-mit-panorama-meerblick/2636165455-275-1195",
+      "price_eur": 170000.0,
+      "location": "41849 Wassenberg",
+      "size_sqm": 10200.0,
+      "property_type": "grundstueck",
+      "source": "kleinanzeigen",
+      "is_private": false,
+      "price_per_sqm": 16.666666666666668,
+      "score": 53.99999999999999,
+      "reasons": [
+        "≈5300% unter Richtwert (900 €/m² in Köln)"
+      ]
+    },
+    {
+      "title": "Kreta, Listaros, Grundstück mit Panorama Meerblick",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/kreta-listaros-grundstueck-mit-panorama-meerblick/2636165455-275-1195",
+      "price_eur": 170000.0,
+      "location": "41849 Wassenberg",
+      "size_sqm": 10200.0,
+      "property_type": "grundstueck",
+      "source": "kleinanzeigen",
+      "is_private": false,
+      "price_per_sqm": 16.666666666666668,
+      "score": 53.99999999999999,
+      "reasons": [
+        "≈5300% unter Richtwert (900 €/m² in Köln)"
+      ]
+    },
+    {
+      "title": "❤️ Euer Herz schlägt für Geldern? So schön kann Wohnen in Veert sein!",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/-euer-herz-schlaegt-fuer-geldern-so-schoen-kann-wohnen-in-veert-sein-/2927647490-208-1151",
+      "price_eur": 320900.0,
+      "location": "47608 Geldern",
+      "size_sqm": null,
+      "property_type": "grundstueck",
       "source": "kleinanzeigen",
       "is_private": true,
-      "price_per_sqm": 3013.157894736842,
-      "score": 1.9846288209606986,
+      "price_per_sqm": null,
+      "score": 1.15,
       "reasons": [
-        "≈73% unter Richtwert (5200 €/m² in Düsseldorf)",
+        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ]
     },
     {
-      "title": "Außergewöhnliche Loft-Dachgeschosswohnung | Erstbezug nach Sanierung | 76 m² | 5 m Deckenhöhe",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/aussergewoehnliche-loft-dachgeschosswohnung-erstbezug-nach-sanierung-76-m-5-m-deckenhoehe/3445931021-196-1283",
-      "price_eur": 229000.0,
-      "location": "45475 Mülheim (Ruhr)",
-      "size_sqm": 76.0,
-      "property_type": "wohnung",
+      "title": "❤️ Euer Herz schlägt für Geldern? So schön kann Wohnen in Veert sein!",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/-euer-herz-schlaegt-fuer-geldern-so-schoen-kann-wohnen-in-veert-sein-/2927647490-208-1151",
+      "price_eur": 320900.0,
+      "location": "47608 Geldern",
+      "size_sqm": null,
+      "property_type": "grundstueck",
       "source": "kleinanzeigen",
       "is_private": true,
-      "price_per_sqm": 3013.157894736842,
-      "score": 1.9846288209606986,
+      "price_per_sqm": null,
+      "score": 1.15,
       "reasons": [
-        "≈73% unter Richtwert (5200 €/m² in Düsseldorf)",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ]
-    },
-    {
-      "title": "2-Zimmer-Wohnung in ruhiger Innenstadtlage von Waiblingen",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/2-zimmer-wohnung-in-ruhiger-innenstadtlage-von-waiblingen/3453421705-196-9044",
-      "price_eur": 248000.0,
-      "location": "71332 Waiblingen",
-      "size_sqm": 78.0,
-      "property_type": "wohnung",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": 3179.4871794871797,
-      "score": 1.880806451612903,
-      "reasons": [
-        "≈64% unter Richtwert (5200 €/m² in Düsseldorf)",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ]
-    },
-    {
-      "title": "2-Zimmer-Wohnung in ruhiger Innenstadtlage von Waiblingen",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/2-zimmer-wohnung-in-ruhiger-innenstadtlage-von-waiblingen/3453421705-196-9044",
-      "price_eur": 248000.0,
-      "location": "71332 Waiblingen",
-      "size_sqm": 78.0,
-      "property_type": "wohnung",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": 3179.4871794871797,
-      "score": 1.880806451612903,
-      "reasons": [
-        "≈64% unter Richtwert (5200 €/m² in Düsseldorf)",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ]
-    },
-    {
-      "title": "Außergewöhnliche Loft-Dachgeschosswohnung | Erstbezug nach Sanierung | 76 m² | 5 m Deckenhöhe",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/aussergewoehnliche-loft-dachgeschosswohnung-erstbezug-nach-sanierung-76-m-5-m-deckenhoehe/3445931021-196-1283",
-      "price_eur": 229000.0,
-      "location": "45475 Mülheim (Ruhr)",
-      "size_sqm": 76.0,
-      "property_type": "wohnung",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": 3013.157894736842,
-      "score": 1.8319650655021833,
-      "reasons": [
-        "≈59% unter Richtwert (4800 €/m² in Köln)",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ]
-    },
-    {
-      "title": "Außergewöhnliche Loft-Dachgeschosswohnung | Erstbezug nach Sanierung | 76 m² | 5 m Deckenhöhe",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/aussergewoehnliche-loft-dachgeschosswohnung-erstbezug-nach-sanierung-76-m-5-m-deckenhoehe/3445931021-196-1283",
-      "price_eur": 229000.0,
-      "location": "45475 Mülheim (Ruhr)",
-      "size_sqm": 76.0,
-      "property_type": "wohnung",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": 3013.157894736842,
-      "score": 1.8319650655021833,
-      "reasons": [
-        "≈59% unter Richtwert (4800 €/m² in Köln)",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ]
-    },
-    {
-      "title": "Bungalow nach Maß Lifetime 6  - Ihr individuelles Traumhaus mit allkauf Qualität und Service",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/bungalow-nach-mass-lifetime-6-ihr-individuelles-traumhaus-mit-allkauf-qualitaet-und-service/3435235206-208-26234",
-      "price_eur": 237739.0,
-      "location": "55442 Daxweiler",
-      "size_sqm": 70.0,
-      "property_type": "wohnung",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": 3396.2714285714287,
-      "score": 1.760754440794316,
-      "reasons": [
-        "≈53% unter Richtwert (5200 €/m² in Düsseldorf)",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ]
-    },
-    {
-      "title": "Bungalow nach Maß Lifetime 6  - Ihr individuelles Traumhaus mit allkauf Qualität und Service",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/bungalow-nach-mass-lifetime-6-ihr-individuelles-traumhaus-mit-allkauf-qualitaet-und-service/3435235206-208-26234",
-      "price_eur": 237739.0,
-      "location": "55442 Daxweiler",
-      "size_sqm": 70.0,
-      "property_type": "wohnung",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": 3396.2714285714287,
-      "score": 1.760754440794316,
-      "reasons": [
-        "≈53% unter Richtwert (5200 €/m² in Düsseldorf)",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ]
-    },
-    {
-      "title": "2-Zimmer-Wohnung in ruhiger Innenstadtlage von Waiblingen",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/2-zimmer-wohnung-in-ruhiger-innenstadtlage-von-waiblingen/3453421705-196-9044",
-      "price_eur": 248000.0,
-      "location": "71332 Waiblingen",
-      "size_sqm": 78.0,
-      "property_type": "wohnung",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": 3179.4871794871797,
-      "score": 1.7361290322580643,
-      "reasons": [
-        "≈51% unter Richtwert (4800 €/m² in Köln)",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ]
-    },
-    {
-      "title": "2-Zimmer-Wohnung in ruhiger Innenstadtlage von Waiblingen",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/2-zimmer-wohnung-in-ruhiger-innenstadtlage-von-waiblingen/3453421705-196-9044",
-      "price_eur": 248000.0,
-      "location": "71332 Waiblingen",
-      "size_sqm": 78.0,
-      "property_type": "wohnung",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": 3179.4871794871797,
-      "score": 1.7361290322580643,
-      "reasons": [
-        "≈51% unter Richtwert (4800 €/m² in Köln)",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ]
-    },
-    {
-      "title": "Ruhig wohnen in der Gartenstadt mit Balkon & Garage",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/ruhig-wohnen-in-der-gartenstadt-mit-balkon-garage/3425259687-196-6816",
-      "price_eur": 175000.0,
-      "location": "90469 Aussenstadt-​Sued",
-      "size_sqm": 55.0,
-      "property_type": "wohnung",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": 3181.818181818182,
-      "score": 1.7348571428571427,
-      "reasons": [
-        "≈51% unter Richtwert (4800 €/m² in Köln)",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ]
-    },
-    {
-      "title": "Bungalow nach Maß Lifetime 6  - Ihr individuelles Traumhaus mit allkauf Qualität und Service",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/bungalow-nach-mass-lifetime-6-ihr-individuelles-traumhaus-mit-allkauf-qualitaet-und-service/3435235206-208-26234",
-      "price_eur": 237739.0,
-      "location": "55442 Daxweiler",
-      "size_sqm": 70.0,
-      "property_type": "wohnung",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": 3396.2714285714287,
-      "score": 1.625311791502446,
-      "reasons": [
-        "≈41% unter Richtwert (4800 €/m² in Köln)",
+        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ]
     }
