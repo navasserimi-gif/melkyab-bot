@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Real Estate Analyzer</title>
 <meta name="theme-color" content="#15573d">
-<link rel="manifest" href="/manifest.json">
-<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="RE Analyzer">
@@ -203,7 +203,7 @@ async function loadListings() {
   const container = document.getElementById("listings");
   const updatedEl = document.getElementById("updatedAt");
   try {
-    const res = await fetch("/api/listings", { cache: "no-store" });
+    const res = await fetch("data.json", { cache: "no-store" });
     const data = await res.json();
     updatedEl.textContent = fmtDate(data.generated_at);
     const items = data.listings || [];
@@ -222,7 +222,7 @@ document.getElementById("refreshBtn").addEventListener("click", loadListings);
 loadListings();
 
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => navigator.serviceWorker.register("/service-worker.js"));
+  window.addEventListener("load", () => navigator.serviceWorker.register("service-worker.js"));
 }
 </script>
 </body>

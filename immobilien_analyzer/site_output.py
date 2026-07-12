@@ -1,8 +1,8 @@
-"""Schickt die Analyse-Ergebnisse optional an das Web-App-Backend (Railway)."""
+"""Schreibt die Analyse-Ergebnisse als JSON für die statische PWA (docs/data.json)."""
+import json
 import logging
 from datetime import datetime, timezone
-
-import requests
+from pathlib import Path
 
 from .scoring import ScoredListing
 
@@ -26,20 +26,11 @@ def scored_listing_to_dict(scored: ScoredListing) -> dict:
     }
 
 
-def push_to_webapp(url: str, token: str, scored_listings: list[ScoredListing]) -> bool:
+def write_site_data(output_path: Path, scored_listings: list[ScoredListing]) -> None:
     payload = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "listings": [scored_listing_to_dict(s) for s in scored_listings],
     }
-    try:
-        resp = requests.post(
-            url,
-            json=payload,
-            headers={"Authorization": f"Bearer {token}"},
-            timeout=15,
-        )
-        resp.raise_for_status()
-        return True
-    except requests.RequestException as exc:
-        logger.error("Konnte Ergebnisse nicht an Web-App senden (%s): %s", url, exc)
-        return False
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    logger.info("Web-App-Daten geschrieben: %s (%d Treffer).", output_path, len(scored_listings))

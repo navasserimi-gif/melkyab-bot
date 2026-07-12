@@ -10,13 +10,14 @@ Aufruf: python -m immobilien_analyzer.run_analysis
 """
 import logging
 import sys
+from pathlib import Path
 
 from . import config
 from .emailer import build_html, send_email
 from .immoscout24 import ImmoScout24Client
-from .ingest import push_to_webapp
 from .kleinanzeigen import fetch_listings
 from .scoring import rank_listings, score_listing
+from .site_output import write_site_data
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
@@ -50,7 +51,7 @@ def main() -> int:
         else "🏡 Real Estate Analyzer – keine neuen Treffer"
     )
 
-    delivered = False
+    write_site_data(Path(config.SITE_DATA_PATH), top)
 
     if config.SMTP_USER and config.SMTP_PASSWORD:
         html = build_html(top, config.CITIES, config.MAX_PRICE)
@@ -64,20 +65,9 @@ def main() -> int:
             html_body=html,
         )
         logger.info("E-Mail an %s gesendet (%d Treffer).", config.RECIPIENT_EMAIL, len(top))
-        delivered = True
     else:
         logger.info("SMTP_USER/SMTP_PASSWORD nicht gesetzt — E-Mail-Versand übersprungen.")
 
-    if config.WEBAPP_INGEST_URL and config.WEBAPP_INGEST_TOKEN:
-        if push_to_webapp(config.WEBAPP_INGEST_URL, config.WEBAPP_INGEST_TOKEN, top):
-            logger.info("Ergebnisse an Web-App gesendet (%d Treffer).", len(top))
-            delivered = True
-    else:
-        logger.info("WEBAPP_INGEST_URL/WEBAPP_INGEST_TOKEN nicht gesetzt — Web-App-Push übersprungen.")
-
-    if not delivered:
-        logger.error("Weder E-Mail noch Web-App konfiguriert — Ergebnisse gehen nur ins Log.")
-        return 1
     return 0
 
 
