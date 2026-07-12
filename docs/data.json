@@ -1,6 +1,25 @@
 {
-  "generated_at": "2026-07-12T07:35:09.839532+00:00",
+  "generated_at": "2026-07-12T11:10:10.284889+00:00",
   "listings": [
+    {
+      "title": "Investment-Chance in Ratingen: 1.643 m² - Erbpachtgrundstück",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/investment-chance-in-ratingen-1-643-m-erbpachtgrundstueck/3457023720-207-1780",
+      "price_eur": 51700.0,
+      "location": "40882 Ratingen",
+      "size_sqm": 1643.0,
+      "property_type": "grundstueck",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": 31.46682897139379,
+      "score": 36.180957446808506,
+      "reasons": [
+        "≈2760% unter Richtwert (900 €/m² in Köln)",
+        "Privater Anbieter – vermutlich keine Käuferprovision",
+        "Ausdrücklich provisionsfrei beworben"
+      ],
+      "listing_age_days": 0,
+      "is_stale_opportunity": false
+    },
     {
       "title": "Pizzeria / Burgerladen zur Ablöse abzugeben",
       "url": "https://www.kleinanzeigen.de/s-anzeige/pizzeria-burgerladen-zur-abloese-abzugeben/3445776543-277-21775",
