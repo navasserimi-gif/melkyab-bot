@@ -9,10 +9,16 @@ import os
 MAX_PRICE = int(os.environ.get("MAX_PRICE", "350000"))
 MIN_PRICE = int(os.environ.get("MIN_PRICE", "15000"))  # filtert versehentliche Mietangebote raus
 CITIES = [c.strip() for c in os.environ.get("CITIES", "Köln,Düsseldorf").split(",") if c.strip()]
-RADIUS_KM = int(os.environ.get("RADIUS_KM", "30"))
-PROPERTY_TYPES = ["wohnung", "grundstueck"]
+# Umkreis für Wohnungen/Grundstücke. "geschaeft" (Ablöse-Übernahmen)
+# ignoriert das und bleibt strikt auf Köln/Düsseldorf selbst beschränkt.
+RADIUS_KM = int(os.environ.get("RADIUS_KM", "50"))
+PROPERTY_TYPES = ["wohnung", "grundstueck", "geschaeft"]
 TOP_N = int(os.environ.get("TOP_N", "12"))
 MAX_PAGES_PER_SEARCH = int(os.environ.get("MAX_PAGES_PER_SEARCH", "2"))
+# Ab diesem Anzeigenalter (Tage) gilt ein Angebot als "lange inseriert" -
+# ein Hinweis darauf, dass der Verkäufer evtl. noch keinen Käufer/
+# Nachmieter gefunden hat und offen für Unterstützung sein könnte.
+STALE_DAYS_THRESHOLD = int(os.environ.get("STALE_DAYS_THRESHOLD", "21"))
 
 SMTP_HOST = os.environ.get("SMTP_HOST", "smtp.gmail.com")
 SMTP_PORT = int(os.environ.get("SMTP_PORT", "465"))

@@ -6,7 +6,11 @@ from email.mime.text import MIMEText
 
 from .scoring import ScoredListing
 
-PROPERTY_TYPE_LABELS = {"wohnung": "Wohnung", "grundstueck": "Grundstück"}
+PROPERTY_TYPE_LABELS = {
+    "wohnung": "Wohnung",
+    "grundstueck": "Grundstück",
+    "geschaeft": "Geschäft (Ablöse)",
+}
 
 
 def _fmt_price(value: float | None) -> str:
@@ -32,15 +36,20 @@ def build_html(scored_listings: list[ScoredListing], cities: list[str], max_pric
     rows = []
     for s in scored_listings:
         listing = s.listing
+        row_style = ' style="background:#fff8e1;"' if s.is_stale_opportunity else ""
+        price_label = f"Ablöse: {_fmt_price(listing.price_eur)}" if listing.property_type == "geschaeft" else _fmt_price(listing.price_eur)
+        ppsqm_label = "–" if listing.property_type == "geschaeft" else _fmt_price_per_sqm(s.price_per_sqm)
+        age_label = f"seit {listing.listing_age_days} Tagen" if listing.listing_age_days is not None else "n/a"
         rows.append(
-            "<tr>"
+            f"<tr{row_style}>"
             f'<td><a href="{listing.url}">{listing.title}</a></td>'
             f"<td>{PROPERTY_TYPE_LABELS.get(listing.property_type, listing.property_type)}</td>"
             f"<td>{listing.location}</td>"
-            f"<td>{_fmt_price(listing.price_eur)}</td>"
+            f"<td>{price_label}</td>"
             f"<td>{_fmt_size(listing.size_sqm)}</td>"
-            f"<td>{_fmt_price_per_sqm(s.price_per_sqm)}</td>"
+            f"<td>{ppsqm_label}</td>"
             f"<td>{'Privat' if listing.is_private else 'Gewerblich'}</td>"
+            f"<td>{age_label}</td>"
             f"<td>{'<br>'.join(s.reasons)}</td>"
             "</tr>"
         )
@@ -51,7 +60,7 @@ def build_html(scored_listings: list[ScoredListing], cities: list[str], max_pric
             'style="border-collapse:collapse;font-family:sans-serif;font-size:13px;">'
             '<tr style="background:#f0f0f0;">'
             "<th>Titel</th><th>Typ</th><th>Ort</th><th>Preis</th><th>Größe</th>"
-            "<th>€/m²</th><th>Anbieter</th><th>Bewertung</th></tr>"
+            "<th>€/m²</th><th>Anbieter</th><th>Inseriert</th><th>Bewertung</th></tr>"
             f"{''.join(rows)}</table>"
         )
     else:

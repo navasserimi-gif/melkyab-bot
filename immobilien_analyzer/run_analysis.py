@@ -42,14 +42,20 @@ def main() -> int:
             )
             listings += is24.search(city, property_type, config.MAX_PRICE, config.RADIUS_KM)
 
-            new_listings = [l for l in listings if l.url not in seen_urls]
-            seen_urls.update(l.url for l in new_listings)
+            new_listings = []
+            for listing in listings:
+                if listing.url in seen_urls:
+                    continue
+                seen_urls.add(listing.url)
+                new_listings.append(listing)
             logger.info(
                 "  -> %d Angebote gefunden (%d neu, %d bereits über andere Stadt gefunden)",
                 len(listings), len(new_listings), len(listings) - len(new_listings),
             )
 
-            all_scored.extend(score_listing(listing, city) for listing in new_listings)
+            all_scored.extend(
+                score_listing(listing, city, config.STALE_DAYS_THRESHOLD) for listing in new_listings
+            )
 
     top = rank_listings(all_scored, config.TOP_N)
     subject = (

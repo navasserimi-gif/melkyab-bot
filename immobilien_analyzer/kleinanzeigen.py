@@ -1,5 +1,6 @@
 """
-Scraper für Kleinanzeigen.de (private Verkäufer, Grundstücke & Wohnungen zum Kauf).
+Scraper für Kleinanzeigen.de (private Verkäufer: Wohnungen/Grundstücke zum
+Kauf, Geschäfte/Gastronomie zur Übernahme mit Ablöse).
 
 Hinweis: Die CSS-Selektoren und die URL-Struktur basieren auf dem seit
 Jahren stabilen Kleinanzeigen-Layout (Karten mit der Klasse "aditem").
@@ -11,6 +12,7 @@ import logging
 import re
 import time
 from dataclasses import dataclass
+from datetime import date, datetime, timedelta
 from typing import Optional
 from urllib.parse import quote
 
@@ -29,11 +31,18 @@ HEADERS = {
 }
 
 # "kaufen" grenzt Mietangebote weitgehend aus; zusätzliche Absicherung
-# per Keyword-Filter weiter unten.
+# per Keyword-Filter weiter unten. "geschaeft" sucht gezielt nach
+# Laden-/Gastro-Übernahmen mit Ablöse (kein Kauf, sondern Mietübernahme +
+# Ablösesumme für Inventar/Einrichtung).
 QUERY_SLUGS = {
     "wohnung": "wohnung-kaufen",
     "grundstueck": "grundstueck-kaufen",
+    "geschaeft": "ablöse",
 }
+
+# Geschäfte/Ablöse-Übernahmen sollen NUR aus Köln oder Düsseldorf selbst
+# kommen (kein Umkreis), Wohnungen/Grundstücke aus der weiteren Region.
+STRICT_CITY_ONLY_TYPES = {"geschaeft"}
 
 RENTAL_KEYWORDS = ("miete", "mieten", "kaltmiete", "warmmiete", "wg-zimmer")
 COMMERCIAL_KEYWORDS = (
@@ -48,13 +57,27 @@ COMMERCIAL_KEYWORDS = (
     "okal", "fingerhaus", "kern-haus", "heinz von heiden",
 )
 
+# Manche Anzeigen betreffen Immobilien im Ausland, obwohl das Konto/die
+# Kontakt-PLZ in Deutschland liegt (z.B. Ferienhaus auf Kreta). Per
+# Stichwort im Titel aussortieren, da die PLZ-Prüfung das nicht erkennt.
+FOREIGN_LOCATION_KEYWORDS = (
+    "kreta", "mallorca", "türkei", "spanien", "italien", "griechenland",
+    "kroatien", "bulgarien", "ungarn", "frankreich", "österreich",
+    "schweiz", "portugal", "zypern", "thailand", "dubai",
+)
+
 # Kleinanzeigens Orts-/Radius-Parameter werden nicht immer zuverlässig
 # angewendet (in der Praxis beobachtet: Preis-Filter greift, Orts-Filter
-# nicht). Deshalb zusätzlich clientseitig anhand der PLZ auf die Region
-# Köln/Düsseldorf (~30-40 km) eingrenzen. Grobe, aber verlässliche
-# Absicherung gegen bundesweite Treffer.
-REGION_PLZ_PREFIXES = {"40", "41", "42", "45", "47", "50", "51", "53"}
+# nicht). Deshalb zusätzlich clientseitig anhand der PLZ eingrenzen.
+# Für Wohnungen/Grundstücke: grobe Region um Köln/Düsseldorf (~50 km).
+REGION_PLZ_PREFIXES = {"40", "41", "42", "45", "46", "47", "50", "51", "53"}
+# Für Geschäfte/Ablöse: nur die Städte selbst, enger PLZ-Bereich.
+STRICT_CITY_PLZ_RANGES = {
+    "köln": (50667, 51149),
+    "düsseldorf": (40200, 40629),
+}
 _PLZ_RE = re.compile(r"\b(\d{5})\b")
+
 # Verneinte/positive Erwähnungen ("kein Makler", "provisionsfrei",
 # "maklerfrei") sind gerade das Gegenteil eines gewerblichen Hinweises
 # und dürfen den Treffer nicht ausschließen.
@@ -65,6 +88,11 @@ _NEGATED_COMMERCIAL_RE = re.compile(
 )
 
 _UMLAUT_MAP = str.maketrans({"ü": "ue", "ö": "oe", "ä": "ae", "ß": "ss"})
+
+_MONTHS_DE = {
+    "jan": 1, "feb": 2, "mär": 3, "maer": 3, "apr": 4, "mai": 5, "jun": 6,
+    "jul": 7, "aug": 8, "sep": 9, "okt": 10, "nov": 11, "dez": 12,
+}
 
 
 @dataclass
@@ -78,6 +106,7 @@ class Listing:
     source: str = "kleinanzeigen"
     is_private: bool = True
     description_snippet: str = ""
+    listing_age_days: Optional[int] = None
 
 
 def _to_float(text: str) -> Optional[float]:
@@ -113,6 +142,11 @@ def _looks_like_rental(text: str) -> bool:
     return any(kw in lowered for kw in RENTAL_KEYWORDS)
 
 
+def _looks_foreign(text: str) -> bool:
+    lowered = text.lower()
+    return any(kw in lowered for kw in FOREIGN_LOCATION_KEYWORDS)
+
+
 def _in_target_region(location: str) -> bool:
     match = _PLZ_RE.search(location or "")
     if not match:
@@ -121,16 +155,66 @@ def _in_target_region(location: str) -> bool:
     return match.group(1)[:2] in REGION_PLZ_PREFIXES
 
 
+def _in_strict_city(location: str, city: str) -> bool:
+    match = _PLZ_RE.search(location or "")
+    plz_range = STRICT_CITY_PLZ_RANGES.get(city.lower())
+    if not match or not plz_range:
+        # Keine PLZ erkennbar oder unbekannte Stadt - im Zweifel nicht ausschließen.
+        return True
+    plz = int(match.group(1))
+    return plz_range[0] <= plz <= plz_range[1]
+
+
 def _city_slug(city: str) -> str:
     return quote(city.lower().translate(_UMLAUT_MAP).replace(" ", "-"))
 
 
 def _build_search_url(property_type: str, city: str, max_price: int, min_price: int, radius_km: int) -> str:
     slug = QUERY_SLUGS[property_type]
-    return (
-        f"{BASE_URL}/s-{_city_slug(city)}/{slug}/k0"
-        f"?maxPrice={max_price}&minPrice={min_price}&radius={radius_km}"
-    )
+    url = f"{BASE_URL}/s-{_city_slug(city)}/{slug}/k0?maxPrice={max_price}&minPrice={min_price}"
+    if property_type not in STRICT_CITY_ONLY_TYPES:
+        url += f"&radius={radius_km}"
+    return url
+
+
+def _parse_listing_age_days(text: str, today: Optional[date] = None) -> Optional[int]:
+    """Best-effort: leitet aus Kleinanzeigen-Datumsangaben ('Heute', 'Gestern',
+    '17.05.2025', '17. Mai') das Alter der Anzeige in Tagen ab. Gibt None
+    zurück, wenn kein Datum erkennbar ist (lieber nichts anzeigen als raten)."""
+    if not text:
+        return None
+    today = today or date.today()
+    lowered = text.lower()
+
+    if "heute" in lowered:
+        return 0
+    if "gestern" in lowered:
+        return 1
+
+    match = re.search(r"\b(\d{1,2})\.(\d{1,2})\.(\d{4})\b", text)
+    if match:
+        day, month, year = (int(g) for g in match.groups())
+        try:
+            listed = date(year, month, day)
+        except ValueError:
+            return None
+        return max((today - listed).days, 0)
+
+    match = re.search(r"\b(\d{1,2})\.\s*(\w{3,4})\b", lowered)
+    if match:
+        day = int(match.group(1))
+        month = _MONTHS_DE.get(match.group(2)[:3])
+        if month:
+            year = today.year
+            try:
+                listed = date(year, month, day)
+            except ValueError:
+                return None
+            if listed > today:
+                listed = date(year - 1, month, day)
+            return max((today - listed).days, 0)
+
+    return None
 
 
 def fetch_listings(
@@ -142,9 +226,11 @@ def fetch_listings(
     max_pages: int = 2,
     request_delay_s: float = 2.0,
 ) -> list[Listing]:
-    """Holt Angebote von Kleinanzeigen.de und filtert Miete/Gewerbe grob raus."""
+    """Holt Angebote von Kleinanzeigen.de und filtert Miete/Gewerbe/Ausland grob raus."""
     listings: list[Listing] = []
+    seen_urls_in_search: set[str] = set()
     base_url = _build_search_url(property_type, city, max_price, min_price, radius_km)
+    strict_city = property_type in STRICT_CITY_ONLY_TYPES
 
     for page in range(1, max_pages + 1):
         page_url = base_url if page == 1 else f"{base_url}&page={page}"
@@ -168,25 +254,46 @@ def fetch_listings(
             break
 
         skipped_out_of_region = 0
+        skipped_foreign = 0
+        skipped_duplicate = 0
+        with_age = 0
         for card in cards:
             listing = _parse_card(card, city, property_type)
             if listing is None:
                 continue
+            if listing.url in seen_urls_in_search:
+                skipped_duplicate += 1
+                continue
+            seen_urls_in_search.add(listing.url)
+
             haystack = f"{listing.title} {listing.description_snippet}"
             if _looks_like_rental(haystack):
                 continue
             if _looks_commercial(haystack):
                 continue
-            if not _in_target_region(listing.location):
+            if _looks_foreign(listing.title):
+                skipped_foreign += 1
+                continue
+
+            in_region = (
+                _in_strict_city(listing.location, city)
+                if strict_city
+                else _in_target_region(listing.location)
+            )
+            if not in_region:
                 skipped_out_of_region += 1
                 continue
+
+            if listing.listing_age_days is not None:
+                with_age += 1
             listings.append(listing)
 
-        if skipped_out_of_region:
+        if skipped_out_of_region or skipped_foreign or skipped_duplicate:
             logger.info(
-                "%d Treffer außerhalb der Zielregion (Köln/Düsseldorf) übersprungen.",
-                skipped_out_of_region,
+                "Übersprungen: %d außerhalb Zielregion, %d Ausland, %d Duplikate auf Seite %d.",
+                skipped_out_of_region, skipped_foreign, skipped_duplicate, page,
             )
+        logger.info("%d/%d Treffer mit erkennbarem Anzeigedatum.", with_age, len(cards))
 
         time.sleep(request_delay_s)
 
@@ -217,6 +324,16 @@ def _parse_card(card, city: str, property_type: str) -> Optional[Listing]:
         location_el = card.select_one(".aditem-main--top--left")
         location = location_el.get_text(" ", strip=True) if location_el else city
 
+        # Beobachtetes Layout: das Anzeigedatum steht meist als eigenes
+        # Element neben dem Preis oder unten im Karten-Footer. Da die
+        # genaue Klasse unsicher ist, wird zusätzlich der komplette
+        # Kartentext als Fallback nach einem Datumsmuster durchsucht.
+        date_el = card.select_one(".aditem-main--top--right") or card.select_one(".aditem-main--bottom")
+        date_text = date_el.get_text(" ", strip=True) if date_el else ""
+        listing_age_days = _parse_listing_age_days(date_text)
+        if listing_age_days is None:
+            listing_age_days = _parse_listing_age_days(card.get_text(" ", strip=True))
+
         size = _extract_size_sqm(title) or _extract_size_sqm(description)
 
         commercial_badge = card.select_one(".badge-hint-pro-small-srp") is not None
@@ -230,6 +347,7 @@ def _parse_card(card, city: str, property_type: str) -> Optional[Listing]:
             property_type=property_type,
             is_private=not commercial_badge,
             description_snippet=description[:300],
+            listing_age_days=listing_age_days,
         )
     except Exception as exc:  # defensiv: eine kaputte Karte darf den ganzen Lauf nicht stoppen
         logger.debug("Konnte Angebotskarte nicht parsen: %s", exc)
