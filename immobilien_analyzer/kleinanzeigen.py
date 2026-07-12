@@ -44,14 +44,6 @@ QUERY_SLUGS = {
 # kommen (kein Umkreis), Wohnungen/Grundstücke aus der weiteren Region.
 STRICT_CITY_ONLY_TYPES = {"geschaeft"}
 
-# Städtenamen als Ort-Slug in der URL wurden in der Praxis von Kleinanzeigen
-# ignoriert (Treffer kamen bundesweit statt aus der Region). Eine PLZ als
-# Ortsanker scheint zuverlässiger von der Suche erkannt zu werden.
-CITY_PLZ_ANCHOR = {
-    "köln": "50667",
-    "düsseldorf": "40210",
-}
-
 RENTAL_KEYWORDS = ("miete", "mieten", "kaltmiete", "warmmiete", "wg-zimmer")
 COMMERCIAL_KEYWORDS = (
     "makler", "provision", "käuferprovision", "immobilien gmbh",
@@ -184,15 +176,14 @@ def _city_slug(city: str) -> str:
     return quote(city.lower().translate(_UMLAUT_MAP).replace(" ", "-"))
 
 
-def _location_anchor(city: str) -> str:
-    """PLZ, falls bekannt (zuverlässiger als der Stadtname), sonst Stadtname-Slug."""
-    return CITY_PLZ_ANCHOR.get(city.lower(), _city_slug(city))
-
-
 def _build_search_url(property_type: str, city: str, max_price: int, min_price: int, radius_km: int) -> str:
+    # Reihenfolge <ort>/<suchbegriff>/k0 mit dem Stadtnamen (nicht PLZ) ist
+    # die einzige Variante, die bisher tatsächlich Ergebniskarten geliefert
+    # hat (PLZ-Ortsanker + vertauschte Reihenfolge lieferte 0 bzw. wirre
+    # Treffer). Ort-/Radius-Filterung selbst bleibt unzuverlässig - siehe
+    # REGION_PLZ_PREFIXES-Absicherung weiter unten.
     slug = QUERY_SLUGS[property_type]
-    location = _location_anchor(city)
-    url = f"{BASE_URL}/s-{slug}/{location}/k0?maxPrice={max_price}&minPrice={min_price}"
+    url = f"{BASE_URL}/s-{_city_slug(city)}/{slug}/k0?maxPrice={max_price}&minPrice={min_price}"
     if property_type not in STRICT_CITY_ONLY_TYPES:
         url += f"&radius={radius_km}"
     return url
