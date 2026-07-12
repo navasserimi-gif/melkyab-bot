@@ -1,22 +1,4 @@
 {
-  "generated_at": "2026-07-12T07:24:57.111426+00:00",
-  "listings": [
-    {
-      "title": "Pizzeria / Burgerladen zur Ablöse abzugeben",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/pizzeria-burgerladen-zur-abloese-abzugeben/3445776543-277-21775",
-      "price_eur": 64999.0,
-      "location": "51107 Ostheim",
-      "size_sqm": null,
-      "property_type": "geschaeft",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": null,
-      "score": 1.15,
-      "reasons": [
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ],
-      "listing_age_days": 14,
-      "is_stale_opportunity": false
-    }
-  ]
+  "generated_at": "2026-07-12T07:32:00.887171+00:00",
+  "listings": []
 }
