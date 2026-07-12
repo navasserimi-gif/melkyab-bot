@@ -28,34 +28,41 @@ def main() -> int:
     all_scored = []
     seen_urls: set[str] = set()
 
-    for city in config.CITIES:
-        for property_type in config.PROPERTY_TYPES:
-            logger.info("Suche %s in %s ...", property_type, city)
+    for property_type in config.PROPERTY_TYPES:
+        logger.info("Suche %s in %s ...", property_type, ", ".join(config.CITIES))
 
-            listings = fetch_listings(
-                city=city,
-                property_type=property_type,
-                max_price=config.MAX_PRICE,
-                min_price=config.MIN_PRICE,
-                radius_km=config.RADIUS_KM,
-                max_pages=config.MAX_PAGES_PER_SEARCH,
-            )
+        # Kleinanzeigen ignoriert den Ort in der Such-URL nachweislich, daher
+        # nur EIN bundesweiter Abruf pro Kategorie; die Zuordnung zu einer
+        # Stadt passiert intern per PLZ (siehe listing.matched_city).
+        listings = fetch_listings(
+            cities=config.CITIES,
+            property_type=property_type,
+            max_price=config.MAX_PRICE,
+            min_price=config.MIN_PRICE,
+            radius_km=config.RADIUS_KM,
+            max_pages=config.MAX_PAGES_PER_SEARCH,
+        )
+
+        # ImmoScout24 (sobald aktiv) unterstützt echte Ortsfilter, daher
+        # weiterhin pro Stadt abgefragt.
+        for city in config.CITIES:
             listings += is24.search(city, property_type, config.MAX_PRICE, config.RADIUS_KM)
 
-            new_listings = []
-            for listing in listings:
-                if listing.url in seen_urls:
-                    continue
-                seen_urls.add(listing.url)
-                new_listings.append(listing)
-            logger.info(
-                "  -> %d Angebote gefunden (%d neu, %d bereits über andere Stadt gefunden)",
-                len(listings), len(new_listings), len(listings) - len(new_listings),
-            )
+        new_listings = []
+        for listing in listings:
+            if listing.url in seen_urls:
+                continue
+            seen_urls.add(listing.url)
+            new_listings.append(listing)
+        logger.info(
+            "  -> %d Angebote gefunden (%d neu, %d Duplikate)",
+            len(listings), len(new_listings), len(listings) - len(new_listings),
+        )
 
-            all_scored.extend(
-                score_listing(listing, city, config.STALE_DAYS_THRESHOLD) for listing in new_listings
-            )
+        all_scored.extend(
+            score_listing(listing, listing.matched_city or config.CITIES[0], config.STALE_DAYS_THRESHOLD)
+            for listing in new_listings
+        )
 
     top = rank_listings(all_scored, config.TOP_N)
     subject = (
