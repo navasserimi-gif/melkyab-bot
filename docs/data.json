@@ -1,11 +1,29 @@
 {
-  "generated_at": "2026-07-12T12:29:44.078562+00:00",
+  "generated_at": "2026-07-13T08:58:17.758295+00:00",
   "listings": [
     {
-      "title": "Charmante Eigentumswohnung mit hohen Decken in zentraler Lage",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/charmante-eigentumswohnung-mit-hohen-decken-in-zentraler-lage/3457116688-196-1546",
-      "price_eur": 189000.0,
-      "location": "42929 Wermelskirchen",
+      "title": "Attraktives Grundstück in Essen-Dellwig von Privat",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/attraktives-grundstueck-in-essen-dellwig-von-privat/3382407008-207-2032",
+      "price_eur": 285000.0,
+      "location": "45357 Essen-​Borbeck",
+      "size_sqm": 670.0,
+      "property_type": "grundstueck",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": 425.3731343283582,
+      "score": 2.5683333333333334,
+      "reasons": [
+        "≈123% unter Richtwert (950 €/m² in Düsseldorf)",
+        "Privater Anbieter – vermutlich keine Käuferprovision"
+      ],
+      "listing_age_days": 0,
+      "is_stale_opportunity": false
+    },
+    {
+      "title": "Eigentumswohnung zum Kauf in Haus mit wenig Parteien",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/eigentumswohnung-zum-kauf-in-haus-mit-wenig-parteien/3457505959-196-29175",
+      "price_eur": 255000.0,
+      "location": "45289 Burgaltendorf",
       "size_sqm": null,
       "property_type": "wohnung",
       "source": "kleinanzeigen",
@@ -16,7 +34,25 @@
         "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 0,
+      "listing_age_days": null,
+      "is_stale_opportunity": false
+    },
+    {
+      "title": "Grundstück Baugrundstück A  mit priv. Zuwegung, Lohmar Birk",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/grundstueck-baugrundstueck-a-mit-priv-zuwegung-lohmar-birk/3291700053-207-1688",
+      "price_eur": 282300.0,
+      "location": "53797 Lohmar",
+      "size_sqm": null,
+      "property_type": "grundstueck",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": null,
+      "score": 1.15,
+      "reasons": [
+        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
+        "Privater Anbieter – vermutlich keine Käuferprovision"
+      ],
+      "listing_age_days": 1,
       "is_stale_opportunity": false
     },
     {
@@ -33,7 +69,7 @@
       "reasons": [
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 14,
+      "listing_age_days": 15,
       "is_stale_opportunity": false
     }
   ]
