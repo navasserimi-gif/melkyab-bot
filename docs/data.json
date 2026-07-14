@@ -1,29 +1,11 @@
 {
-  "generated_at": "2026-07-13T08:58:17.758295+00:00",
+  "generated_at": "2026-07-14T07:53:48.140352+00:00",
   "listings": [
     {
-      "title": "Attraktives Grundstück in Essen-Dellwig von Privat",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/attraktives-grundstueck-in-essen-dellwig-von-privat/3382407008-207-2032",
-      "price_eur": 285000.0,
-      "location": "45357 Essen-​Borbeck",
-      "size_sqm": 670.0,
-      "property_type": "grundstueck",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": 425.3731343283582,
-      "score": 2.5683333333333334,
-      "reasons": [
-        "≈123% unter Richtwert (950 €/m² in Düsseldorf)",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ],
-      "listing_age_days": 0,
-      "is_stale_opportunity": false
-    },
-    {
-      "title": "Eigentumswohnung zum Kauf in Haus mit wenig Parteien",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/eigentumswohnung-zum-kauf-in-haus-mit-wenig-parteien/3457505959-196-29175",
-      "price_eur": 255000.0,
-      "location": "45289 Burgaltendorf",
+      "title": "Frisch sanierte 3-Zimmer-Wohnung mit großem Balkon in Erkrath",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/frisch-sanierte-3-zimmer-wohnung-mit-grossem-balkon-in-erkrath/3458555105-196-1401",
+      "price_eur": 269000.0,
+      "location": "40699 Erkrath",
       "size_sqm": null,
       "property_type": "wohnung",
       "source": "kleinanzeigen",
@@ -34,16 +16,16 @@
         "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": null,
+      "listing_age_days": 0,
       "is_stale_opportunity": false
     },
     {
-      "title": "Grundstück Baugrundstück A  mit priv. Zuwegung, Lohmar Birk",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/grundstueck-baugrundstueck-a-mit-priv-zuwegung-lohmar-birk/3291700053-207-1688",
-      "price_eur": 282300.0,
-      "location": "53797 Lohmar",
+      "title": "3-Zimmer-Eigentumswohnung – komplett saniert & bezugsfertig",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/3-zimmer-eigentumswohnung-komplett-saniert-bezugsfertig/3458554717-196-2115",
+      "price_eur": 260000.0,
+      "location": "41470 Neuss",
       "size_sqm": null,
-      "property_type": "grundstueck",
+      "property_type": "wohnung",
       "source": "kleinanzeigen",
       "is_private": true,
       "price_per_sqm": null,
@@ -52,7 +34,7 @@
         "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 1,
+      "listing_age_days": 0,
       "is_stale_opportunity": false
     },
     {
@@ -69,7 +51,7 @@
       "reasons": [
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 15,
+      "listing_age_days": 16,
       "is_stale_opportunity": false
     }
   ]
