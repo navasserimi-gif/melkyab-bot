@@ -1,42 +1,6 @@
 {
-  "generated_at": "2026-07-14T07:53:48.140352+00:00",
+  "generated_at": "2026-07-15T07:58:04.739178+00:00",
   "listings": [
-    {
-      "title": "Frisch sanierte 3-Zimmer-Wohnung mit großem Balkon in Erkrath",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/frisch-sanierte-3-zimmer-wohnung-mit-grossem-balkon-in-erkrath/3458555105-196-1401",
-      "price_eur": 269000.0,
-      "location": "40699 Erkrath",
-      "size_sqm": null,
-      "property_type": "wohnung",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": null,
-      "score": 1.15,
-      "reasons": [
-        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ],
-      "listing_age_days": 0,
-      "is_stale_opportunity": false
-    },
-    {
-      "title": "3-Zimmer-Eigentumswohnung – komplett saniert & bezugsfertig",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/3-zimmer-eigentumswohnung-komplett-saniert-bezugsfertig/3458554717-196-2115",
-      "price_eur": 260000.0,
-      "location": "41470 Neuss",
-      "size_sqm": null,
-      "property_type": "wohnung",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": null,
-      "score": 1.15,
-      "reasons": [
-        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ],
-      "listing_age_days": 0,
-      "is_stale_opportunity": false
-    },
     {
       "title": "Pizzeria / Burgerladen zur Ablöse abzugeben",
       "url": "https://www.kleinanzeigen.de/s-anzeige/pizzeria-burgerladen-zur-abloese-abzugeben/3445776543-277-21775",
@@ -51,7 +15,7 @@
       "reasons": [
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 16,
+      "listing_age_days": 17,
       "is_stale_opportunity": false
     }
   ]
