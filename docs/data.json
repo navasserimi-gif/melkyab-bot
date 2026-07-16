@@ -1,6 +1,24 @@
 {
-  "generated_at": "2026-07-15T07:58:04.739178+00:00",
+  "generated_at": "2026-07-16T08:03:40.606249+00:00",
   "listings": [
+    {
+      "title": "Charmante 2 Zi Eigentumswohnung in Gladbeck m Balkon & Stellplatz",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/charmante-2-zi-eigentumswohnung-in-gladbeck-m-balkon-stellplatz/3403477322-196-1801",
+      "price_eur": 119000.0,
+      "location": "45968 Gladbeck",
+      "size_sqm": null,
+      "property_type": "wohnung",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": null,
+      "score": 1.15,
+      "reasons": [
+        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
+        "Privater Anbieter – vermutlich keine Käuferprovision"
+      ],
+      "listing_age_days": 0,
+      "is_stale_opportunity": false
+    },
     {
       "title": "Pizzeria / Burgerladen zur Ablöse abzugeben",
       "url": "https://www.kleinanzeigen.de/s-anzeige/pizzeria-burgerladen-zur-abloese-abzugeben/3445776543-277-21775",
@@ -15,7 +33,24 @@
       "reasons": [
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 17,
+      "listing_age_days": 18,
+      "is_stale_opportunity": false
+    },
+    {
+      "title": "Pizzeria, Imbiss, Döner, Burger,Gastro,Lieferdienst zum verkaufen",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/pizzeria-imbiss-doener-burger-gastro-lieferdienst-zum-verkaufen/3429765722-277-23414",
+      "price_eur": 26999.0,
+      "location": "51105 Humboldt-​Gremberg",
+      "size_sqm": null,
+      "property_type": "geschaeft",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": null,
+      "score": 1.15,
+      "reasons": [
+        "Privater Anbieter – vermutlich keine Käuferprovision"
+      ],
+      "listing_age_days": 1,
       "is_stale_opportunity": false
     }
   ]
