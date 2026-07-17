@@ -1,11 +1,30 @@
 {
-  "generated_at": "2026-07-16T08:03:40.606249+00:00",
+  "generated_at": "2026-07-17T08:00:23.575335+00:00",
   "listings": [
     {
-      "title": "Charmante 2 Zi Eigentumswohnung in Gladbeck m Balkon & Stellplatz",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/charmante-2-zi-eigentumswohnung-in-gladbeck-m-balkon-stellplatz/3403477322-196-1801",
-      "price_eur": 119000.0,
-      "location": "45968 Gladbeck",
+      "title": "Haus mit Garten *PROVISIONSFREI*",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/haus-mit-garten-provisionsfrei-/3460833561-208-1190",
+      "price_eur": 130000.0,
+      "location": "41844 Wegberg",
+      "size_sqm": null,
+      "property_type": "grundstueck",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": null,
+      "score": 1.265,
+      "reasons": [
+        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
+        "Privater Anbieter – vermutlich keine Käuferprovision",
+        "Ausdrücklich provisionsfrei beworben"
+      ],
+      "listing_age_days": 0,
+      "is_stale_opportunity": false
+    },
+    {
+      "title": "RE-Nordviertel: 4,5 Zi-Whg, Balkone, Wohnküche, Tageslichtbäder",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/re-nordviertel-4-5-zi-whg-balkone-wohnkueche-tageslichtbaeder/3460841639-196-1987",
+      "price_eur": 229000.0,
+      "location": "45657 Recklinghausen",
       "size_sqm": null,
       "property_type": "wohnung",
       "source": "kleinanzeigen",
@@ -17,6 +36,24 @@
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
       "listing_age_days": 0,
+      "is_stale_opportunity": false
+    },
+    {
+      "title": "Charmantes Fachwerkhaus von Privat zu verkaufen",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/charmantes-fachwerkhaus-von-privat-zu-verkaufen/3460620470-208-1688",
+      "price_eur": 147000.0,
+      "location": "53797 Lohmar",
+      "size_sqm": null,
+      "property_type": "grundstueck",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": null,
+      "score": 1.15,
+      "reasons": [
+        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
+        "Privater Anbieter – vermutlich keine Käuferprovision"
+      ],
+      "listing_age_days": 1,
       "is_stale_opportunity": false
     },
     {
@@ -33,7 +70,7 @@
       "reasons": [
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 18,
+      "listing_age_days": 19,
       "is_stale_opportunity": false
     },
     {
