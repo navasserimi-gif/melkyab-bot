@@ -1,61 +1,6 @@
 {
-  "generated_at": "2026-07-17T08:00:23.575335+00:00",
+  "generated_at": "2026-07-18T07:41:03.676997+00:00",
   "listings": [
-    {
-      "title": "Haus mit Garten *PROVISIONSFREI*",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/haus-mit-garten-provisionsfrei-/3460833561-208-1190",
-      "price_eur": 130000.0,
-      "location": "41844 Wegberg",
-      "size_sqm": null,
-      "property_type": "grundstueck",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": null,
-      "score": 1.265,
-      "reasons": [
-        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
-        "Privater Anbieter – vermutlich keine Käuferprovision",
-        "Ausdrücklich provisionsfrei beworben"
-      ],
-      "listing_age_days": 0,
-      "is_stale_opportunity": false
-    },
-    {
-      "title": "RE-Nordviertel: 4,5 Zi-Whg, Balkone, Wohnküche, Tageslichtbäder",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/re-nordviertel-4-5-zi-whg-balkone-wohnkueche-tageslichtbaeder/3460841639-196-1987",
-      "price_eur": 229000.0,
-      "location": "45657 Recklinghausen",
-      "size_sqm": null,
-      "property_type": "wohnung",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": null,
-      "score": 1.15,
-      "reasons": [
-        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ],
-      "listing_age_days": 0,
-      "is_stale_opportunity": false
-    },
-    {
-      "title": "Charmantes Fachwerkhaus von Privat zu verkaufen",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/charmantes-fachwerkhaus-von-privat-zu-verkaufen/3460620470-208-1688",
-      "price_eur": 147000.0,
-      "location": "53797 Lohmar",
-      "size_sqm": null,
-      "property_type": "grundstueck",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": null,
-      "score": 1.15,
-      "reasons": [
-        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ],
-      "listing_age_days": 1,
-      "is_stale_opportunity": false
-    },
     {
       "title": "Pizzeria / Burgerladen zur Ablöse abzugeben",
       "url": "https://www.kleinanzeigen.de/s-anzeige/pizzeria-burgerladen-zur-abloese-abzugeben/3445776543-277-21775",
@@ -70,7 +15,7 @@
       "reasons": [
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 19,
+      "listing_age_days": 20,
       "is_stale_opportunity": false
     },
     {
