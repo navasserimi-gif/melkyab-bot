@@ -1,6 +1,24 @@
 {
-  "generated_at": "2026-07-18T07:41:03.676997+00:00",
+  "generated_at": "2026-07-19T08:07:37.624842+00:00",
   "listings": [
+    {
+      "title": "Seltene Gelegenheit: Großzügiges Baugrundstück in Brüggen-Born",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/seltene-gelegenheit-grosszuegiges-baugrundstueck-in-brueggen-born/3462283107-207-1204",
+      "price_eur": 285000.0,
+      "location": "41379 Brüggen",
+      "size_sqm": 824.0,
+      "property_type": "grundstueck",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": 345.873786407767,
+      "score": 3.1586666666666665,
+      "reasons": [
+        "≈175% unter Richtwert (950 €/m² in Düsseldorf)",
+        "Privater Anbieter – vermutlich keine Käuferprovision"
+      ],
+      "listing_age_days": 1,
+      "is_stale_opportunity": false
+    },
     {
       "title": "Pizzeria / Burgerladen zur Ablöse abzugeben",
       "url": "https://www.kleinanzeigen.de/s-anzeige/pizzeria-burgerladen-zur-abloese-abzugeben/3445776543-277-21775",
@@ -11,11 +29,30 @@
       "source": "kleinanzeigen",
       "is_private": true,
       "price_per_sqm": null,
+      "score": 1.4949999999999999,
+      "reasons": [
+        "Privater Anbieter – vermutlich keine Käuferprovision",
+        "🎯 Seit 21 Tagen inseriert – vermutlich noch offen, gute Kontakt-Chance"
+      ],
+      "listing_age_days": 21,
+      "is_stale_opportunity": true
+    },
+    {
+      "title": "Attraktives Baugrundstück in Haltern am See-Lavesum",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/attraktives-baugrundstueck-in-haltern-am-see-lavesum/3462431290-207-1336",
+      "price_eur": 185000.0,
+      "location": "45721 Haltern am See",
+      "size_sqm": null,
+      "property_type": "grundstueck",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": null,
       "score": 1.15,
       "reasons": [
+        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 20,
+      "listing_age_days": 0,
       "is_stale_opportunity": false
     },
     {
