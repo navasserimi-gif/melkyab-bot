@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-20T08:48:56.177317+00:00",
+  "generated_at": "2026-07-21T08:16:16.952429+00:00",
   "listings": [
     {
       "title": "Pizzeria / Burgerladen zur Ablöse abzugeben",
@@ -14,18 +14,18 @@
       "score": 1.4949999999999999,
       "reasons": [
         "Privater Anbieter – vermutlich keine Käuferprovision",
-        "🎯 Seit 22 Tagen inseriert – vermutlich noch offen, gute Kontakt-Chance"
+        "🎯 Seit 23 Tagen inseriert – vermutlich noch offen, gute Kontakt-Chance"
       ],
-      "listing_age_days": 22,
+      "listing_age_days": 23,
       "is_stale_opportunity": true
     },
     {
-      "title": "Seltene Gelegenheit: Zwei Wohnhäuser auf großzügigem Grundstück",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/seltene-gelegenheit-zwei-wohnhaeuser-auf-grosszuegigem-grundstueck/3463615766-208-1202",
-      "price_eur": 229000.0,
-      "location": "41812 Erkelenz",
+      "title": "Sonniger Baugrund Kerpen 509 qm",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/sonniger-baugrund-kerpen-509-qm/3464442705-207-1827",
+      "price_eur": 235000.0,
+      "location": "50171 Kerpen",
       "size_sqm": null,
-      "property_type": "wohnung",
+      "property_type": "grundstueck",
       "source": "kleinanzeigen",
       "is_private": true,
       "price_per_sqm": null,
@@ -38,10 +38,10 @@
       "is_stale_opportunity": false
     },
     {
-      "title": "Grundstück",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/grundstueck/3454148370-207-2034",
-      "price_eur": 145000.0,
-      "location": "45359 Essen-​Borbeck",
+      "title": "Reihenendhaus mit Garten,Garage und viel Nutzfläche in Witzhelden",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/reihenendhaus-mit-garten-garage-und-viel-nutzflaeche-in-witzhelden/3464169637-208-4969",
+      "price_eur": 333000.0,
+      "location": "42799 Leichlingen",
       "size_sqm": null,
       "property_type": "grundstueck",
       "source": "kleinanzeigen",
@@ -52,13 +52,13 @@
         "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": null,
+      "listing_age_days": 1,
       "is_stale_opportunity": false
     },
     {
       "title": "Pizzeria, Imbiss, Döner, Burger,Gastro,Lieferdienst zum verkaufen",
       "url": "https://www.kleinanzeigen.de/s-anzeige/pizzeria-imbiss-doener-burger-gastro-lieferdienst-zum-verkaufen/3429765722-277-23414",
-      "price_eur": 26999.0,
+      "price_eur": 24999.0,
       "location": "51105 Humboldt-​Gremberg",
       "size_sqm": null,
       "property_type": "geschaeft",
