@@ -1,6 +1,24 @@
 {
-  "generated_at": "2026-07-21T08:16:16.952429+00:00",
+  "generated_at": "2026-07-22T08:16:45.639880+00:00",
   "listings": [
+    {
+      "title": "3 Familienhaus Privatverkauf",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/3-familienhaus-privatverkauf/3465045036-208-1988",
+      "price_eur": 315000.0,
+      "location": "45659 Recklinghausen",
+      "size_sqm": 1200.0,
+      "property_type": "grundstueck",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": 262.5,
+      "score": 4.161904761904761,
+      "reasons": [
+        "≈262% unter Richtwert (950 €/m² in Düsseldorf)",
+        "Privater Anbieter – vermutlich keine Käuferprovision"
+      ],
+      "listing_age_days": 1,
+      "is_stale_opportunity": false
+    },
     {
       "title": "Pizzeria / Burgerladen zur Ablöse abzugeben",
       "url": "https://www.kleinanzeigen.de/s-anzeige/pizzeria-burgerladen-zur-abloese-abzugeben/3445776543-277-21775",
@@ -14,18 +32,18 @@
       "score": 1.4949999999999999,
       "reasons": [
         "Privater Anbieter – vermutlich keine Käuferprovision",
-        "🎯 Seit 23 Tagen inseriert – vermutlich noch offen, gute Kontakt-Chance"
+        "🎯 Seit 24 Tagen inseriert – vermutlich noch offen, gute Kontakt-Chance"
       ],
-      "listing_age_days": 23,
+      "listing_age_days": 24,
       "is_stale_opportunity": true
     },
     {
-      "title": "Sonniger Baugrund Kerpen 509 qm",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/sonniger-baugrund-kerpen-509-qm/3464442705-207-1827",
-      "price_eur": 235000.0,
-      "location": "50171 Kerpen",
+      "title": "Helle und geräumige 2,5 Zimmer  mit Balkon in Duisburg-Serm",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/helle-und-geraeumige-2-5-zimmer-mit-balkon-in-duisburg-serm/3465262483-196-2139",
+      "price_eur": 130000.0,
+      "location": "47259 Duisburg-​Süd",
       "size_sqm": null,
-      "property_type": "grundstueck",
+      "property_type": "wohnung",
       "source": "kleinanzeigen",
       "is_private": true,
       "price_per_sqm": null,
@@ -38,10 +56,10 @@
       "is_stale_opportunity": false
     },
     {
-      "title": "Reihenendhaus mit Garten,Garage und viel Nutzfläche in Witzhelden",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/reihenendhaus-mit-garten-garage-und-viel-nutzflaeche-in-witzhelden/3464169637-208-4969",
-      "price_eur": 333000.0,
-      "location": "42799 Leichlingen",
+      "title": "Modernisiertes Reihenhaus mit EBK WINTERGARTEN",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/modernisiertes-reihenhaus-mit-ebk-wintergarten/3465143820-208-1772",
+      "price_eur": 319000.0,
+      "location": "45772 Marl",
       "size_sqm": null,
       "property_type": "grundstueck",
       "source": "kleinanzeigen",
@@ -52,7 +70,7 @@
         "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 1,
+      "listing_age_days": 0,
       "is_stale_opportunity": false
     },
     {
