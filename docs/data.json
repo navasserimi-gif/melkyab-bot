@@ -1,24 +1,6 @@
 {
-  "generated_at": "2026-07-22T08:16:45.639880+00:00",
+  "generated_at": "2026-07-23T08:21:02.754640+00:00",
   "listings": [
-    {
-      "title": "3 Familienhaus Privatverkauf",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/3-familienhaus-privatverkauf/3465045036-208-1988",
-      "price_eur": 315000.0,
-      "location": "45659 Recklinghausen",
-      "size_sqm": 1200.0,
-      "property_type": "grundstueck",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": 262.5,
-      "score": 4.161904761904761,
-      "reasons": [
-        "≈262% unter Richtwert (950 €/m² in Düsseldorf)",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ],
-      "listing_age_days": 1,
-      "is_stale_opportunity": false
-    },
     {
       "title": "Pizzeria / Burgerladen zur Ablöse abzugeben",
       "url": "https://www.kleinanzeigen.de/s-anzeige/pizzeria-burgerladen-zur-abloese-abzugeben/3445776543-277-21775",
@@ -32,63 +14,10 @@
       "score": 1.4949999999999999,
       "reasons": [
         "Privater Anbieter – vermutlich keine Käuferprovision",
-        "🎯 Seit 24 Tagen inseriert – vermutlich noch offen, gute Kontakt-Chance"
+        "🎯 Seit 25 Tagen inseriert – vermutlich noch offen, gute Kontakt-Chance"
       ],
-      "listing_age_days": 24,
+      "listing_age_days": 25,
       "is_stale_opportunity": true
-    },
-    {
-      "title": "Helle und geräumige 2,5 Zimmer  mit Balkon in Duisburg-Serm",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/helle-und-geraeumige-2-5-zimmer-mit-balkon-in-duisburg-serm/3465262483-196-2139",
-      "price_eur": 130000.0,
-      "location": "47259 Duisburg-​Süd",
-      "size_sqm": null,
-      "property_type": "wohnung",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": null,
-      "score": 1.15,
-      "reasons": [
-        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ],
-      "listing_age_days": 0,
-      "is_stale_opportunity": false
-    },
-    {
-      "title": "Modernisiertes Reihenhaus mit EBK WINTERGARTEN",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/modernisiertes-reihenhaus-mit-ebk-wintergarten/3465143820-208-1772",
-      "price_eur": 319000.0,
-      "location": "45772 Marl",
-      "size_sqm": null,
-      "property_type": "grundstueck",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": null,
-      "score": 1.15,
-      "reasons": [
-        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ],
-      "listing_age_days": 0,
-      "is_stale_opportunity": false
-    },
-    {
-      "title": "Pizzeria, Imbiss, Döner, Burger,Gastro,Lieferdienst zum verkaufen",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/pizzeria-imbiss-doener-burger-gastro-lieferdienst-zum-verkaufen/3429765722-277-23414",
-      "price_eur": 24999.0,
-      "location": "51105 Humboldt-​Gremberg",
-      "size_sqm": null,
-      "property_type": "geschaeft",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": null,
-      "score": 1.15,
-      "reasons": [
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ],
-      "listing_age_days": 1,
-      "is_stale_opportunity": false
     }
   ]
 }
