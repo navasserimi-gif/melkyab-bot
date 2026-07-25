@@ -22,8 +22,11 @@ SO BENUTZT DU DAS SKRIPT:
     ab (z. B. als MP3, aus TikTok/CapCut exportiert). Ist keine Datei
     vorhanden, wird das Video trotzdem erstellt -- nur ohne Ton und
     mit einem festen Ersatz-Rhythmus fuer die Schnitte.
- 3. Passe HOOK_TEXT und TEXT_OVERLAYS an deinen Inhalt an.
- 4. Skript ausfuehren:  python erstelle_viral_video.py
+ 3. Optional: MIT_TEXT_OVERLAYS = True setzen und HOOK_TEXT / TEXT_OVERLAYS
+    anpassen, falls Text im Video erscheinen soll (Standard: aus).
+ 4. Optional: SCHNITT_TEMPO anpassen, um den Schnittrhythmus langsamer
+    (Wert erhoehen) oder schneller (Wert senken) zu machen.
+ 5. Skript ausfuehren:  python erstelle_viral_video.py
 ======================================================================
 """
 
@@ -68,11 +71,16 @@ MUSIK_PFAD = "musik/trending_track.mp3"
 SFX_WHOOSH = "sfx/whoosh.mp3"   # wird bei "Glitch"-Uebergaengen abgespielt
 SFX_IMPACT = "sfx/impact.mp3"   # wird beim Flash-Cut abgespielt
 
-# Hook: erscheint gross und farbig in den ersten 1-3 Sekunden.
+# Text im Video an/aus. Auf False = komplett textfreies Video (nur Bilder,
+# Effekte und Musik). Auf True, um Hook- und Zusatztexte einzublenden.
+MIT_TEXT_OVERLAYS = False
+
+# Hook: erscheint gross und farbig in den ersten 1-3 Sekunden (nur falls
+# MIT_TEXT_OVERLAYS = True).
 HOOK_TEXT = "WARTE BIS ZUM ENDE 👀"
 
 # Weitere Text-Overlays, die im Laufe des Videos nacheinander eingeblendet
-# werden (leere Liste = keine Zusatztexte).
+# werden (leere Liste = keine Zusatztexte; nur falls MIT_TEXT_OVERLAYS = True).
 TEXT_OVERLAYS = [
     "Das glaubst du nicht...",
     "Schau genau hin 🔍",
@@ -89,6 +97,14 @@ AUSGABE_PFAD = "output/viral_video.mp4"
 BREITE, HOEHE = 1080, 1920     # 9:16 Hochkantformat fuer TikTok/Reels/Shorts
 FPS = 30
 ZOOM_MAX = 1.22                # maximale Ken-Burns-Zoomstufe pro Bild
+
+# Tempo-Regler fuer den Schnittrhythmus: >1.0 = ruhigere/langsamere Schnitte,
+# 1.0 = unveraendert (roher Beat-Takt), <1.0 = noch schnellere Schnitte.
+# Die zu schnellen Cuts im ersten Test kamen vom rohen Beat-Takt -- hierueber
+# laesst sich das Tempo bequem drosseln, ohne die Beat-Erkennung anzufassen.
+SCHNITT_TEMPO = 1.8
+MINDEST_SEGMENT_DAUER = 0.55   # kein Bild wird kuerzer als das angezeigt (Sek.)
+
 HOOK_MIN_DAUER, HOOK_MAX_DAUER = 1.0, 2.6   # Laenge des Hook-Segments (Sek.)
 FLASH_DAUER = 0.07             # Laenge des weissen Flash-Cuts (Sek.)
 UEBERGANG_OVERLAP = 0.28       # Ueberlappung bei weichen Crossfades (Sek.)
@@ -377,6 +393,7 @@ def erstelle_viral_video():
         print(f"Warnung: folgende Bilder fehlen und werden uebersprungen: {sorted(fehlende)}")
 
     segmente, _, beat_times, tempo = erkenne_schnitt_segmente(MUSIK_PFAD)
+    segmente = [(max(d * SCHNITT_TEMPO, MINDEST_SEGMENT_DAUER), e) for d, e in segmente]
     segmente[0] = (min(max(segmente[0][0], HOOK_MIN_DAUER), HOOK_MAX_DAUER), True)
     info = f"{len(segmente)} Schnitt-Segmente"
     info += f" bei ca. {tempo:.0f} BPM" if beat_times is not None else " (Ersatz-Rhythmus)"
@@ -419,12 +436,12 @@ def erstelle_viral_video():
         elif uebergang == "glitch":
             audio_events.append((start_i, SFX_WHOOSH))
 
-        if i == 0 and HOOK_TEXT:
+        if MIT_TEXT_OVERLAYS and i == 0 and HOOK_TEXT:
             hook = text_overlay_clip(HOOK_TEXT, dauer + 0.4, BREITE, HOEHE,
                                       y_position=0.42, schriftgroesse=110,
                                       betont=True, verzoegerung=0.12)
             ebenen.append(hook.set_start(start_i))
-        elif TEXT_OVERLAYS and i > 0 and i % TEXT_ALLE_N_SEGMENTE == 0:
+        elif MIT_TEXT_OVERLAYS and TEXT_OVERLAYS and i > 0 and i % TEXT_ALLE_N_SEGMENTE == 0:
             text = TEXT_OVERLAYS[text_index % len(TEXT_OVERLAYS)]
             text_index += 1
             overlay = text_overlay_clip(text, min(dauer + 0.2, 2.2), BREITE, HOEHE,
