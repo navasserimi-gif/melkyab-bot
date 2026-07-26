@@ -1,23 +1,41 @@
 {
-  "generated_at": "2026-07-25T07:58:09.069675+00:00",
+  "generated_at": "2026-07-26T08:16:07.430115+00:00",
   "listings": [
     {
-      "title": "Pizzeria / Burgerladen zur Ablöse abzugeben",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/pizzeria-burgerladen-zur-abloese-abzugeben/3445776543-277-21775",
-      "price_eur": 64999.0,
-      "location": "51107 Ostheim",
+      "title": "Eigentumswohnung Kapitalanlage Zentrale Lage",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/eigentumswohnung-kapitalanlage-zentrale-lage/3468466509-196-1563",
+      "price_eur": 100000.0,
+      "location": "42103 Elberfeld-​West",
+      "size_sqm": 43.0,
+      "property_type": "wohnung",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": 2325.5813953488373,
+      "score": 2.5713999999999997,
+      "reasons": [
+        "≈124% unter Richtwert (5200 €/m² in Düsseldorf)",
+        "Privater Anbieter – vermutlich keine Käuferprovision"
+      ],
+      "listing_age_days": 0,
+      "is_stale_opportunity": false
+    },
+    {
+      "title": "Charmanter Altbau mit großem Garten–ideal für Handwerker/Sanierer",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/charmanter-altbau-mit-grossem-garten-ideal-fuer-handwerker-sanierer/3468464877-208-1874",
+      "price_eur": 235000.0,
+      "location": "50127 Bergheim",
       "size_sqm": null,
-      "property_type": "geschaeft",
+      "property_type": "grundstueck",
       "source": "kleinanzeigen",
       "is_private": true,
       "price_per_sqm": null,
-      "score": 1.4949999999999999,
+      "score": 1.15,
       "reasons": [
-        "Privater Anbieter – vermutlich keine Käuferprovision",
-        "🎯 Seit 27 Tagen inseriert – vermutlich noch offen, gute Kontakt-Chance"
+        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
+        "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 27,
-      "is_stale_opportunity": true
+      "listing_age_days": 0,
+      "is_stale_opportunity": false
     }
   ]
 }
