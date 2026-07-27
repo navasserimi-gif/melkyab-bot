@@ -1,29 +1,47 @@
 {
-  "generated_at": "2026-07-26T08:16:07.430115+00:00",
+  "generated_at": "2026-07-27T09:40:03.855888+00:00",
   "listings": [
     {
-      "title": "Eigentumswohnung Kapitalanlage Zentrale Lage",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/eigentumswohnung-kapitalanlage-zentrale-lage/3468466509-196-1563",
-      "price_eur": 100000.0,
-      "location": "42103 Elberfeld-​West",
-      "size_sqm": 43.0,
+      "title": "Suche Wohnung zum Kaufen",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/suche-wohnung-zum-kaufen/3469627083-196-1867",
+      "price_eur": 200000.0,
+      "location": "46483 Wesel",
+      "size_sqm": null,
       "property_type": "wohnung",
       "source": "kleinanzeigen",
       "is_private": true,
-      "price_per_sqm": 2325.5813953488373,
-      "score": 2.5713999999999997,
+      "price_per_sqm": null,
+      "score": 1.15,
       "reasons": [
-        "≈124% unter Richtwert (5200 €/m² in Düsseldorf)",
+        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
       "listing_age_days": 0,
       "is_stale_opportunity": false
     },
     {
-      "title": "Charmanter Altbau mit großem Garten–ideal für Handwerker/Sanierer",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/charmanter-altbau-mit-grossem-garten-ideal-fuer-handwerker-sanierer/3468464877-208-1874",
-      "price_eur": 235000.0,
-      "location": "50127 Bergheim",
+      "title": "2. ZIMMER WOHNUNG - GARAGE- GARTEN-KELLER | OHNE MAKLER |",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/2-zimmer-wohnung-garage-garten-keller-ohne-makler-/3469626050-196-1876",
+      "price_eur": 229900.0,
+      "location": "50129 Bergheim",
+      "size_sqm": null,
+      "property_type": "wohnung",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": null,
+      "score": 1.15,
+      "reasons": [
+        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
+        "Privater Anbieter – vermutlich keine Käuferprovision"
+      ],
+      "listing_age_days": 0,
+      "is_stale_opportunity": false
+    },
+    {
+      "title": "Charmante Doppelhaushälfte in Nütterden privat zu verkaufen",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/charmante-doppelhaushaelfte-in-nuetterden-privat-zu-verkaufen/3469351599-208-1124",
+      "price_eur": 329000.0,
+      "location": "47559 Kranenburg",
       "size_sqm": null,
       "property_type": "grundstueck",
       "source": "kleinanzeigen",
@@ -34,7 +52,25 @@
         "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 0,
+      "listing_age_days": 1,
+      "is_stale_opportunity": false
+    },
+    {
+      "title": "Traumhaft modernisiert: Stylisches Reihenhaus",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/traumhaft-modernisiert-stylisches-reihenhaus/3469311569-208-1772",
+      "price_eur": 297000.0,
+      "location": "45772 Marl",
+      "size_sqm": null,
+      "property_type": "grundstueck",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": null,
+      "score": 1.15,
+      "reasons": [
+        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
+        "Privater Anbieter – vermutlich keine Käuferprovision"
+      ],
+      "listing_age_days": 1,
       "is_stale_opportunity": false
     }
   ]
