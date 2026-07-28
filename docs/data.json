@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-07-27T09:40:03.855888+00:00",
+  "generated_at": "2026-07-28T08:24:36.863016+00:00",
   "listings": [
     {
-      "title": "Suche Wohnung zum Kaufen",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/suche-wohnung-zum-kaufen/3469627083-196-1867",
-      "price_eur": 200000.0,
-      "location": "46483 Wesel",
+      "title": "Bezugsfreie 2-Zimmer-DG-Wohnung mit Einbauküche in Leichlingen",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/bezugsfreie-2-zimmer-dg-wohnung-mit-einbaukueche-in-leichlingen/3470411627-196-4969",
+      "price_eur": 130000.0,
+      "location": "42799 Leichlingen",
       "size_sqm": null,
       "property_type": "wohnung",
       "source": "kleinanzeigen",
@@ -20,10 +20,10 @@
       "is_stale_opportunity": false
     },
     {
-      "title": "2. ZIMMER WOHNUNG - GARAGE- GARTEN-KELLER | OHNE MAKLER |",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/2-zimmer-wohnung-garage-garten-keller-ohne-makler-/3469626050-196-1876",
-      "price_eur": 229900.0,
-      "location": "50129 Bergheim",
+      "title": "Saniertes EFH mit XL Grundstück - Tierhaltung möglich",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/saniertes-efh-mit-xl-grundstueck-tierhaltung-moeglich/3470403650-208-1730",
+      "price_eur": 335000.0,
+      "location": "53940 Hellenthal",
       "size_sqm": null,
       "property_type": "wohnung",
       "source": "kleinanzeigen",
@@ -38,10 +38,10 @@
       "is_stale_opportunity": false
     },
     {
-      "title": "Charmante Doppelhaushälfte in Nütterden privat zu verkaufen",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/charmante-doppelhaushaelfte-in-nuetterden-privat-zu-verkaufen/3469351599-208-1124",
-      "price_eur": 329000.0,
-      "location": "47559 Kranenburg",
+      "title": "Haus im Sauerland  nur 1 direkter Nachbar sonst nur Wiesen Felder",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/haus-im-sauerland-nur-1-direkter-nachbar-sonst-nur-wiesen-felder/3470402625-208-961",
+      "price_eur": 299000.0,
+      "location": "51147 Porz",
       "size_sqm": null,
       "property_type": "grundstueck",
       "source": "kleinanzeigen",
@@ -52,14 +52,14 @@
         "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 1,
+      "listing_age_days": 0,
       "is_stale_opportunity": false
     },
     {
-      "title": "Traumhaft modernisiert: Stylisches Reihenhaus",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/traumhaft-modernisiert-stylisches-reihenhaus/3469311569-208-1772",
-      "price_eur": 297000.0,
-      "location": "45772 Marl",
+      "title": "Einfamilienhaus mit Innenhof, Halle, Nebengebäude und Garage",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/einfamilienhaus-mit-innenhof-halle-nebengebaeude-und-garage/3460868893-208-5394",
+      "price_eur": 239000.0,
+      "location": "53501 Grafschaft",
       "size_sqm": null,
       "property_type": "grundstueck",
       "source": "kleinanzeigen",
@@ -70,7 +70,25 @@
         "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 1,
+      "listing_age_days": null,
+      "is_stale_opportunity": false
+    },
+    {
+      "title": "PRIVAT - Haus in Overath Steinenbück zu verkaufen",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/privat-haus-in-overath-steinenbueck-zu-verkaufen/3470333868-208-1144",
+      "price_eur": 215000.0,
+      "location": "51491 Overath",
+      "size_sqm": null,
+      "property_type": "grundstueck",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": null,
+      "score": 1.15,
+      "reasons": [
+        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
+        "Privater Anbieter – vermutlich keine Käuferprovision"
+      ],
+      "listing_age_days": 0,
       "is_stale_opportunity": false
     }
   ]
