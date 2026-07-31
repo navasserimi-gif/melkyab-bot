@@ -1,4 +1,58 @@
 {
-  "generated_at": "2026-07-30T08:14:26.989755+00:00",
-  "listings": []
+  "generated_at": "2026-07-31T08:41:29.787476+00:00",
+  "listings": [
+    {
+      "title": "Gebäudeensemble für Fachwerkliebhaber",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/gebaeudeensemble-fuer-fachwerkliebhaber/3472350444-208-1034",
+      "price_eur": 299000.0,
+      "location": "42857 Remscheid",
+      "size_sqm": null,
+      "property_type": "grundstueck",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": null,
+      "score": 1.15,
+      "reasons": [
+        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
+        "Privater Anbieter – vermutlich keine Käuferprovision"
+      ],
+      "listing_age_days": 1,
+      "is_stale_opportunity": false
+    },
+    {
+      "title": "Charmantes Reihenhaus mit Garten, Garage & Denkmalcharakter",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/charmantes-reihenhaus-mit-garten-garage-denkmalcharakter/3465652337-208-1952",
+      "price_eur": 295000.0,
+      "location": "46238 Bottrop",
+      "size_sqm": null,
+      "property_type": "grundstueck",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": null,
+      "score": 1.15,
+      "reasons": [
+        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
+        "Privater Anbieter – vermutlich keine Käuferprovision"
+      ],
+      "listing_age_days": 1,
+      "is_stale_opportunity": false
+    },
+    {
+      "title": "Pizzeria zur ablöse zu verkaufen",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/pizzeria-zur-abloese-zu-verkaufen/3472473988-277-996",
+      "price_eur": 70000.0,
+      "location": "51063 Mülheim",
+      "size_sqm": null,
+      "property_type": "geschaeft",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": null,
+      "score": 1.15,
+      "reasons": [
+        "Privater Anbieter – vermutlich keine Käuferprovision"
+      ],
+      "listing_age_days": 1,
+      "is_stale_opportunity": false
+    }
+  ]
 }
