@@ -1,6 +1,24 @@
 {
-  "generated_at": "2026-08-01T08:11:16.786619+00:00",
+  "generated_at": "2026-08-02T08:12:57.334277+00:00",
   "listings": [
+    {
+      "title": "Sanierte Reihenmittelhaus",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/sanierte-reihenmittelhaus/3474022321-208-2136",
+      "price_eur": 249000.0,
+      "location": "47226 Rheinhausen",
+      "size_sqm": null,
+      "property_type": "grundstueck",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": null,
+      "score": 1.15,
+      "reasons": [
+        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
+        "Privater Anbieter – vermutlich keine Käuferprovision"
+      ],
+      "listing_age_days": 1,
+      "is_stale_opportunity": false
+    },
     {
       "title": "Pizzeria zur ablöse zu verkaufen",
       "url": "https://www.kleinanzeigen.de/s-anzeige/pizzeria-zur-abloese-zu-verkaufen/3472473988-277-996",
@@ -15,7 +33,7 @@
       "reasons": [
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 2,
+      "listing_age_days": 3,
       "is_stale_opportunity": false
     }
   ]
