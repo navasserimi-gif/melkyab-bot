@@ -1,22 +1,23 @@
 {
-  "generated_at": "2026-08-02T08:12:57.334277+00:00",
+  "generated_at": "2026-08-03T09:33:06.126452+00:00",
   "listings": [
     {
-      "title": "Sanierte Reihenmittelhaus",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/sanierte-reihenmittelhaus/3474022321-208-2136",
-      "price_eur": 249000.0,
-      "location": "47226 Rheinhausen",
+      "title": "Baugrundstück in Hellenthal-Blumenthal provisionsfrei",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/baugrundstueck-in-hellenthal-blumenthal-provisionsfrei/3472495149-207-1730",
+      "price_eur": 54000.0,
+      "location": "53940 Hellenthal",
       "size_sqm": null,
       "property_type": "grundstueck",
       "source": "kleinanzeigen",
       "is_private": true,
       "price_per_sqm": null,
-      "score": 1.15,
+      "score": 1.265,
       "reasons": [
         "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
+        "Privater Anbieter – vermutlich keine Käuferprovision",
+        "Ausdrücklich provisionsfrei beworben"
       ],
-      "listing_age_days": 1,
+      "listing_age_days": null,
       "is_stale_opportunity": false
     },
     {
@@ -33,7 +34,24 @@
       "reasons": [
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 3,
+      "listing_age_days": 4,
+      "is_stale_opportunity": false
+    },
+    {
+      "title": "Pizzeria,Imbiss,Döner,Burger,Gastro,Lieferdienst zum verkaufen",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/pizzeria-imbiss-doener-burger-gastro-lieferdienst-zum-verkaufen/3475011109-277-23414",
+      "price_eur": 22499.0,
+      "location": "51105 Humboldt-​Gremberg",
+      "size_sqm": null,
+      "property_type": "geschaeft",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": null,
+      "score": 1.15,
+      "reasons": [
+        "Privater Anbieter – vermutlich keine Käuferprovision"
+      ],
+      "listing_age_days": 1,
       "is_stale_opportunity": false
     }
   ]
