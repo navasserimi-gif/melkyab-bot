@@ -1,23 +1,22 @@
 {
-  "generated_at": "2026-08-03T09:33:06.126452+00:00",
+  "generated_at": "2026-08-04T08:28:35.656866+00:00",
   "listings": [
     {
-      "title": "Baugrundstück in Hellenthal-Blumenthal provisionsfrei",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/baugrundstueck-in-hellenthal-blumenthal-provisionsfrei/3472495149-207-1730",
-      "price_eur": 54000.0,
-      "location": "53940 Hellenthal",
+      "title": "Grundstück Baugrundstück A  mit priv. Zuwegung, Lohmar Birk",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/grundstueck-baugrundstueck-a-mit-priv-zuwegung-lohmar-birk/3291700053-207-1688",
+      "price_eur": 282300.0,
+      "location": "53797 Lohmar",
       "size_sqm": null,
       "property_type": "grundstueck",
       "source": "kleinanzeigen",
       "is_private": true,
       "price_per_sqm": null,
-      "score": 1.265,
+      "score": 1.15,
       "reasons": [
         "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
-        "Privater Anbieter – vermutlich keine Käuferprovision",
-        "Ausdrücklich provisionsfrei beworben"
+        "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": null,
+      "listing_age_days": 1,
       "is_stale_opportunity": false
     },
     {
@@ -34,7 +33,7 @@
       "reasons": [
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 4,
+      "listing_age_days": 5,
       "is_stale_opportunity": false
     },
     {
