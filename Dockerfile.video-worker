@@ -1,0 +1,24 @@
+# Container für den Video-Automatisierungs-Worker (video_pipeline/).
+#
+# Separates Image vom Telegram-Bot (der läuft weiterhin schlank über
+# nixpacks.toml/Procfile auf Railway). Dieses Image braucht ffmpeg mit
+# vollem Codec-Support für 4K/60fps-Material und wird auf einer
+# GPU-fähigen Umgebung deployt (siehe docs/video-automation/README.md).
+FROM python:3.11-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ffmpeg \
+    libgl1 \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY requirements-video.txt .
+RUN pip install --no-cache-dir -r requirements-video.txt
+
+COPY video_pipeline/ ./video_pipeline/
+
+EXPOSE 8080
+
+CMD ["python", "-m", "video_pipeline.webhook_server"]

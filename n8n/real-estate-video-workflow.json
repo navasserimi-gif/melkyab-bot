@@ -1,0 +1,247 @@
+{
+  "name": "Immo-Reels: Video-Automatisierung",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "start-video-project",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook: Neues Projekt",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -40,
+        280
+      ],
+      "notes": "Wird aufgerufen, sobald alle Rohvideos eines Objekts unter raw/{project_id}/ im R2-Bucket liegen. Body: {\"project_id\": \"...\"}. Der Upload selbst (Drive-Inbox -> R2) läuft außerhalb von n8n, siehe docs/video-automation/README.md."
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"status\": \"accepted\", \"project_id\": $json.body.project_id } }}"
+      },
+      "id": "respond-immediately",
+      "name": "Sofort antworten",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        180,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.VIDEO_WORKER_URL }}/projects/{{ $json.body.project_id }}/run",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Webhook-Secret",
+              "value": "={{ $env.VIDEO_WEBHOOK_SHARED_SECRET }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "start-worker-job",
+      "name": "Worker-Job starten",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        180,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 5,
+        "unit": "minutes"
+      },
+      "id": "wait-before-poll",
+      "name": "Warten",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        420,
+        460
+      ],
+      "notes": "Ein komplettes Objekt (20-100 4K-Clips) braucht üblicherweise mehrere Minuten bis Stunden je nach Worker-Hardware. Poll-Intervall bewusst grob."
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.VIDEO_WORKER_URL }}/projects/{{ $('Webhook: Neues Projekt').item.json.body.project_id }}/status",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Webhook-Secret",
+              "value": "={{ $env.VIDEO_WEBHOOK_SHARED_SECRET }}"
+            }
+          ]
+        }
+      },
+      "id": "poll-status",
+      "name": "Status abfragen",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "running",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "is-still-running",
+      "name": "Läuft noch?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        900,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "failed",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "is-failed",
+      "name": "Fehlgeschlagen?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1140,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.ADMIN_ID }}",
+        "text": "=⚠️ Video-Projekt {{ $('Webhook: Neues Projekt').item.json.body.project_id }} ist fehlgeschlagen:\n{{ $json.error }}",
+        "additionalFields": {}
+      },
+      "id": "notify-failure",
+      "name": "Telegram: Fehler melden",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1380,
+        700
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "melkyab-bot-telegram",
+          "name": "Melkyab Bot (BOT_TOKEN)"
+        }
+      },
+      "notes": "Nutzt bewusst denselben Telegram-Bot (BOT_TOKEN/ADMIN_ID) wie der bestehende Immobilien-Analyzer. Der Erfolgsfall wird NICHT hier, sondern direkt vom Worker gemeldet (video_pipeline/notify.py), da der Worker die fertigen R2-Links am zuverlässigsten kennt."
+    },
+    {
+      "parameters": {},
+      "id": "done-noop",
+      "name": "Fertig (Worker hat bereits benachrichtigt)",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1380,
+        540
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook: Neues Projekt": {
+      "main": [
+        [
+          { "node": "Sofort antworten", "type": "main", "index": 0 },
+          { "node": "Worker-Job starten", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Worker-Job starten": {
+      "main": [
+        [
+          { "node": "Warten", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Warten": {
+      "main": [
+        [
+          { "node": "Status abfragen", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Status abfragen": {
+      "main": [
+        [
+          { "node": "Läuft noch?", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Läuft noch?": {
+      "main": [
+        [
+          { "node": "Warten", "type": "main", "index": 0 }
+        ],
+        [
+          { "node": "Fehlgeschlagen?", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Fehlgeschlagen?": {
+      "main": [
+        [
+          { "node": "Telegram: Fehler melden", "type": "main", "index": 0 }
+        ],
+        [
+          { "node": "Fertig (Worker hat bereits benachrichtigt)", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+  "meta": {
+    "description": "Orchestriert den Video-Automatisierungs-Worker (video_pipeline/). Trigger, sobald Rohvideos in R2 liegen; startet den Worker-Job per Webhook, pollt den Status und alarmiert per Telegram bei Fehlern. Die Erfolgsbenachrichtigung mit den fertigen TikTok/Reel/Short-Links verschickt der Worker selbst (video_pipeline/notify.py). Import: n8n -> Workflows -> Import from File. Danach VIDEO_WORKER_URL und VIDEO_WEBHOOK_SHARED_SECRET als n8n-Umgebungsvariablen setzen und die Telegram-Credential 'melkyab-bot-telegram' mit dem bestehenden BOT_TOKEN anlegen."
+  }
+}
