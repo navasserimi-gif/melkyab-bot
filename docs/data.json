@@ -1,78 +1,6 @@
 {
-  "generated_at": "2026-08-07T07:05:49.852694+00:00",
+  "generated_at": "2026-08-08T06:41:25.171548+00:00",
   "listings": [
-    {
-      "title": "Haus in Schleiden",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/haus-in-schleiden/3478314129-208-1681",
-      "price_eur": 315000.0,
-      "location": "53937 Schleiden",
-      "size_sqm": null,
-      "property_type": "wohnung",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": null,
-      "score": 1.15,
-      "reasons": [
-        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ],
-      "listing_age_days": 0,
-      "is_stale_opportunity": false
-    },
-    {
-      "title": "Besondere 2-Zimmer-Galeriewohnung in Düsseldorf",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/besondere-2-zimmer-galeriewohnung-in-duesseldorf/3478307236-196-16752",
-      "price_eur": 240000.0,
-      "location": "40591 Eller",
-      "size_sqm": null,
-      "property_type": "wohnung",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": null,
-      "score": 1.15,
-      "reasons": [
-        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ],
-      "listing_age_days": 0,
-      "is_stale_opportunity": false
-    },
-    {
-      "title": "Eigentumswohnung 2 OG.",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/eigentumswohnung-2-og-/3478280104-196-2050",
-      "price_eur": 250000.0,
-      "location": "45133 Bredeney",
-      "size_sqm": null,
-      "property_type": "wohnung",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": null,
-      "score": 1.15,
-      "reasons": [
-        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ],
-      "listing_age_days": 0,
-      "is_stale_opportunity": false
-    },
-    {
-      "title": "Einfamilienhaus mit Innenhof, Halle, Nebengebäude und Garage",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/einfamilienhaus-mit-innenhof-halle-nebengebaeude-und-garage/3460868893-208-5394",
-      "price_eur": 239000.0,
-      "location": "53501 Grafschaft",
-      "size_sqm": null,
-      "property_type": "grundstueck",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": null,
-      "score": 1.15,
-      "reasons": [
-        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ],
-      "listing_age_days": null,
-      "is_stale_opportunity": false
-    },
     {
       "title": "Pizzeria zur ablöse zu verkaufen",
       "url": "https://www.kleinanzeigen.de/s-anzeige/pizzeria-zur-abloese-zu-verkaufen/3472473988-277-996",
@@ -87,24 +15,7 @@
       "reasons": [
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 8,
-      "is_stale_opportunity": false
-    },
-    {
-      "title": "Pizzeria,Imbiss,Döner,Burger,Gastro,Lieferdienst zum verkaufen",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/pizzeria-imbiss-doener-burger-gastro-lieferdienst-zum-verkaufen/3475011109-277-23414",
-      "price_eur": 22499.0,
-      "location": "51105 Humboldt-​Gremberg",
-      "size_sqm": null,
-      "property_type": "geschaeft",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": null,
-      "score": 1.15,
-      "reasons": [
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ],
-      "listing_age_days": 1,
+      "listing_age_days": null,
       "is_stale_opportunity": false
     }
   ]
