@@ -1,24 +1,6 @@
 {
-  "generated_at": "2026-08-09T06:45:06.516558+00:00",
+  "generated_at": "2026-08-10T07:19:59.425612+00:00",
   "listings": [
-    {
-      "title": "Erstklassige Lebensqualität im Grünen - Ihr exklusiver Bauplatz",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/erstklassige-lebensqualitaet-im-gruenen-ihr-exklusiver-bauplatz/3479646997-207-1190",
-      "price_eur": 162400.0,
-      "location": "41844 Wegberg",
-      "size_sqm": null,
-      "property_type": "grundstueck",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": null,
-      "score": 1.15,
-      "reasons": [
-        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ],
-      "listing_age_days": 1,
-      "is_stale_opportunity": false
-    },
     {
       "title": "Pizzeria zur ablöse zu verkaufen",
       "url": "https://www.kleinanzeigen.de/s-anzeige/pizzeria-zur-abloese-zu-verkaufen/3472473988-277-996",
@@ -50,26 +32,7 @@
       "reasons": [
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 1,
-      "is_stale_opportunity": false
-    },
-    {
-      "title": "Reihen-Eckhaus ca. 95 m2 erweiterbar ca.125m2 von privat",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/reihen-eckhaus-ca-95-m2-erweiterbar-ca-125m2-von-privat/3479585853-208-1147",
-      "price_eur": 299000.0,
-      "location": "47574 Goch",
-      "size_sqm": 95.0,
-      "property_type": "grundstueck",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": 3147.3684210526317,
-      "score": 0.381826923076923,
-      "reasons": [
-        "≈70% über Richtwert (950 €/m² in Düsseldorf)",
-        "Privater Anbieter – vermutlich keine Käuferprovision",
-        "Ausdrücklich provisionsfrei beworben"
-      ],
-      "listing_age_days": 1,
+      "listing_age_days": 2,
       "is_stale_opportunity": false
     }
   ]
