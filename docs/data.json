@@ -1,13 +1,13 @@
 {
-  "generated_at": "2026-08-13T07:18:37.214116+00:00",
+  "generated_at": "2026-08-14T07:16:45.971000+00:00",
   "listings": [
     {
-      "title": "Schöne 3 Zimmer Wohnung in Wülfrath mit Balkon",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/schoene-3-zimmer-wohnung-in-wuelfrath-mit-balkon/3483401175-196-1554",
-      "price_eur": 159000.0,
-      "location": "42489 Wülfrath",
+      "title": "Privatverkauf | 3-Familienhaus – 2 Wohnungen frei",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/privatverkauf-3-familienhaus-2-wohnungen-frei/3483892852-208-2140",
+      "price_eur": 349000.0,
+      "location": "47198 Homberg/​Ruhrort/​Baerl",
       "size_sqm": null,
-      "property_type": "wohnung",
+      "property_type": "grundstueck",
       "source": "kleinanzeigen",
       "is_private": true,
       "price_per_sqm": null,
@@ -16,7 +16,25 @@
         "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 0,
+      "listing_age_days": 1,
+      "is_stale_opportunity": false
+    },
+    {
+      "title": "Bauernhaus Bauernhof Hofstelle 155 qm Wohnfläche & 90 qm Scheune",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/bauernhaus-bauernhof-hofstelle-155-qm-wohnflaeche-90-qm-scheune/3358588878-208-1822",
+      "price_eur": 349000.0,
+      "location": "41517 Grevenbroich",
+      "size_sqm": null,
+      "property_type": "grundstueck",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": null,
+      "score": 1.15,
+      "reasons": [
+        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
+        "Privater Anbieter – vermutlich keine Käuferprovision"
+      ],
+      "listing_age_days": 1,
       "is_stale_opportunity": false
     },
     {
