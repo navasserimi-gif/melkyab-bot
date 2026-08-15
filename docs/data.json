@@ -1,31 +1,50 @@
 {
-  "generated_at": "2026-08-14T07:16:45.971000+00:00",
+  "generated_at": "2026-08-15T06:27:27.730764+00:00",
   "listings": [
     {
-      "title": "Privatverkauf | 3-Familienhaus – 2 Wohnungen frei",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/privatverkauf-3-familienhaus-2-wohnungen-frei/3483892852-208-2140",
-      "price_eur": 349000.0,
-      "location": "47198 Homberg/​Ruhrort/​Baerl",
-      "size_sqm": null,
+      "title": "Grundstück ca 800m2",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/grundstueck-ca-800m2/3484770615-207-1576",
+      "price_eur": 139000.0,
+      "location": "42369 Ronsdorf",
+      "size_sqm": 800.0,
       "property_type": "grundstueck",
       "source": "kleinanzeigen",
       "is_private": true,
-      "price_per_sqm": null,
-      "score": 1.15,
+      "price_per_sqm": 173.75,
+      "score": 6.287769784172661,
       "reasons": [
-        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
+        "≈447% unter Richtwert (950 €/m² in Düsseldorf)",
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
       "listing_age_days": 1,
       "is_stale_opportunity": false
     },
     {
-      "title": "Bauernhaus Bauernhof Hofstelle 155 qm Wohnfläche & 90 qm Scheune",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/bauernhaus-bauernhof-hofstelle-155-qm-wohnflaeche-90-qm-scheune/3358588878-208-1822",
+      "title": "Schmuckstück in Radevormwald -provisionsfrei -",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/schmuckstueck-in-radevormwald-provisionsfrei-/3484564160-208-1560",
       "price_eur": 349000.0,
-      "location": "41517 Grevenbroich",
+      "location": "42477 Radevormwald",
       "size_sqm": null,
       "property_type": "grundstueck",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": null,
+      "score": 1.265,
+      "reasons": [
+        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
+        "Privater Anbieter – vermutlich keine Käuferprovision",
+        "Ausdrücklich provisionsfrei beworben"
+      ],
+      "listing_age_days": 1,
+      "is_stale_opportunity": false
+    },
+    {
+      "title": "Nurdachhaus über 2 Etagen (50qm)",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/nurdachhaus-ueber-2-etagen-50qm-/3469459206-275-1138",
+      "price_eur": 130000.0,
+      "location": "47627 Kevelaer",
+      "size_sqm": null,
+      "property_type": "wohnung",
       "source": "kleinanzeigen",
       "is_private": true,
       "price_per_sqm": null,
@@ -34,7 +53,7 @@
         "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 1,
+      "listing_age_days": 0,
       "is_stale_opportunity": false
     },
     {
@@ -51,7 +70,7 @@
       "reasons": [
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": null,
+      "listing_age_days": 16,
       "is_stale_opportunity": false
     }
   ]
