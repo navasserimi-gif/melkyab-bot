@@ -1,40 +1,23 @@
 {
-  "generated_at": "2026-08-16T06:29:28.018176+00:00",
+  "generated_at": "2026-08-17T06:41:47.529266+00:00",
   "listings": [
     {
-      "title": "Nurdachhaus über 2 Etagen (50qm)",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/nurdachhaus-ueber-2-etagen-50qm-/3469459206-275-1138",
-      "price_eur": 130000.0,
-      "location": "47627 Kevelaer",
+      "title": "Mehrfamilienhaus in Duisburg Marxloh PROVISIONSFREI mit Anbau",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/mehrfamilienhaus-in-duisburg-marxloh-provisionsfrei-mit-anbau/3486700891-208-23949",
+      "price_eur": 320000.0,
+      "location": "47169 Marxloh",
       "size_sqm": null,
-      "property_type": "wohnung",
+      "property_type": "grundstueck",
       "source": "kleinanzeigen",
       "is_private": true,
       "price_per_sqm": null,
-      "score": 1.15,
+      "score": 1.265,
       "reasons": [
         "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
+        "Privater Anbieter – vermutlich keine Käuferprovision",
+        "Ausdrücklich provisionsfrei beworben"
       ],
-      "listing_age_days": 0,
-      "is_stale_opportunity": false
-    },
-    {
-      "title": "Haus gesucht ländlich",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/haus-gesucht-laendlich/3485668165-208-1961",
-      "price_eur": 300000.0,
-      "location": "41169 Mönchengladbach",
-      "size_sqm": null,
-      "property_type": "wohnung",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": null,
-      "score": 1.15,
-      "reasons": [
-        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ],
-      "listing_age_days": 0,
+      "listing_age_days": 1,
       "is_stale_opportunity": false
     },
     {
@@ -51,7 +34,26 @@
       "reasons": [
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 17,
+      "listing_age_days": 18,
+      "is_stale_opportunity": false
+    },
+    {
+      "title": "Gewerbeimmobilie mit Wohnoption | ca.300 m² | Zentrum Sprockhövel",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/gewerbeimmobilie-mit-wohnoption-ca-300-m-zentrum-sprockhoevel/3486008947-277-1556",
+      "price_eur": 329000.0,
+      "location": "45549 Sprockhövel",
+      "size_sqm": 300.0,
+      "property_type": "grundstueck",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": 1096.6666666666667,
+      "score": 1.095820668693009,
+      "reasons": [
+        "≈13% über Richtwert (950 €/m² in Düsseldorf)",
+        "Privater Anbieter – vermutlich keine Käuferprovision",
+        "Ausdrücklich provisionsfrei beworben"
+      ],
+      "listing_age_days": 1,
       "is_stale_opportunity": false
     }
   ]
