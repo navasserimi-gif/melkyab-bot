@@ -1,21 +1,20 @@
 {
-  "generated_at": "2026-08-17T06:41:47.529266+00:00",
+  "generated_at": "2026-08-18T06:33:06.753513+00:00",
   "listings": [
     {
-      "title": "Mehrfamilienhaus in Duisburg Marxloh PROVISIONSFREI mit Anbau",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/mehrfamilienhaus-in-duisburg-marxloh-provisionsfrei-mit-anbau/3486700891-208-23949",
+      "title": "Mehrfamilienhaus nahe Centro - von Privat",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/mehrfamilienhaus-nahe-centro-von-privat/3487478500-208-1287",
       "price_eur": 320000.0,
-      "location": "47169 Marxloh",
+      "location": "46047 Oberhausen",
       "size_sqm": null,
       "property_type": "grundstueck",
       "source": "kleinanzeigen",
       "is_private": true,
       "price_per_sqm": null,
-      "score": 1.265,
+      "score": 1.15,
       "reasons": [
         "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
-        "Privater Anbieter – vermutlich keine Käuferprovision",
-        "Ausdrücklich provisionsfrei beworben"
+        "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
       "listing_age_days": 1,
       "is_stale_opportunity": false
@@ -34,26 +33,7 @@
       "reasons": [
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 18,
-      "is_stale_opportunity": false
-    },
-    {
-      "title": "Gewerbeimmobilie mit Wohnoption | ca.300 m² | Zentrum Sprockhövel",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/gewerbeimmobilie-mit-wohnoption-ca-300-m-zentrum-sprockhoevel/3486008947-277-1556",
-      "price_eur": 329000.0,
-      "location": "45549 Sprockhövel",
-      "size_sqm": 300.0,
-      "property_type": "grundstueck",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": 1096.6666666666667,
-      "score": 1.095820668693009,
-      "reasons": [
-        "≈13% über Richtwert (950 €/m² in Düsseldorf)",
-        "Privater Anbieter – vermutlich keine Käuferprovision",
-        "Ausdrücklich provisionsfrei beworben"
-      ],
-      "listing_age_days": 1,
+      "listing_age_days": 19,
       "is_stale_opportunity": false
     }
   ]
