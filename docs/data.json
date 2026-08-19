@@ -1,11 +1,30 @@
 {
-  "generated_at": "2026-08-18T06:33:06.753513+00:00",
+  "generated_at": "2026-08-19T06:34:04.938466+00:00",
   "listings": [
     {
-      "title": "Mehrfamilienhaus nahe Centro - von Privat",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/mehrfamilienhaus-nahe-centro-von-privat/3487478500-208-1287",
-      "price_eur": 320000.0,
-      "location": "46047 Oberhausen",
+      "title": "Grundstück 461 m² mit Altbestand - provisionsfrei von privat",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/grundstueck-461-m-mit-altbestand-provisionsfrei-von-privat/3488394775-208-1532",
+      "price_eur": 45000.0,
+      "location": "51580 Reichshof",
+      "size_sqm": 461.0,
+      "property_type": "grundstueck",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": 97.61388286334056,
+      "score": 11.663300000000001,
+      "reasons": [
+        "≈822% unter Richtwert (900 €/m² in Köln)",
+        "Privater Anbieter – vermutlich keine Käuferprovision",
+        "Ausdrücklich provisionsfrei beworben"
+      ],
+      "listing_age_days": 1,
+      "is_stale_opportunity": false
+    },
+    {
+      "title": "NEU erschlossenes Baugrundstück, offene Bauweise, Südausrichtung",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/neu-erschlossenes-baugrundstueck-offene-bauweise-suedausrichtung/3488534492-207-1887",
+      "price_eur": 151200.0,
+      "location": "51645 Gummersbach",
       "size_sqm": null,
       "property_type": "grundstueck",
       "source": "kleinanzeigen",
@@ -16,7 +35,7 @@
         "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 1,
+      "listing_age_days": 0,
       "is_stale_opportunity": false
     },
     {
@@ -33,7 +52,7 @@
       "reasons": [
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 19,
+      "listing_age_days": 20,
       "is_stale_opportunity": false
     }
   ]
