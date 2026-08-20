@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { SendOfferForm } from "@/components/admin/send-offer-form";
 import type { Property } from "@/types/models";
 
 const STATUS_LABEL: Record<string, string> = {
@@ -8,6 +9,14 @@ const STATUS_LABEL: Record<string, string> = {
   reserviert: "Reserviert",
   vermietet: "Vermietet",
   archiviert: "Archiviert",
+};
+
+const STATUS_COLOR: Record<string, string> = {
+  entwurf: "bg-slate-100 text-slate-700",
+  veroeffentlicht: "bg-emerald-100 text-emerald-700",
+  reserviert: "bg-amber-100 text-amber-700",
+  vermietet: "bg-blue-100 text-blue-700",
+  archiviert: "bg-slate-100 text-slate-400",
 };
 
 export default async function PropertiesPage({
@@ -28,6 +37,42 @@ export default async function PropertiesPage({
   }
 
   const { data: properties } = await query.limit(200);
+  const propertyIds = (properties ?? []).map((p) => p.id);
+
+  const [{ data: images }, { data: applicants }, { data: offers }] = await Promise.all([
+    propertyIds.length
+      ? supabase
+          .from("property_images")
+          .select("property_id, storage_path, sort_order")
+          .in("property_id", propertyIds)
+          .order("sort_order")
+      : Promise.resolve({ data: [] }),
+    supabase
+      .from("applicants")
+      .select("id, internal_code, first_name, last_name")
+      .order("created_at", { ascending: false })
+      .limit(200),
+    propertyIds.length
+      ? supabase.from("property_offers").select("property_id, applicant_id").in("property_id", propertyIds)
+      : Promise.resolve({ data: [] }),
+  ]);
+
+  const coverByProperty = new Map<string, string>();
+  for (const img of images ?? []) {
+    if (!coverByProperty.has(img.property_id)) {
+      coverByProperty.set(
+        img.property_id,
+        supabase.storage.from("property-images").getPublicUrl(img.storage_path).data.publicUrl,
+      );
+    }
+  }
+
+  const sentByProperty = new Map<string, string[]>();
+  for (const offer of offers ?? []) {
+    const list = sentByProperty.get(offer.property_id) ?? [];
+    list.push(offer.applicant_id);
+    sentByProperty.set(offer.property_id, list);
+  }
 
   return (
     <div className="space-y-6">
@@ -73,53 +118,65 @@ export default async function PropertiesPage({
         </button>
       </form>
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-        <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-200 bg-slate-50 text-xs tracking-wide text-slate-500 uppercase">
-            <tr>
-              <th className="px-4 py-3">ID</th>
-              <th className="px-4 py-3">Objekt / Adresse</th>
-              <th className="px-4 py-3">Zimmer</th>
-              <th className="px-4 py-3">Warmmiete</th>
-              <th className="px-4 py-3">Status</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {(properties ?? []).map((property: Property) => (
-              <tr key={property.id} className="hover:bg-slate-50">
-                <td className="px-4 py-3">
-                  <Link
-                    href={`/admin/properties/${property.id}`}
-                    className="font-mono text-xs font-medium text-slate-900 hover:underline"
-                  >
-                    {property.internal_code}
-                  </Link>
-                </td>
-                <td className="px-4 py-3 text-slate-700">
-                  {property.object_name ?? (`${property.street ?? ""} ${property.house_number ?? ""}`.trim() || "–")}
-                  <span className="ml-1 text-slate-400">{property.city ?? ""}</span>
-                </td>
-                <td className="px-4 py-3 text-slate-500">{property.rooms ?? "–"}</td>
-                <td className="px-4 py-3 text-slate-500">
-                  {property.warm_rent ? `${property.warm_rent} €` : "–"}
-                </td>
-                <td className="px-4 py-3">
-                  <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700">
-                    {STATUS_LABEL[property.status] ?? property.status}
-                  </span>
-                </td>
-              </tr>
-            ))}
-            {(properties ?? []).length === 0 && (
-              <tr>
-                <td colSpan={5} className="px-4 py-10 text-center text-sm text-slate-400">
-                  Keine Wohnungen gefunden.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+      {(properties ?? []).length === 0 ? (
+        <p className="rounded-xl border border-slate-200 bg-white px-4 py-10 text-center text-sm text-slate-400">
+          Keine Wohnungen gefunden.
+        </p>
+      ) : (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {(properties ?? []).map((property: Property) => (
+            <div
+              key={property.id}
+              className="flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
+            >
+              <Link href={`/admin/properties/${property.id}`} className="block">
+                <div className="h-40 w-full bg-slate-100">
+                  {coverByProperty.has(property.id) ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={coverByProperty.get(property.id)}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-xs text-slate-400">
+                      Kein Bild
+                    </div>
+                  )}
+                </div>
+                <div className="p-4 pb-2">
+                  <div className="flex items-center justify-between">
+                    <p className="font-mono text-xs text-slate-400">{property.internal_code}</p>
+                    <span
+                      className={`rounded-full px-2.5 py-1 text-xs font-medium ${STATUS_COLOR[property.status] ?? "bg-slate-100 text-slate-700"}`}
+                    >
+                      {STATUS_LABEL[property.status] ?? property.status}
+                    </span>
+                  </div>
+                  <p className="mt-1 font-medium text-slate-900 hover:underline">
+                    {property.object_name ??
+                      (`${property.street ?? ""} ${property.house_number ?? ""}`.trim() || "Wohnung")}
+                  </p>
+                  <p className="text-sm text-slate-500">{property.city ?? "–"}</p>
+                  <div className="mt-2 flex gap-4 text-sm text-slate-600">
+                    <span>{property.rooms ?? "–"} Zimmer</span>
+                    <span>{property.warm_rent ? `${property.warm_rent} €` : "–"}</span>
+                  </div>
+                </div>
+              </Link>
+
+              <div className="mt-auto border-t border-slate-100 p-4 pt-3">
+                <p className="mb-2 text-xs font-medium text-slate-500">Exposé senden</p>
+                <SendOfferForm
+                  propertyId={property.id}
+                  applicants={applicants ?? []}
+                  alreadySentTo={sentByProperty.get(property.id) ?? []}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
