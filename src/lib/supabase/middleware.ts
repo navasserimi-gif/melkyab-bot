@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 const ADMIN_PREFIX = "/admin";
 const PORTAL_PREFIX = "/portal";
+const APPLY_PREFIX = "/apply";
 
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -33,7 +34,8 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const path = request.nextUrl.pathname;
-  const needsAuth = path.startsWith(ADMIN_PREFIX) || path.startsWith(PORTAL_PREFIX);
+  const needsAuth =
+    path.startsWith(ADMIN_PREFIX) || path.startsWith(PORTAL_PREFIX) || path.startsWith(APPLY_PREFIX);
 
   if (needsAuth && !user) {
     const redirectUrl = new URL("/login", request.url);
