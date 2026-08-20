@@ -63,16 +63,25 @@ export default async function ApplicantDetailPage({
 
       <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
         <h2 className="text-sm font-semibold text-slate-900">Exposé an diesen Interessenten senden</h2>
-        <p className="mt-1 text-sm text-slate-500">
-          Wähle eine veröffentlichte Wohnung — der Interessent sieht sie danach in seinem Portal.
-        </p>
-        <div className="mt-4">
-          <SendOfferFromApplicantForm
-            applicantId={id}
-            properties={properties ?? []}
-            alreadySentFor={(offers ?? []).map((o) => o.property_id)}
-          />
-        </div>
+        {applicant.status_key === "neu" ? (
+          <p className="mt-1 text-sm text-amber-700">
+            Dieser Interessent hat das Formular noch nicht ausgefüllt — Status zuerst ändern oder
+            das Formular vom Kunden ausfüllen lassen, bevor ein Exposé gesendet wird.
+          </p>
+        ) : (
+          <>
+            <p className="mt-1 text-sm text-slate-500">
+              Wähle eine veröffentlichte Wohnung — der Interessent sieht sie danach in seinem Portal.
+            </p>
+            <div className="mt-4">
+              <SendOfferFromApplicantForm
+                applicantId={id}
+                properties={properties ?? []}
+                alreadySentFor={(offers ?? []).map((o) => o.property_id)}
+              />
+            </div>
+          </>
+        )}
       </section>
 
       <ApplicantForm applicant={applicant} statusOptions={statuses ?? []} action={boundUpdate} />

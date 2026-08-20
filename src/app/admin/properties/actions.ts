@@ -185,6 +185,16 @@ export async function sendPropertyOffer(
   const applicantId = String(formData.get("applicant_id") ?? "");
   if (!applicantId) return { error: "Bitte einen Interessenten auswählen." };
 
+  const { data: applicant } = await supabase
+    .from("applicants")
+    .select("status_key")
+    .eq("id", applicantId)
+    .single();
+  if (!applicant) return { error: "Interessent nicht gefunden." };
+  if (applicant.status_key === "neu") {
+    return { error: "Dieser Interessent hat das Formular noch nicht ausgefüllt." };
+  }
+
   const { data, error } = await supabase
     .from("property_offers")
     .insert({ property_id: propertyId, applicant_id: applicantId, sent_via: "portal" })
