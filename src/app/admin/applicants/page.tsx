@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { SendOfferFromApplicantForm } from "@/components/admin/send-offer-from-applicant-form";
 import type { Applicant, StatusDefinition } from "@/types/models";
 
 const SORT_COLUMNS: Record<string, string> = {
@@ -64,12 +65,30 @@ export default async function ApplicantsPage({
     );
   }
 
-  const [{ data: applicants }, { data: statuses }] = await Promise.all([
+  const [{ data: applicants }, { data: statuses }, { data: properties }] = await Promise.all([
     query.limit(200),
     supabase.from("status_definitions").select("*").order("sort_order"),
+    supabase
+      .from("properties")
+      .select("id, internal_code, object_name, city")
+      .in("status", ["veroeffentlicht", "reserviert"])
+      .order("created_at", { ascending: false })
+      .limit(200),
   ]);
 
   const statusMap = new Map((statuses ?? []).map((s: StatusDefinition) => [s.key, s.label]));
+
+  const applicantIds = (applicants ?? []).map((a) => a.id);
+  const { data: offerRows } = applicantIds.length
+    ? await supabase.from("property_offers").select("applicant_id, property_id").in("applicant_id", applicantIds)
+    : { data: [] as { applicant_id: string; property_id: string }[] };
+
+  const offersByApplicant = new Map<string, string[]>();
+  for (const offer of offerRows ?? []) {
+    const list = offersByApplicant.get(offer.applicant_id) ?? [];
+    list.push(offer.property_id);
+    offersByApplicant.set(offer.applicant_id, list);
+  }
 
   return (
     <div className="space-y-6">
@@ -121,8 +140,8 @@ export default async function ApplicantsPage({
         </button>
       </form>
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-        <table className="w-full text-left text-sm">
+      <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+        <table className="w-full min-w-[900px] text-left text-sm">
           <thead className="border-b border-slate-200 bg-slate-50 text-xs tracking-wide text-slate-500 uppercase">
             <tr>
               <th className="px-4 py-3">ID</th>
@@ -136,6 +155,7 @@ export default async function ApplicantsPage({
                 <SortHeader label="Nettoeinkommen" column="income" params={params} />
               </th>
               <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3">Exposé</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -165,11 +185,22 @@ export default async function ApplicantsPage({
                     {statusMap.get(applicant.status_key) ?? applicant.status_key}
                   </span>
                 </td>
+                <td className="px-4 py-3">
+                  {applicant.status_key === "neu" ? (
+                    <span className="text-xs text-slate-400">Formular fehlt</span>
+                  ) : (
+                    <SendOfferFromApplicantForm
+                      applicantId={applicant.id}
+                      properties={properties ?? []}
+                      alreadySentFor={offersByApplicant.get(applicant.id) ?? []}
+                    />
+                  )}
+                </td>
               </tr>
             ))}
             {(applicants ?? []).length === 0 && (
               <tr>
-                <td colSpan={7} className="px-4 py-10 text-center text-sm text-slate-400">
+                <td colSpan={8} className="px-4 py-10 text-center text-sm text-slate-400">
                   Keine Interessenten gefunden.
                 </td>
               </tr>
