@@ -29,7 +29,7 @@ export default async function PropertyDetailPage({
   const { id } = await params;
   const supabase = await createClient();
 
-  const [{ data: property }, { data: images }, { data: applicants }, { data: offers }] =
+  const [{ data: property }, { data: images }, { data: applicants }, { data: offers }, { count: matchCount }] =
     await Promise.all([
       supabase.from("properties").select("*").eq("id", id).single(),
       supabase.from("property_images").select("*").eq("property_id", id).order("sort_order"),
@@ -38,7 +38,8 @@ export default async function PropertyDetailPage({
         .select("id, internal_code, first_name, last_name")
         .order("created_at", { ascending: false })
         .limit(200),
-      supabase.from("property_offers").select("applicant_id").eq("property_id", id),
+      supabase.from("property_offers").select("applicant_id, sent_via").eq("property_id", id),
+      supabase.from("matches").select("id", { count: "exact", head: true }).eq("property_id", id),
     ]);
 
   if (!property) notFound();
@@ -98,11 +99,24 @@ export default async function PropertyDetailPage({
         <PropertyImageUploadForm action={boundUpload} />
       </section>
 
+      {property.status === "veroeffentlicht" && (
+        <section className="rounded-xl border border-emerald-200 bg-emerald-50 p-5 shadow-sm">
+          <h2 className="text-sm font-semibold text-emerald-900">Automatisches Matching</h2>
+          <p className="mt-1 text-sm text-emerald-800">
+            {matchCount ?? 0} Interessenten mit Suchprofil abgeglichen ·{" "}
+            {(offers ?? []).filter((o) => o.sent_via === "automatisch").length} davon automatisch
+            per Portal-Angebot benachrichtigt (Match-Score ≥ 50).
+          </p>
+        </section>
+      )}
+
       <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
         <h2 className="text-sm font-semibold text-slate-900">Exposé an Interessenten senden</h2>
         <p className="mt-1 text-sm text-slate-500">
           Der Interessent sieht Fotos, Eckdaten und Beschreibung in seinem Portal und kann mit
-          Interesse, kein Interesse oder Besichtigungsanfrage antworten.
+          Interesse, kein Interesse oder Besichtigungsanfrage antworten. Bei Veröffentlichung
+          werden gut passende Interessenten automatisch benachrichtigt — hier kannst du zusätzlich
+          gezielt an Einzelne senden.
         </p>
         <div className="mt-4">
           <SendOfferForm

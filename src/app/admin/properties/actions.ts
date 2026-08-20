@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/auth";
 import type { ImageCategory, Property } from "@/types/models";
+import { computeAndAutoSendMatches } from "@/lib/matching/auto-match";
 
 type PropertyInput = Omit<
   Property,
@@ -84,6 +85,11 @@ export async function createProperty(formData: FormData) {
     p_payload: { property_id: data.id },
   });
 
+  if (input.status === "veroeffentlicht") {
+    const { data: property } = await supabase.from("properties").select("*").eq("id", data.id).single();
+    if (property) await computeAndAutoSendMatches(supabase, property as Property);
+  }
+
   revalidatePath("/admin/properties");
   redirect(`/admin/properties/${data.id}`);
 }
@@ -103,10 +109,14 @@ export async function updateProperty(id: string, formData: FormData) {
       p_type: "PROPERTY_PUBLISHED",
       p_payload: { property_id: id, published_by: admin.id },
     });
+
+    const { data: property } = await supabase.from("properties").select("*").eq("id", id).single();
+    if (property) await computeAndAutoSendMatches(supabase, property as Property);
   }
 
   revalidatePath("/admin/properties");
   revalidatePath(`/admin/properties/${id}`);
+  revalidatePath("/admin/dashboard");
 }
 
 export async function deleteProperty(id: string) {
