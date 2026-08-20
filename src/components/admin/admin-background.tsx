@@ -11,7 +11,14 @@ export function AdminBackground() {
 
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      <Image src={match.url} alt="" fill sizes="100vw" className="object-cover opacity-[0.07]" />
+      <Image
+        src={match.url}
+        alt=""
+        fill
+        sizes="100vw"
+        className="object-cover"
+        style={{ opacity: match.opacity ?? 0.07 }}
+      />
       <div className="absolute inset-0 bg-gradient-to-b from-slate-50/40 via-slate-50/70 to-slate-50" />
     </div>
   );
