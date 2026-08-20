@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { PropertyForm } from "@/components/admin/property-form";
 import { SendOfferForm } from "@/components/admin/send-offer-form";
+import { PropertyImageUploadForm } from "@/components/admin/property-image-upload-form";
 import {
   updateProperty,
   deleteProperty,
@@ -94,28 +95,7 @@ export default async function PropertyDetailPage({
           <p className="mt-3 text-sm text-slate-400">Noch keine Bilder hochgeladen.</p>
         )}
 
-        <form action={boundUpload} className="mt-5 flex flex-wrap items-end gap-3 border-t border-slate-100 pt-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700">Bild</label>
-            <input type="file" name="file" accept="image/*" required className="mt-1 text-sm" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700">Kategorie</label>
-            <select name="category" className="mt-1 rounded-lg border border-slate-300 px-3 py-2 text-sm">
-              {Object.entries(CATEGORY_LABEL).map(([key, label]) => (
-                <option key={key} value={key}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </div>
-          <button
-            type="submit"
-            className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700"
-          >
-            Hochladen
-          </button>
-        </form>
+        <PropertyImageUploadForm action={boundUpload} />
       </section>
 
       <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">

@@ -34,8 +34,8 @@ export async function uploadApplicantDocument(formData: FormData): Promise<Uploa
   if (!(file instanceof File) || file.size === 0) {
     return { error: "Bitte eine Datei auswählen." };
   }
-  if (file.size > 15 * 1024 * 1024) {
-    return { error: "Datei ist zu groß (max. 15 MB)." };
+  if (file.size > 8 * 1024 * 1024) {
+    return { error: "Datei ist zu groß (max. 8 MB). Bitte als PDF oder komprimiertes Foto hochladen." };
   }
 
   const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");

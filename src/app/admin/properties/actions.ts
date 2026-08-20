@@ -64,7 +64,9 @@ export async function createProperty(formData: FormData) {
   const { data, error } = await supabase.from("properties").insert(input).select("id").single();
   if (error) throw new Error(error.message);
 
-  const images = formData.getAll("images").filter((f): f is File => f instanceof File && f.size > 0);
+  const images = formData
+    .getAll("images")
+    .filter((f): f is File => f instanceof File && f.size > 0 && f.size <= 8 * 1024 * 1024);
   for (const [index, file] of images.entries()) {
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
     const path = `${data.id}/${crypto.randomUUID()}-${safeName}`;
@@ -125,6 +127,9 @@ export async function uploadPropertyImage(propertyId: string, formData: FormData
   const category = String(formData.get("category") ?? "sonstige") as ImageCategory;
   if (!(file instanceof File) || file.size === 0) {
     throw new Error("Bitte eine Bilddatei auswählen.");
+  }
+  if (file.size > 8 * 1024 * 1024) {
+    throw new Error("Bild ist zu groß (max. 8 MB).");
   }
 
   const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");

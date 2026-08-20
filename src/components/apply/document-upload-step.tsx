@@ -3,6 +3,7 @@
 import { useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { uploadApplicantDocument } from "@/lib/actions/applicant-documents";
+import { compressImageFile } from "@/lib/image-compress";
 import { Bilingual, DOC_TYPE_FA } from "./bilingual";
 
 export interface RequiredDocType {
@@ -69,12 +70,13 @@ export function DocumentUploadStep({
     setErrors((e) => ({ ...e, [docTypeKey]: "" }));
     setPendingKey(docTypeKey);
 
-    const formData = new FormData();
-    formData.set("applicant_id", applicantId as string);
-    formData.set("doc_type_key", docTypeKey);
-    formData.set("file", file);
-
     startTransition(async () => {
+      const compressed = await compressImageFile(file);
+      const formData = new FormData();
+      formData.set("applicant_id", applicantId as string);
+      formData.set("doc_type_key", docTypeKey);
+      formData.set("file", compressed);
+
       const result = await uploadApplicantDocument(formData);
       setPendingKey(null);
       if (result.error) {

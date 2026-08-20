@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { Property } from "@/types/models";
+import { compressImageFile } from "@/lib/image-compress";
 
 const FIELD =
   "mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:ring-1 focus:ring-slate-500 focus:outline-none";
@@ -44,10 +45,32 @@ export function PropertyForm({
   action: (formData: FormData) => void;
 }) {
   const [pending, setPending] = useState(false);
+  const [optimizing, setOptimizing] = useState(false);
   const p = property;
 
+  async function handleImagesChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const input = e.target;
+    const files = input.files;
+    if (!files || files.length === 0) return;
+
+    setOptimizing(true);
+    const dt = new DataTransfer();
+    for (const file of Array.from(files)) {
+      dt.items.add(await compressImageFile(file));
+    }
+    input.files = dt.files;
+    setOptimizing(false);
+  }
+
   return (
-    <form action={action} onSubmit={() => setPending(true)} className="space-y-6">
+    <form
+      action={action}
+      onSubmit={(e) => {
+        if (optimizing) e.preventDefault();
+        else setPending(true);
+      }}
+      className="space-y-6"
+    >
       <Section title="Objekt">
         <Field label="Externe Wohnungs-ID">
           <input name="external_id" defaultValue={p?.external_id ?? ""} className={FIELD} />
@@ -152,14 +175,17 @@ export function PropertyForm({
           <div className="sm:col-span-2">
             <label className={LABEL}>
               Fotos direkt mit anlegen — Kategorien (Titelbild, Grundriss, …) kannst du danach auf
-              der Wohnungsseite noch zuordnen.
+              der Wohnungsseite noch zuordnen. Fotos werden automatisch verkleinert (max. 8 MB pro
+              Datei), damit der Speicher nicht vollläuft.
               <input
                 type="file"
                 name="images"
                 accept="image/*"
                 multiple
+                onChange={handleImagesChange}
                 className="mt-1 block w-full text-sm"
               />
+              {optimizing && <p className="mt-1 text-xs text-slate-400">Bilder werden optimiert…</p>}
             </label>
           </div>
         </Section>
@@ -168,10 +194,10 @@ export function PropertyForm({
       <div className="flex justify-end gap-3">
         <button
           type="submit"
-          disabled={pending}
+          disabled={pending || optimizing}
           className="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-slate-700 disabled:opacity-60"
         >
-          {pending ? "Speichern…" : p ? "Änderungen speichern" : "Wohnung anlegen"}
+          {optimizing ? "Bilder werden optimiert…" : pending ? "Speichern…" : p ? "Änderungen speichern" : "Wohnung anlegen"}
         </button>
       </div>
     </form>
