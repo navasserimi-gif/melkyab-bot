@@ -1,0 +1,116 @@
+import { notFound } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { PropertyForm } from "@/components/admin/property-form";
+import {
+  updateProperty,
+  deleteProperty,
+  uploadPropertyImage,
+  deletePropertyImage,
+} from "../actions";
+
+const CATEGORY_LABEL: Record<string, string> = {
+  titelbild: "Titelbild",
+  wohnzimmer: "Wohnzimmer",
+  schlafzimmer: "Schlafzimmer",
+  kueche: "Küche",
+  bad: "Badezimmer",
+  balkon: "Balkon",
+  grundriss: "Grundriss",
+  sonstige: "Weitere Bilder",
+};
+
+export default async function PropertyDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const supabase = await createClient();
+
+  const [{ data: property }, { data: images }] = await Promise.all([
+    supabase.from("properties").select("*").eq("id", id).single(),
+    supabase.from("property_images").select("*").eq("property_id", id).order("sort_order"),
+  ]);
+
+  if (!property) notFound();
+
+  const boundUpdate = updateProperty.bind(null, id);
+  const boundDelete = deleteProperty.bind(null, id);
+  const boundUpload = uploadPropertyImage.bind(null, id);
+
+  const gallery = (images ?? []).map((img) => ({
+    ...img,
+    url: supabase.storage.from("property-images").getPublicUrl(img.storage_path).data.publicUrl,
+  }));
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="font-mono text-xs text-slate-400">{property.internal_code}</p>
+          <h1 className="mt-1 text-2xl font-semibold text-slate-900">
+            {property.object_name ?? (`${property.street ?? ""} ${property.house_number ?? ""}`.trim() || "Wohnung")}
+          </h1>
+        </div>
+        <form action={boundDelete}>
+          <button
+            type="submit"
+            className="rounded-lg border border-red-200 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50"
+          >
+            Wohnung löschen
+          </button>
+        </form>
+      </div>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+        <h2 className="text-sm font-semibold text-slate-900">Wohnungsalbum</h2>
+
+        {gallery.length > 0 ? (
+          <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+            {gallery.map((img) => (
+              <div key={img.id} className="group relative overflow-hidden rounded-lg border border-slate-200">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={img.url} alt={CATEGORY_LABEL[img.category]} className="h-32 w-full object-cover" />
+                <div className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-black/60 px-2 py-1">
+                  <span className="text-xs text-white">{CATEGORY_LABEL[img.category]}</span>
+                  <form action={deletePropertyImage.bind(null, id, img.id, img.storage_path)}>
+                    <button type="submit" className="text-xs text-red-300 hover:text-red-100">
+                      Entfernen
+                    </button>
+                  </form>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-3 text-sm text-slate-400">Noch keine Bilder hochgeladen.</p>
+        )}
+
+        <form action={boundUpload} className="mt-5 flex flex-wrap items-end gap-3 border-t border-slate-100 pt-4">
+          <div>
+            <label className="block text-sm font-medium text-slate-700">Bild</label>
+            <input type="file" name="file" accept="image/*" required className="mt-1 text-sm" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700">Kategorie</label>
+            <select name="category" className="mt-1 rounded-lg border border-slate-300 px-3 py-2 text-sm">
+              {Object.entries(CATEGORY_LABEL).map(([key, label]) => (
+                <option key={key} value={key}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <button
+            type="submit"
+            className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700"
+          >
+            Hochladen
+          </button>
+        </form>
+      </section>
+
+      <PropertyForm property={property} action={boundUpdate} />
+    </div>
+  );
+}
