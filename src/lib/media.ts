@@ -5,3 +5,18 @@ export const HERO_IMAGE_URL =
 
 export const AUTH_PANEL_IMAGE_URL =
   "https://d8j0ntlcm91z4.cloudfront.net/user_3F34Sz8rfgnjbIR8HyASsrGpYKu/hf_20260820_200600_3c760c87-40c3-4aa3-a76d-6358eb56da8d.png";
+
+export const PEOPLE_IMAGE_URL =
+  "https://d8j0ntlcm91z4.cloudfront.net/user_3F34Sz8rfgnjbIR8HyASsrGpYKu/hf_20260820_204622_35d768ca-3ecf-4e56-bc83-9ca958cb3d5c.png";
+
+export const HANDOVER_IMAGE_URL =
+  "https://d8j0ntlcm91z4.cloudfront.net/user_3F34Sz8rfgnjbIR8HyASsrGpYKu/hf_20260820_204644_f3465743-a865-4477-a416-47718e737f1c.png";
+
+/** Themen-Hintergrund je Admin-Bereich (Pfad-Präfix -> Bild). Dezent im
+ * Layout eingeblendet, Inhalt liegt immer auf deckenden weißen Karten. */
+export const ADMIN_SECTION_BACKGROUNDS: { prefix: string; url: string }[] = [
+  { prefix: "/admin/applicants", url: PEOPLE_IMAGE_URL },
+  { prefix: "/admin/properties", url: HERO_IMAGE_URL },
+  { prefix: "/admin/viewings", url: HANDOVER_IMAGE_URL },
+  { prefix: "/admin/dashboard", url: AUTH_PANEL_IMAGE_URL },
+];

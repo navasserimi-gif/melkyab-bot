@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { ApplicationForm } from "@/components/apply/application-form";
+import { PEOPLE_IMAGE_URL } from "@/lib/media";
 
 export default async function ApplyPage() {
   const supabase = await createClient();
@@ -18,7 +20,17 @@ export default async function ApplyPage() {
   if (existing) redirect("/portal");
 
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 py-12">
+    <main className="relative mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 py-12">
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <Image
+          src={PEOPLE_IMAGE_URL}
+          alt=""
+          fill
+          sizes="100vw"
+          className="object-cover opacity-[0.07]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-50/40 via-slate-50/70 to-slate-50" />
+      </div>
       <div className="mb-8 text-center">
         <p className="text-sm font-medium tracking-wide text-slate-500 uppercase">
           Mietinteressenten-Formular
