@@ -23,6 +23,12 @@ const STATUS_LABEL: Record<string, string> = {
   abgeschlossen: "Abgeschlossen",
 };
 
+const REQUIRED_DOC_LABELS: Record<string, string> = {
+  schufa: "Schufa-Auskunft",
+  einkommensnachweis: "Lohn-/Gehaltsabrechnung",
+  ausweis: "Personalausweis",
+};
+
 export default async function PortalPage() {
   const profile = await getCurrentProfile();
   if (!profile) redirect("/login");
@@ -31,16 +37,34 @@ export default async function PortalPage() {
   const supabase = await createClient();
   const { data: applicant } = await supabase
     .from("applicants")
-    .select("internal_code, status_key, has_schufa, has_income_proof, has_debt_clearance_cert")
+    .select("id, internal_code, status_key")
     .eq("user_id", profile.id)
     .maybeSingle();
 
-  const missingDocs = applicant
-    ? [
-        !applicant.has_schufa && "Schufa-Auskunft",
-        !applicant.has_income_proof && "Lohn-/Gehaltsabrechnung",
-      ].filter(Boolean)
-    : [];
+  let missingDocs: string[] = [];
+  let offers: { id: string; response: string; property: { internal_code: string; object_name: string | null; city: string | null } | null }[] = [];
+
+  if (applicant) {
+    const [{ data: uploadedDocs }, { data: offerRows }] = await Promise.all([
+      supabase.from("applicant_documents").select("doc_type_key").eq("applicant_id", applicant.id),
+      supabase
+        .from("property_offers")
+        .select("id, response, property:properties(internal_code, object_name, city)")
+        .eq("applicant_id", applicant.id)
+        .order("sent_at", { ascending: false }),
+    ]);
+
+    const uploadedKeys = new Set((uploadedDocs ?? []).map((d) => d.doc_type_key));
+    missingDocs = Object.entries(REQUIRED_DOC_LABELS)
+      .filter(([key]) => !uploadedKeys.has(key))
+      .map(([, label]) => label);
+
+    offers = (offerRows ?? []).map((o) => ({
+      id: o.id,
+      response: o.response,
+      property: Array.isArray(o.property) ? (o.property[0] ?? null) : o.property,
+    }));
+  }
 
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 py-16">
@@ -78,10 +102,29 @@ export default async function PortalPage() {
               Dokumente verwalten
             </Link>
 
-            <p className="text-sm text-slate-500">
-              Passende Wohnungen, Besichtigungen und Angebote folgen hier, sobald sie verfügbar
-              sind.
-            </p>
+            {offers.length > 0 && (
+              <div>
+                <h2 className="text-sm font-semibold text-slate-900">Deine Wohnungsangebote</h2>
+                <ul className="mt-2 space-y-2">
+                  {offers.map((offer) => (
+                    <li key={offer.id}>
+                      <Link
+                        href={`/portal/offers/${offer.id}`}
+                        className="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2 text-sm hover:bg-slate-50"
+                      >
+                        <span>
+                          {offer.property?.object_name ?? offer.property?.internal_code}
+                          {offer.property?.city ? ` · ${offer.property.city}` : ""}
+                        </span>
+                        <span className="text-xs text-slate-400">
+                          {offer.response === "offen" ? "Neu" : offer.response}
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         ) : (
           <div className="mt-4 space-y-4">

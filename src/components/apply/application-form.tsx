@@ -2,21 +2,23 @@
 
 import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { createOwnApplicant } from "@/app/apply/actions";
 import { DocumentUploadStep, type RequiredDocType } from "./document-upload-step";
 import { Bilingual } from "./bilingual";
+import { STEP_IMAGES } from "@/lib/step-images";
 
 const FIELD =
   "mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:border-slate-500 focus:ring-1 focus:ring-slate-500 focus:outline-none";
 const LABEL = "block text-sm font-medium text-slate-700";
 
 const STEPS = [
-  { de: "Persönliche Daten", fa: "اطلاعات شخصی" },
-  { de: "Wohnungssuche", fa: "جستجوی مسکن" },
-  { de: "Haushalt", fa: "خانوار" },
-  { de: "Einkommen", fa: "درآمد" },
-  { de: "Aufenthaltsstatus", fa: "وضعیت اقامت" },
-  { de: "Dokumente", fa: "مدارک" },
+  { key: "persoenliche_daten", de: "Persönliche Daten", fa: "اطلاعات شخصی" },
+  { key: "wohnungssuche", de: "Wohnungssuche", fa: "جستجوی مسکن" },
+  { key: "haushalt", de: "Haushalt", fa: "خانوار" },
+  { key: "einkommen", de: "Einkommen", fa: "درآمد" },
+  { key: "aufenthaltsstatus", de: "Aufenthaltsstatus", fa: "وضعیت اقامت" },
+  { key: "dokumente", de: "Dokumente", fa: "مدارک" },
 ] as const;
 
 const REQUIRED_DOC_TYPES: RequiredDocType[] = [
@@ -24,6 +26,16 @@ const REQUIRED_DOC_TYPES: RequiredDocType[] = [
   { key: "einkommensnachweis", label: "Lohn-/Gehaltsabrechnung", labelFa: "فیش حقوقی" },
   { key: "ausweis", label: "Personalausweis", labelFa: "کارت شناسایی / پاسپورت" },
 ];
+
+function StepImage({ stepKey }: { stepKey: string }) {
+  const src = STEP_IMAGES[stepKey];
+  if (!src) return null;
+  return (
+    <div className="mx-auto mb-6 h-24 w-24">
+      <Image src={src} alt="" width={96} height={96} className="h-full w-full object-contain" />
+    </div>
+  );
+}
 
 function Field({ de, fa, children }: { de: string; fa: string; children: React.ReactNode }) {
   return (
@@ -58,11 +70,13 @@ export function ApplicationForm({ defaultEmail }: { defaultEmail: string }) {
   const [step, setStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [applicantId, setApplicantId] = useState<string | null>(null);
+  const [submitted, setSubmitted] = useState(false);
   const [pending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
 
-  const isDataStep = step < STEPS.length - 1;
+  const isDataStep = step < STEPS.length - 1 && !submitted;
+  const isDocumentsStep = step === STEPS.length - 1 && !submitted;
   const isLastDataStep = step === STEPS.length - 2;
 
   function next() {
@@ -88,12 +102,39 @@ export function ApplicationForm({ defaultEmail }: { defaultEmail: string }) {
     });
   }
 
+  if (submitted) {
+    return (
+      <div className="mx-auto w-full max-w-xl text-center">
+        <StepImage stepKey="erfolg" />
+        <h1 className="text-2xl font-semibold text-slate-900">Vielen Dank für deine Bewerbung!</h1>
+        <h2 className="mt-1 text-lg font-semibold text-slate-500" dir="rtl" lang="fa">
+          از درخواست شما متشکریم!
+        </h2>
+        <p className="mt-4 text-sm text-slate-600">
+          Dein Profil und deine Unterlagen sind bei uns eingegangen. Unser Team prüft alles und
+          meldet sich in Kürze bei dir.
+        </p>
+        <p className="mt-1 text-sm text-slate-400" dir="rtl" lang="fa">
+          پروفایل و مدارک شما دریافت شد. تیم ما همه چیز را بررسی می‌کند و به‌زودی با شما تماس
+          می‌گیرد.
+        </p>
+        <button
+          type="button"
+          onClick={() => router.push("/portal")}
+          className="mt-8 rounded-lg bg-slate-900 px-6 py-2.5 text-sm font-medium text-white transition hover:bg-slate-700"
+        >
+          <BtnText de="Zum Portal" fa="به پورتال" />
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto w-full max-w-xl">
       <ol className="mb-8 flex items-start justify-between text-center text-[11px] text-slate-400">
         {STEPS.map((s, i) => (
           <li
-            key={s.de}
+            key={s.key}
             className={`flex-1 border-t-2 pt-2 ${i <= step ? "border-slate-900 text-slate-900" : "border-slate-200"}`}
           >
             <span className="block">{s.de}</span>
@@ -114,6 +155,7 @@ export function ApplicationForm({ defaultEmail }: { defaultEmail: string }) {
           }}
           className="space-y-6"
         >
+          <StepImage stepKey={STEPS[step].key} />
           <input type="hidden" name="email" value={defaultEmail} />
 
           <div className={step === 0 ? "space-y-4" : "hidden"}>
@@ -270,13 +312,16 @@ export function ApplicationForm({ defaultEmail }: { defaultEmail: string }) {
             </button>
           </div>
         </form>
-      ) : (
-        <DocumentUploadStep
-          applicantId={applicantId}
-          requiredTypes={REQUIRED_DOC_TYPES}
-          onFinish={() => router.push("/portal")}
-        />
-      )}
+      ) : isDocumentsStep ? (
+        <>
+          <StepImage stepKey="dokumente" />
+          <DocumentUploadStep
+            applicantId={applicantId}
+            requiredTypes={REQUIRED_DOC_TYPES}
+            onFinish={() => setSubmitted(true)}
+          />
+        </>
+      ) : null}
     </div>
   );
 }

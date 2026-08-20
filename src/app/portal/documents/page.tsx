@@ -49,6 +49,9 @@ export default async function PortalDocumentsPage() {
         applicantId={applicant.id}
         requiredTypes={(docTypes ?? []).map((d) => ({ key: d.key, label: d.label }))}
         uploadedKeys={uploadedKeys}
+        finishHref="/portal"
+        finishLabel="Fertig — zurück zur Übersicht"
+        finishLabelFa="پایان — بازگشت به نمای کلی"
       />
     </main>
   );

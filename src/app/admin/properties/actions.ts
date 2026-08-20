@@ -140,3 +140,41 @@ export async function deletePropertyImage(propertyId: string, imageId: string, s
 
   revalidatePath(`/admin/properties/${propertyId}`);
 }
+
+export interface SendOfferResult {
+  ok?: true;
+  error?: string;
+}
+
+/** Sendet ein Wohnungsangebot (Exposé) an einen registrierten Interessenten (§13). */
+export async function sendPropertyOffer(
+  propertyId: string,
+  formData: FormData,
+): Promise<SendOfferResult> {
+  await requireAdmin();
+  const supabase = await createClient();
+
+  const applicantId = String(formData.get("applicant_id") ?? "");
+  if (!applicantId) return { error: "Bitte einen Interessenten auswählen." };
+
+  const { data, error } = await supabase
+    .from("property_offers")
+    .insert({ property_id: propertyId, applicant_id: applicantId, sent_via: "portal" })
+    .select("id")
+    .single();
+  if (error) return { error: error.message };
+
+  await supabase
+    .from("applicants")
+    .update({ status_key: "wohnung_angeboten" })
+    .eq("id", applicantId);
+
+  await supabase.rpc("emit_event", {
+    p_type: "PROPERTY_OFFERED",
+    p_payload: { property_id: propertyId, applicant_id: applicantId, offer_id: data.id },
+  });
+
+  revalidatePath(`/admin/properties/${propertyId}`);
+  revalidatePath("/portal");
+  return { ok: true };
+}

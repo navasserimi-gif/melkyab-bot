@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { PropertyForm } from "@/components/admin/property-form";
+import { SendOfferForm } from "@/components/admin/send-offer-form";
 import {
   updateProperty,
   deleteProperty,
@@ -27,10 +28,17 @@ export default async function PropertyDetailPage({
   const { id } = await params;
   const supabase = await createClient();
 
-  const [{ data: property }, { data: images }] = await Promise.all([
-    supabase.from("properties").select("*").eq("id", id).single(),
-    supabase.from("property_images").select("*").eq("property_id", id).order("sort_order"),
-  ]);
+  const [{ data: property }, { data: images }, { data: applicants }, { data: offers }] =
+    await Promise.all([
+      supabase.from("properties").select("*").eq("id", id).single(),
+      supabase.from("property_images").select("*").eq("property_id", id).order("sort_order"),
+      supabase
+        .from("applicants")
+        .select("id, internal_code, first_name, last_name")
+        .order("created_at", { ascending: false })
+        .limit(200),
+      supabase.from("property_offers").select("applicant_id").eq("property_id", id),
+    ]);
 
   if (!property) notFound();
 
@@ -108,6 +116,21 @@ export default async function PropertyDetailPage({
             Hochladen
           </button>
         </form>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+        <h2 className="text-sm font-semibold text-slate-900">Exposé an Interessenten senden</h2>
+        <p className="mt-1 text-sm text-slate-500">
+          Der Interessent sieht Fotos, Eckdaten und Beschreibung in seinem Portal und kann mit
+          Interesse, kein Interesse oder Besichtigungsanfrage antworten.
+        </p>
+        <div className="mt-4">
+          <SendOfferForm
+            propertyId={id}
+            applicants={applicants ?? []}
+            alreadySentTo={(offers ?? []).map((o) => o.applicant_id)}
+          />
+        </div>
       </section>
 
       <PropertyForm property={property} action={boundUpdate} />

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
+import Link from "next/link";
 import { uploadApplicantDocument } from "@/lib/actions/applicant-documents";
 import { Bilingual, DOC_TYPE_FA } from "./bilingual";
 
@@ -15,13 +16,18 @@ export function DocumentUploadStep({
   requiredTypes,
   uploadedKeys = [],
   onFinish,
+  finishHref,
   finishLabel = "Fertig — zum Portal",
   finishLabelFa = "پایان — به پورتال",
 }: {
   applicantId: string | null;
   requiredTypes: RequiredDocType[];
   uploadedKeys?: string[];
+  /** Client-side callback (z.B. innerhalb des mehrstufigen /apply-Formulars). */
   onFinish?: () => void;
+  /** Alternative zu onFinish: einfacher Link-Href, funktioniert auch wenn die
+   * Elternkomponente eine Server Component ist (z.B. /portal/documents). */
+  finishHref?: string;
   finishLabel?: string;
   finishLabelFa?: string;
 }) {
@@ -160,15 +166,24 @@ export function DocumentUploadStep({
         })}
       </div>
 
-      {onFinish && (
+      {(onFinish || finishHref) && (
         <div className="flex justify-end pt-2">
-          <button
-            type="button"
-            onClick={onFinish}
-            className="rounded-lg bg-slate-900 px-6 py-2.5 text-sm font-medium text-white transition hover:bg-slate-700"
-          >
-            <Bilingual de={finishLabel} fa={finishLabelFa} />
-          </button>
+          {finishHref ? (
+            <Link
+              href={finishHref}
+              className="rounded-lg bg-slate-900 px-6 py-2.5 text-sm font-medium text-white transition hover:bg-slate-700"
+            >
+              <Bilingual de={finishLabel} fa={finishLabelFa} />
+            </Link>
+          ) : (
+            <button
+              type="button"
+              onClick={onFinish}
+              className="rounded-lg bg-slate-900 px-6 py-2.5 text-sm font-medium text-white transition hover:bg-slate-700"
+            >
+              <Bilingual de={finishLabel} fa={finishLabelFa} />
+            </button>
+          )}
         </div>
       )}
     </div>
