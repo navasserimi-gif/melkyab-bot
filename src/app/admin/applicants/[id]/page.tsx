@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth";
 import { ApplicantForm } from "@/components/admin/applicant-form";
+import { SendOfferFromApplicantForm } from "@/components/admin/send-offer-from-applicant-form";
 import { updateApplicant, deleteApplicant } from "../actions";
 
 export default async function ApplicantDetailPage({
@@ -13,16 +14,24 @@ export default async function ApplicantDetailPage({
   const supabase = await createClient();
   const profile = await getCurrentProfile();
 
-  const [{ data: applicant }, { data: statuses }, { data: history }] = await Promise.all([
-    supabase.from("applicants").select("*").eq("id", id).single(),
-    supabase.from("status_definitions").select("*").order("sort_order"),
-    supabase
-      .from("applicant_status_history")
-      .select("*")
-      .eq("applicant_id", id)
-      .order("changed_at", { ascending: false })
-      .limit(20),
-  ]);
+  const [{ data: applicant }, { data: statuses }, { data: history }, { data: properties }, { data: offers }] =
+    await Promise.all([
+      supabase.from("applicants").select("*").eq("id", id).single(),
+      supabase.from("status_definitions").select("*").order("sort_order"),
+      supabase
+        .from("applicant_status_history")
+        .select("*")
+        .eq("applicant_id", id)
+        .order("changed_at", { ascending: false })
+        .limit(20),
+      supabase
+        .from("properties")
+        .select("id, internal_code, object_name, city")
+        .in("status", ["veroeffentlicht", "reserviert"])
+        .order("created_at", { ascending: false })
+        .limit(200),
+      supabase.from("property_offers").select("property_id").eq("applicant_id", id),
+    ]);
 
   if (!applicant) notFound();
 
@@ -51,6 +60,20 @@ export default async function ApplicantDetailPage({
           </form>
         )}
       </div>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+        <h2 className="text-sm font-semibold text-slate-900">Exposé an diesen Interessenten senden</h2>
+        <p className="mt-1 text-sm text-slate-500">
+          Wähle eine veröffentlichte Wohnung — der Interessent sieht sie danach in seinem Portal.
+        </p>
+        <div className="mt-4">
+          <SendOfferFromApplicantForm
+            applicantId={id}
+            properties={properties ?? []}
+            alreadySentFor={(offers ?? []).map((o) => o.property_id)}
+          />
+        </div>
+      </section>
 
       <ApplicantForm applicant={applicant} statusOptions={statuses ?? []} action={boundUpdate} />
 
