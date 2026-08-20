@@ -33,7 +33,7 @@ export async function computeAndAutoSendMatches(
 ): Promise<{ matched: number; offered: number }> {
   const [{ data: applicantRows }, { data: weightRows }, { data: existingOfferRows }] =
     await Promise.all([
-      supabase.from("applicants").select("*").limit(500),
+      supabase.from("applicants").select("*").neq("status_key", "neu").limit(500),
       supabase.from("matching_weights").select("*"),
       supabase.from("property_offers").select("applicant_id").eq("property_id", property.id),
     ]);

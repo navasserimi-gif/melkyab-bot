@@ -36,6 +36,7 @@ export default async function PropertyDetailPage({
       supabase
         .from("applicants")
         .select("id, internal_code, first_name, last_name")
+        .neq("status_key", "neu")
         .order("created_at", { ascending: false })
         .limit(200),
       supabase.from("property_offers").select("applicant_id, sent_via").eq("property_id", id),

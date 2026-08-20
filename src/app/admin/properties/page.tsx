@@ -50,6 +50,7 @@ export default async function PropertiesPage({
     supabase
       .from("applicants")
       .select("id, internal_code, first_name, last_name")
+      .neq("status_key", "neu")
       .order("created_at", { ascending: false })
       .limit(200),
     propertyIds.length
