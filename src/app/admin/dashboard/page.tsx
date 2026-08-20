@@ -96,12 +96,86 @@ async function loadConfirmedViewings(): Promise<ConfirmedViewing[]> {
   }));
 }
 
-export default async function DashboardPage() {
-  const [counts, activity, confirmedViewings] = await Promise.all([
+const PIPELINE_STATUSES = [
+  "wohnung_angeboten",
+  "interesse_bestaetigt",
+  "besichtigung_angefragt",
+  "besichtigung_geplant",
+  "besichtigung_durchgefuehrt",
+];
+
+const PIPELINE_STATUS_LABEL: Record<string, string> = {
+  wohnung_angeboten: "Wohnung angeboten",
+  interesse_bestaetigt: "Interesse bestätigt",
+  besichtigung_angefragt: "Besichtigung angefragt",
+  besichtigung_geplant: "Besichtigung geplant",
+  besichtigung_durchgefuehrt: "Besichtigung durchgeführt",
+};
+
+interface PipelineApplicant {
+  id: string;
+  internal_code: string;
+  first_name: string;
+  last_name: string;
+  num_persons: number | null;
+  household_net_income: number | null;
+  status_key: string;
+  property: { internal_code: string; object_name: string | null } | null;
+}
+
+async function loadPipelineApplicants(
+  sortColumn: "household_net_income" | "num_persons",
+  ascending: boolean,
+): Promise<PipelineApplicant[]> {
+  const supabase = await createClient();
+  const { data: applicants } = await supabase
+    .from("applicants")
+    .select("id, internal_code, first_name, last_name, num_persons, household_net_income, status_key")
+    .in("status_key", PIPELINE_STATUSES)
+    .order(sortColumn, { ascending, nullsFirst: false })
+    .limit(20);
+
+  if (!applicants || applicants.length === 0) return [];
+
+  const { data: offers } = await supabase
+    .from("property_offers")
+    .select("applicant_id, sent_at, property:properties(internal_code, object_name)")
+    .in(
+      "applicant_id",
+      applicants.map((a) => a.id),
+    )
+    .order("sent_at", { ascending: false });
+
+  const propertyByApplicant = new Map<string, PipelineApplicant["property"]>();
+  for (const offer of offers ?? []) {
+    if (propertyByApplicant.has(offer.applicant_id)) continue;
+    const property = Array.isArray(offer.property) ? (offer.property[0] ?? null) : offer.property;
+    propertyByApplicant.set(offer.applicant_id, property);
+  }
+
+  return applicants.map((a) => ({ ...a, property: propertyByApplicant.get(a.id) ?? null }));
+}
+
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ psort?: string; porder?: string }>;
+}) {
+  const params = await searchParams;
+  const sortColumn = params.psort === "persons" ? "num_persons" : "household_net_income";
+  const ascending = params.porder === "asc";
+
+  const [counts, activity, confirmedViewings, pipelineApplicants] = await Promise.all([
     loadCounts(),
     loadRecentActivity(),
     loadConfirmedViewings(),
+    loadPipelineApplicants(sortColumn, ascending),
   ]);
+
+  function pipelineSortHref(column: "income" | "persons") {
+    const nextOrder = params.psort === column && params.porder === "desc" ? "asc" : "desc";
+    return `/admin/dashboard?psort=${column}&porder=${nextOrder}`;
+  }
 
   const tiles = [
     { label: "Interessenten", value: counts.applicants, href: "/admin/applicants" },
@@ -148,6 +222,76 @@ export default async function DashboardPage() {
           </Link>
         </section>
       )}
+
+      <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-semibold text-slate-900">
+            Kunden im Bewerbungsprozess ({pipelineApplicants.length})
+          </h2>
+          <div className="flex gap-3 text-xs">
+            <Link
+              href={pipelineSortHref("income")}
+              className={`hover:text-slate-900 ${sortColumn === "household_net_income" ? "font-semibold text-slate-900" : "text-slate-500"}`}
+            >
+              Nach Einkommen {sortColumn === "household_net_income" && (ascending ? "↑" : "↓")}
+            </Link>
+            <Link
+              href={pipelineSortHref("persons")}
+              className={`hover:text-slate-900 ${sortColumn === "num_persons" ? "font-semibold text-slate-900" : "text-slate-500"}`}
+            >
+              Nach Personenzahl {sortColumn === "num_persons" && (ascending ? "↑" : "↓")}
+            </Link>
+          </div>
+        </div>
+        <p className="mt-1 text-sm text-slate-500">
+          Alle Kunden, die sich aktiv für eine Wohnung interessieren — vom gesendeten Exposé bis zur
+          bestätigten Besichtigung. Reine Neuanmeldungen ohne Wohnungsbezug stehen unter
+          &bdquo;Interessenten&ldquo;.
+        </p>
+        {pipelineApplicants.length === 0 ? (
+          <p className="mt-3 text-sm text-slate-400">
+            Noch keine Kunden im Bewerbungsprozess — sende dazu ein Exposé auf einer Wohnungsseite.
+          </p>
+        ) : (
+          <div className="mt-3 overflow-x-auto">
+            <table className="w-full min-w-[640px] text-left text-sm">
+              <thead className="text-xs tracking-wide text-slate-400 uppercase">
+                <tr>
+                  <th className="py-2 pr-4">Kunde</th>
+                  <th className="py-2 pr-4">Wohnung</th>
+                  <th className="py-2 pr-4">Personen</th>
+                  <th className="py-2 pr-4">Nettoeinkommen</th>
+                  <th className="py-2 pr-4">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {pipelineApplicants.map((a) => (
+                  <tr key={a.id} className="hover:bg-slate-50">
+                    <td className="py-2 pr-4">
+                      <Link href={`/admin/applicants/${a.id}`} className="font-medium text-slate-900 hover:underline">
+                        {a.first_name} {a.last_name}
+                      </Link>
+                      <span className="ml-1 font-mono text-xs text-slate-400">{a.internal_code}</span>
+                    </td>
+                    <td className="py-2 pr-4 text-slate-600">
+                      {a.property?.object_name ?? a.property?.internal_code ?? "–"}
+                    </td>
+                    <td className="py-2 pr-4 text-slate-600">{a.num_persons ?? "–"}</td>
+                    <td className="py-2 pr-4 text-slate-600">
+                      {a.household_net_income ? `${a.household_net_income} €` : "–"}
+                    </td>
+                    <td className="py-2 pr-4">
+                      <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700">
+                        {PIPELINE_STATUS_LABEL[a.status_key] ?? a.status_key}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
         {tiles.map((tile) => (

@@ -147,6 +147,24 @@ export function PropertyForm({
         </div>
       </Section>
 
+      {!p && (
+        <Section title="Bilder (optional)">
+          <div className="sm:col-span-2">
+            <label className={LABEL}>
+              Fotos direkt mit anlegen — Kategorien (Titelbild, Grundriss, …) kannst du danach auf
+              der Wohnungsseite noch zuordnen.
+              <input
+                type="file"
+                name="images"
+                accept="image/*"
+                multiple
+                className="mt-1 block w-full text-sm"
+              />
+            </label>
+          </div>
+        </Section>
+      )}
+
       <div className="flex justify-end gap-3">
         <button
           type="submit"

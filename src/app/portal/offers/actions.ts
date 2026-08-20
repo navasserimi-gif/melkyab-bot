@@ -40,11 +40,19 @@ export async function respondToOffer(offerId: string, response: Response): Promi
       applicant_id: offer.applicant_id,
       status: "angefragt",
     });
+    await supabase
+      .from("applicants")
+      .update({ status_key: "besichtigung_angefragt" })
+      .eq("id", offer.applicant_id);
     await supabase.rpc("emit_event", {
       p_type: "VIEWING_REQUESTED",
       p_payload: { property_id: offer.property_id, applicant_id: offer.applicant_id },
     });
   } else if (response === "interesse") {
+    await supabase
+      .from("applicants")
+      .update({ status_key: "interesse_bestaetigt" })
+      .eq("id", offer.applicant_id);
     await supabase.rpc("emit_event", {
       p_type: "INTEREST_CONFIRMED",
       p_payload: { property_id: offer.property_id, applicant_id: offer.applicant_id },
@@ -71,6 +79,11 @@ export async function confirmViewingTime(viewingId: string): Promise<RespondResu
     .select("property_id, applicant_id")
     .single();
   if (error) return { error: error.message };
+
+  await supabase
+    .from("applicants")
+    .update({ status_key: "besichtigung_geplant" })
+    .eq("id", viewing.applicant_id);
 
   await supabase.rpc("emit_event", {
     p_type: "VIEWING_CONFIRMED",

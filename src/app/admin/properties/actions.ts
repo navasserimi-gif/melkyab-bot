@@ -64,6 +64,19 @@ export async function createProperty(formData: FormData) {
   const { data, error } = await supabase.from("properties").insert(input).select("id").single();
   if (error) throw new Error(error.message);
 
+  const images = formData.getAll("images").filter((f): f is File => f instanceof File && f.size > 0);
+  for (const [index, file] of images.entries()) {
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+    const path = `${data.id}/${crypto.randomUUID()}-${safeName}`;
+    const { error: uploadError } = await supabase.storage
+      .from("property-images")
+      .upload(path, file, { contentType: file.type || undefined });
+    if (uploadError) continue;
+    await supabase
+      .from("property_images")
+      .insert({ property_id: data.id, storage_path: path, category: "sonstige", sort_order: index });
+  }
+
   await supabase.rpc("emit_event", {
     p_type: "PROPERTY_CREATED",
     p_payload: { property_id: data.id },

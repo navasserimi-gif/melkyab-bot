@@ -2,18 +2,59 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import type { Applicant, StatusDefinition } from "@/types/models";
 
+const SORT_COLUMNS: Record<string, string> = {
+  income: "household_net_income",
+  persons: "num_persons",
+  created: "created_at",
+};
+
+function sortHref(
+  params: { q?: string; status?: string; city?: string; sort?: string; order?: string },
+  column: string,
+) {
+  const nextOrder = params.sort === column && params.order === "desc" ? "asc" : "desc";
+  const search = new URLSearchParams();
+  if (params.q) search.set("q", params.q);
+  if (params.status) search.set("status", params.status);
+  if (params.city) search.set("city", params.city);
+  search.set("sort", column);
+  search.set("order", nextOrder);
+  return `/admin/applicants?${search.toString()}`;
+}
+
+function SortHeader({
+  label,
+  column,
+  params,
+}: {
+  label: string;
+  column: string;
+  params: { q?: string; status?: string; city?: string; sort?: string; order?: string };
+}) {
+  const active = params.sort === column;
+  return (
+    <Link href={sortHref(params, column)} className="inline-flex items-center gap-1 hover:text-slate-900">
+      {label}
+      {active && <span>{params.order === "desc" ? "↓" : "↑"}</span>}
+    </Link>
+  );
+}
+
 export default async function ApplicantsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; status?: string; city?: string }>;
+  searchParams: Promise<{ q?: string; status?: string; city?: string; sort?: string; order?: string }>;
 }) {
   const params = await searchParams;
   const supabase = await createClient();
 
+  const sortColumn = SORT_COLUMNS[params.sort ?? ""] ?? "created_at";
+  const ascending = params.order === "asc";
+
   let query = supabase
     .from("applicants")
     .select("*")
-    .order("created_at", { ascending: false });
+    .order(sortColumn, { ascending, nullsFirst: false });
 
   if (params.status) query = query.eq("status_key", params.status);
   if (params.city) query = query.ilike("desired_city", `%${params.city}%`);
@@ -88,6 +129,12 @@ export default async function ApplicantsPage({
               <th className="px-4 py-3">Name</th>
               <th className="px-4 py-3">Ort</th>
               <th className="px-4 py-3">Budget (Warm)</th>
+              <th className="px-4 py-3">
+                <SortHeader label="Personen" column="persons" params={params} />
+              </th>
+              <th className="px-4 py-3">
+                <SortHeader label="Nettoeinkommen" column="income" params={params} />
+              </th>
               <th className="px-4 py-3">Status</th>
             </tr>
           </thead>
@@ -109,6 +156,10 @@ export default async function ApplicantsPage({
                 <td className="px-4 py-3 text-slate-500">
                   {applicant.max_warm_rent ? `${applicant.max_warm_rent} €` : "–"}
                 </td>
+                <td className="px-4 py-3 text-slate-500">{applicant.num_persons ?? "–"}</td>
+                <td className="px-4 py-3 text-slate-500">
+                  {applicant.household_net_income ? `${applicant.household_net_income} €` : "–"}
+                </td>
                 <td className="px-4 py-3">
                   <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700">
                     {statusMap.get(applicant.status_key) ?? applicant.status_key}
@@ -118,7 +169,7 @@ export default async function ApplicantsPage({
             ))}
             {(applicants ?? []).length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-10 text-center text-sm text-slate-400">
+                <td colSpan={7} className="px-4 py-10 text-center text-sm text-slate-400">
                   Keine Interessenten gefunden.
                 </td>
               </tr>
