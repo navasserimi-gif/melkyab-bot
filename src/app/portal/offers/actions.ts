@@ -55,3 +55,32 @@ export async function respondToOffer(offerId: string, response: Response): Promi
   revalidatePath("/portal");
   return { ok: true };
 }
+
+/** Interessent bestätigt den von Staff vorgeschlagenen Besichtigungstermin. */
+export async function confirmViewingTime(viewingId: string): Promise<RespondResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Bitte zuerst anmelden." };
+
+  const { data: viewing, error } = await supabase
+    .from("viewings")
+    .update({ confirmed_at: new Date().toISOString() })
+    .eq("id", viewingId)
+    .select("property_id, applicant_id")
+    .single();
+  if (error) return { error: error.message };
+
+  await supabase.rpc("emit_event", {
+    p_type: "VIEWING_CONFIRMED",
+    p_payload: {
+      viewing_id: viewingId,
+      property_id: viewing.property_id,
+      applicant_id: viewing.applicant_id,
+    },
+  });
+
+  revalidatePath("/portal");
+  return { ok: true };
+}

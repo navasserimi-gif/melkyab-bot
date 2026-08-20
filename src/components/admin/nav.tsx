@@ -9,6 +9,7 @@ const LINKS = [
   { href: "/admin/dashboard", label: "Dashboard" },
   { href: "/admin/applicants", label: "Interessenten" },
   { href: "/admin/properties", label: "Wohnungen" },
+  { href: "/admin/viewings", label: "Besichtigungen" },
 ];
 
 export function AdminNav({ profile }: { profile: Profile }) {

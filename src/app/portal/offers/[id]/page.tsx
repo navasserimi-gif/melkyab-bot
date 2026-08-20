@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { getCurrentProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { OfferResponse } from "@/components/portal/offer-response";
+import { ViewingConfirm } from "@/components/portal/viewing-confirm";
 
 const AMENITY_LABELS: { key: string; label: string }[] = [
   { key: "has_balcony", label: "Balkon" },
@@ -28,18 +29,24 @@ export default async function OfferDetailPage({
   const supabase = await createClient();
   const { data: offer } = await supabase
     .from("property_offers")
-    .select("id, response, property:properties(*)")
+    .select("id, response, applicant_id, property:properties(*)")
     .eq("id", id)
     .single();
 
   if (!offer || !offer.property) notFound();
   const property = Array.isArray(offer.property) ? offer.property[0] : offer.property;
 
-  const { data: images } = await supabase
-    .from("property_images")
-    .select("*")
-    .eq("property_id", property.id)
-    .order("sort_order");
+  const [{ data: images }, { data: viewing }] = await Promise.all([
+    supabase.from("property_images").select("*").eq("property_id", property.id).order("sort_order"),
+    supabase
+      .from("viewings")
+      .select("id, scheduled_at, confirmed_at, status")
+      .eq("property_id", property.id)
+      .eq("applicant_id", offer.applicant_id)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+  ]);
 
   const gallery = (images ?? []).map((img) => ({
     ...img,
@@ -132,6 +139,16 @@ export default async function OfferDetailPage({
           <div className="mt-6 border-t border-slate-100 pt-6">
             <OfferResponse offerId={offer.id} currentResponse={offer.response} />
           </div>
+
+          {viewing && viewing.scheduled_at && viewing.status !== "abgesagt" && (
+            <div className="mt-4">
+              <ViewingConfirm
+                viewingId={viewing.id}
+                scheduledAt={viewing.scheduled_at}
+                confirmedAt={viewing.confirmed_at}
+              />
+            </div>
+          )}
         </div>
       </div>
     </main>

@@ -68,14 +68,46 @@ async function loadRecentActivity() {
   return data ?? [];
 }
 
+interface ConfirmedViewing {
+  id: string;
+  scheduled_at: string;
+  confirmed_at: string;
+  property: { internal_code: string; object_name: string | null } | null;
+  applicant: { internal_code: string; first_name: string; last_name: string } | null;
+}
+
+async function loadConfirmedViewings(): Promise<ConfirmedViewing[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("viewings")
+    .select(
+      "id, scheduled_at, confirmed_at, property:properties(internal_code, object_name), applicant:applicants(internal_code, first_name, last_name)",
+    )
+    .not("confirmed_at", "is", null)
+    .order("confirmed_at", { ascending: false })
+    .limit(5);
+
+  return (data ?? []).map((v) => ({
+    id: v.id,
+    scheduled_at: v.scheduled_at as string,
+    confirmed_at: v.confirmed_at as string,
+    property: Array.isArray(v.property) ? (v.property[0] ?? null) : v.property,
+    applicant: Array.isArray(v.applicant) ? (v.applicant[0] ?? null) : v.applicant,
+  }));
+}
+
 export default async function DashboardPage() {
-  const [counts, activity] = await Promise.all([loadCounts(), loadRecentActivity()]);
+  const [counts, activity, confirmedViewings] = await Promise.all([
+    loadCounts(),
+    loadRecentActivity(),
+    loadConfirmedViewings(),
+  ]);
 
   const tiles = [
     { label: "Interessenten", value: counts.applicants, href: "/admin/applicants" },
     { label: "Wohnungen", value: counts.properties, href: "/admin/properties" },
     { label: "Passende Matches", value: counts.matches, href: "/admin/applicants" },
-    { label: "Offene Besichtigungen", value: counts.openViewings, href: "/admin/applicants" },
+    { label: "Offene Besichtigungen", value: counts.openViewings, href: "/admin/viewings" },
     { label: "Fehlende Unterlagen", value: counts.missingDocs, href: "/admin/applicants" },
     { label: "Neue Interessenten (7 Tage)", value: counts.newApplicants, href: "/admin/applicants" },
   ];
@@ -86,6 +118,36 @@ export default async function DashboardPage() {
         <h1 className="text-2xl font-semibold text-slate-900">Dashboard</h1>
         <p className="mt-1 text-sm text-slate-500">Überblick über den aktuellen Prozessstand.</p>
       </div>
+
+      {confirmedViewings.length > 0 && (
+        <section className="rounded-xl border border-emerald-200 bg-emerald-50 p-5 shadow-sm">
+          <h2 className="text-sm font-semibold text-emerald-900">
+            ✓ Kürzlich bestätigte Besichtigungstermine
+          </h2>
+          <ul className="mt-3 divide-y divide-emerald-100">
+            {confirmedViewings.map((v) => (
+              <li key={v.id} className="flex flex-wrap items-center justify-between gap-2 py-2 text-sm">
+                <span className="text-emerald-900">
+                  {v.applicant ? `${v.applicant.first_name} ${v.applicant.last_name}` : "–"} ·{" "}
+                  {v.property?.object_name ?? v.property?.internal_code}
+                </span>
+                <span className="text-emerald-700">
+                  {new Date(v.scheduled_at).toLocaleString("de-DE", {
+                    dateStyle: "medium",
+                    timeStyle: "short",
+                  })}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <Link
+            href="/admin/viewings"
+            className="mt-3 inline-block text-sm font-medium text-emerald-700 hover:underline"
+          >
+            Alle Besichtigungen ansehen →
+          </Link>
+        </section>
+      )}
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
         {tiles.map((tile) => (
