@@ -19,7 +19,12 @@ export default async function PortalDocumentsPage() {
   if (!applicant) redirect("/apply");
 
   const [{ data: docTypes }, { data: uploadedDocs }] = await Promise.all([
-    supabase.from("document_types").select("key, label").eq("is_active", true).order("sort_order"),
+    supabase
+      .from("document_types")
+      .select("key, label")
+      .eq("is_active", true)
+      .eq("required", true)
+      .order("sort_order"),
     supabase.from("applicant_documents").select("doc_type_key").eq("applicant_id", applicant.id),
   ]);
 

@@ -164,9 +164,6 @@ export function ApplicationForm({ defaultEmail }: { defaultEmail: string }) {
             <Field de="Höchstfläche (m²)" fa="حداکثر متراژ (متر مربع)">
               <input name="desired_area_max" type="number" min={0} className={FIELD} />
             </Field>
-            <Field de="Maximale Kaltmiete (€)" fa="حداکثر اجاره پایه (یورو)">
-              <input name="max_cold_rent" type="number" min={0} className={FIELD} />
-            </Field>
             <Field de="Maximale Warmmiete (€)" fa="حداکثر اجاره کل (یورو)">
               <input name="max_warm_rent" type="number" min={0} className={FIELD} />
             </Field>
