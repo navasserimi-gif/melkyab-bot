@@ -20,7 +20,7 @@ export const DASHBOARD_3D_IMAGE_URL =
  * Karten. Der 3D-Look auf dem Dashboard verträgt etwas mehr Deckkraft als
  * die Foto-Hintergründe der übrigen Bereiche. */
 export const ADMIN_SECTION_BACKGROUNDS: { prefix: string; url: string; opacity?: number }[] = [
-  { prefix: "/admin/dashboard", url: DASHBOARD_3D_IMAGE_URL, opacity: 0.14 },
+  { prefix: "/admin/dashboard", url: DASHBOARD_3D_IMAGE_URL, opacity: 0.28 },
   { prefix: "/admin/applicants", url: PEOPLE_IMAGE_URL },
   { prefix: "/admin/properties", url: HERO_IMAGE_URL },
   { prefix: "/admin/viewings", url: HANDOVER_IMAGE_URL },

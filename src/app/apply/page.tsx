@@ -27,9 +27,9 @@ export default async function ApplyPage() {
           alt=""
           fill
           sizes="100vw"
-          className="object-cover opacity-[0.07]"
+          className="object-cover opacity-[0.22]"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-50/40 via-slate-50/70 to-slate-50" />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-50/20 via-slate-50/45 to-slate-50" />
       </div>
       <div className="mb-8 text-center">
         <p className="text-sm font-medium tracking-wide text-slate-500 uppercase">
