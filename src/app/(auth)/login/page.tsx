@@ -4,6 +4,7 @@ import { Suspense, useActionState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { login, type AuthFormState } from "../actions";
+import { AuthShell } from "@/components/auth/auth-shell";
 
 const initialState: AuthFormState = {};
 
@@ -22,7 +23,7 @@ function LoginForm() {
   const justRegistered = searchParams.get("registered") === "1";
 
   return (
-    <main className="flex flex-1 items-center justify-center px-4 py-16">
+    <AuthShell>
       <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
         <h1 className="text-xl font-semibold text-slate-900">Anmelden</h1>
         <p className="mt-1 text-sm text-slate-500">Willkommen zurück.</p>
@@ -80,6 +81,6 @@ function LoginForm() {
           </Link>
         </p>
       </div>
-    </main>
+    </AuthShell>
   );
 }

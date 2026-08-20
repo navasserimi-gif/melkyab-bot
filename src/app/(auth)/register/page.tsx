@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import Link from "next/link";
 import { register, type AuthFormState } from "../actions";
+import { AuthShell } from "@/components/auth/auth-shell";
 
 const initialState: AuthFormState = {};
 
@@ -10,7 +11,7 @@ export default function RegisterPage() {
   const [state, formAction, pending] = useActionState(register, initialState);
 
   return (
-    <main className="flex flex-1 items-center justify-center px-4 py-16">
+    <AuthShell>
       <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
         <h1 className="text-xl font-semibold text-slate-900">Konto erstellen</h1>
         <p className="mt-1 text-sm text-slate-500">
@@ -78,6 +79,6 @@ export default function RegisterPage() {
           </Link>
         </p>
       </div>
-    </main>
+    </AuthShell>
   );
 }
