@@ -23,9 +23,18 @@ export default async function ApplyPage() {
         <p className="text-sm font-medium tracking-wide text-slate-500 uppercase">
           Mietinteressenten-Formular
         </p>
+        <p className="text-xs font-medium tracking-wide text-slate-400" dir="rtl" lang="fa">
+          فرم متقاضیان اجاره مسکن
+        </p>
         <h1 className="mt-2 text-2xl font-semibold text-slate-900">Dein Suchprofil</h1>
+        <h2 className="text-lg font-semibold text-slate-500" dir="rtl" lang="fa">
+          پروفایل جستجوی شما
+        </h2>
         <p className="mt-2 text-sm text-slate-500">
           Ein paar kurze Schritte — danach lädst du direkt deine Unterlagen hoch.
+        </p>
+        <p className="text-sm text-slate-400" dir="rtl" lang="fa">
+          چند مرحله کوتاه — سپس می‌توانید مدارک خود را مستقیماً بارگذاری کنید.
         </p>
       </div>
       <ApplicationForm defaultEmail={user.email ?? ""} />

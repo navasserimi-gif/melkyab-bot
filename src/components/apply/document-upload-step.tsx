@@ -2,10 +2,12 @@
 
 import { useRef, useState, useTransition } from "react";
 import { uploadApplicantDocument } from "@/lib/actions/applicant-documents";
+import { Bilingual, DOC_TYPE_FA } from "./bilingual";
 
 export interface RequiredDocType {
   key: string;
   label: string;
+  labelFa?: string;
 }
 
 export function DocumentUploadStep({
@@ -14,12 +16,14 @@ export function DocumentUploadStep({
   uploadedKeys = [],
   onFinish,
   finishLabel = "Fertig — zum Portal",
+  finishLabelFa = "پایان — به پورتال",
 }: {
   applicantId: string | null;
   requiredTypes: RequiredDocType[];
   uploadedKeys?: string[];
   onFinish?: () => void;
   finishLabel?: string;
+  finishLabelFa?: string;
 }) {
   const [uploaded, setUploaded] = useState<Set<string>>(new Set(uploadedKeys));
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -31,6 +35,9 @@ export function DocumentUploadStep({
     return (
       <p className="text-sm text-red-600">
         Dein Profil konnte nicht gefunden werden. Bitte lade die Seite neu.
+        <span className="mt-1 block" dir="rtl" lang="fa">
+          پروفایل شما یافت نشد. لطفاً صفحه را دوباره بارگذاری کنید.
+        </span>
       </p>
     );
   }
@@ -39,7 +46,7 @@ export function DocumentUploadStep({
     const input = fileInputs.current[docTypeKey];
     const file = input?.files?.[0];
     if (!file) {
-      setErrors((e) => ({ ...e, [docTypeKey]: "Bitte zuerst eine Datei auswählen." }));
+      setErrors((e) => ({ ...e, [docTypeKey]: "Bitte zuerst eine Datei auswählen. / لطفاً ابتدا یک فایل انتخاب کنید." }));
       return;
     }
     setErrors((e) => ({ ...e, [docTypeKey]: "" }));
@@ -67,11 +74,16 @@ export function DocumentUploadStep({
       <p className="text-sm text-slate-500">
         Bitte lade folgende Unterlagen hoch. Deine Dokumente werden sicher und ausschließlich für
         die Bearbeitung deiner Bewerbung gespeichert — niemals öffentlich einsehbar.
+        <span className="mt-1 block" dir="rtl" lang="fa">
+          لطفاً مدارک زیر را بارگذاری کنید. مدارک شما به‌صورت امن و فقط برای بررسی درخواست شما
+          ذخیره می‌شود — هرگز به‌صورت عمومی قابل مشاهده نیست.
+        </span>
       </p>
 
       <div className="space-y-4">
         {requiredTypes.map((docType) => {
           const isUploaded = uploaded.has(docType.key);
+          const fa = docType.labelFa ?? DOC_TYPE_FA[docType.key] ?? docType.label;
           return (
             <div
               key={docType.key}
@@ -81,6 +93,9 @@ export function DocumentUploadStep({
                 <p className="text-sm font-medium text-slate-900">
                   {isUploaded ? "✓ " : ""}
                   {docType.label}
+                </p>
+                <p className="text-xs text-slate-400" dir="rtl" lang="fa">
+                  {fa}
                 </p>
                 {errors[docType.key] && (
                   <p className="text-xs text-red-600">{errors[docType.key]}</p>
@@ -102,10 +117,10 @@ export function DocumentUploadStep({
                   className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
                 >
                   {pendingKey === docType.key
-                    ? "Lädt…"
+                    ? "Lädt… / در حال بارگذاری…"
                     : isUploaded
-                      ? "Ersetzen"
-                      : "Hochladen"}
+                      ? "Ersetzen / جایگزینی"
+                      : "Hochladen / بارگذاری"}
                 </button>
               </div>
             </div>
@@ -120,7 +135,7 @@ export function DocumentUploadStep({
             onClick={onFinish}
             className="rounded-lg bg-slate-900 px-6 py-2.5 text-sm font-medium text-white transition hover:bg-slate-700"
           >
-            {finishLabel}
+            <Bilingual de={finishLabel} fa={finishLabelFa} />
           </button>
         </div>
       )}

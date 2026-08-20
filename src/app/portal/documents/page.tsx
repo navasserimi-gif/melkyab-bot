@@ -32,6 +32,9 @@ export default async function PortalDocumentsPage() {
           ← Zurück zur Übersicht
         </Link>
         <h1 className="mt-2 text-2xl font-semibold text-slate-900">Deine Dokumente</h1>
+        <h2 className="text-base font-semibold text-slate-400" dir="rtl" lang="fa">
+          مدارک شما
+        </h2>
         <p className="mt-1 text-sm text-slate-500">
           Du kannst Dokumente jederzeit ergänzen oder ersetzen.
         </p>
