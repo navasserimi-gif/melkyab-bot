@@ -1,43 +1,6 @@
 {
-  "generated_at": "2026-08-19T06:34:04.938466+00:00",
+  "generated_at": "2026-08-20T06:35:52.712809+00:00",
   "listings": [
-    {
-      "title": "Grundstück 461 m² mit Altbestand - provisionsfrei von privat",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/grundstueck-461-m-mit-altbestand-provisionsfrei-von-privat/3488394775-208-1532",
-      "price_eur": 45000.0,
-      "location": "51580 Reichshof",
-      "size_sqm": 461.0,
-      "property_type": "grundstueck",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": 97.61388286334056,
-      "score": 11.663300000000001,
-      "reasons": [
-        "≈822% unter Richtwert (900 €/m² in Köln)",
-        "Privater Anbieter – vermutlich keine Käuferprovision",
-        "Ausdrücklich provisionsfrei beworben"
-      ],
-      "listing_age_days": 1,
-      "is_stale_opportunity": false
-    },
-    {
-      "title": "NEU erschlossenes Baugrundstück, offene Bauweise, Südausrichtung",
-      "url": "https://www.kleinanzeigen.de/s-anzeige/neu-erschlossenes-baugrundstueck-offene-bauweise-suedausrichtung/3488534492-207-1887",
-      "price_eur": 151200.0,
-      "location": "51645 Gummersbach",
-      "size_sqm": null,
-      "property_type": "grundstueck",
-      "source": "kleinanzeigen",
-      "is_private": true,
-      "price_per_sqm": null,
-      "score": 1.15,
-      "reasons": [
-        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
-        "Privater Anbieter – vermutlich keine Käuferprovision"
-      ],
-      "listing_age_days": 0,
-      "is_stale_opportunity": false
-    },
     {
       "title": "Pizzeria zur ablöse zu verkaufen",
       "url": "https://www.kleinanzeigen.de/s-anzeige/pizzeria-zur-abloese-zu-verkaufen/3472473988-277-996",
@@ -48,11 +11,30 @@
       "source": "kleinanzeigen",
       "is_private": true,
       "price_per_sqm": null,
+      "score": 1.4949999999999999,
+      "reasons": [
+        "Privater Anbieter – vermutlich keine Käuferprovision",
+        "🎯 Seit 21 Tagen inseriert – vermutlich noch offen, gute Kontakt-Chance"
+      ],
+      "listing_age_days": 21,
+      "is_stale_opportunity": true
+    },
+    {
+      "title": "Tiny House im Park der Ruhe und Gelassenheit Feriendorf Kevelaer",
+      "url": "https://www.kleinanzeigen.de/s-anzeige/tiny-house-im-park-der-ruhe-und-gelassenheit-feriendorf-kevelaer/3488949894-208-1138",
+      "price_eur": 109000.0,
+      "location": "47627 Kevelaer",
+      "size_sqm": null,
+      "property_type": "grundstueck",
+      "source": "kleinanzeigen",
+      "is_private": true,
+      "price_per_sqm": null,
       "score": 1.15,
       "reasons": [
+        "Preis pro m² nicht ermittelbar – bitte manuell prüfen",
         "Privater Anbieter – vermutlich keine Käuferprovision"
       ],
-      "listing_age_days": 20,
+      "listing_age_days": 1,
       "is_stale_opportunity": false
     }
   ]
